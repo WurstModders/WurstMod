@@ -38,8 +38,8 @@ Maps consist of a folder with three files: *leveldata*, *info.txt*, and *thumb.p
 I plan to create a video walkthrough of level creation at some point. For now, here's a wall-of-text-style tutorial of the super basic requirements.
 
 1. You need a **specific version of Unity, Unity 5.6.3**. You can find that [Here](https://unity3d.com/get-unity/download/archive)
-1. Clone or Download this repository, it contains the WurstModWorkbench Unity project.
-1. Open the WurstModWorkbench project using Unity 5.6.3. The included TAHDebug scene includes a fully working level. You can use this to reference specific details of level creation.
+1. Clone or Download this repository, it contains the WurstModWorkbench.unitypackage file
+1. Open Unity 5.6.3 and create a new project. In the new project, use Assets->Import Package->Custom Package to import WurstModWorkbench.unitypackage. The included TAHDebug scene includes a fully working level. You can use this to reference specific details of level creation.
 1. Create and open a new Scene in the Assets/Scenes folder. **Delete Main Camera.**
 1. From the Prefabs folder, drag in the [TNHLEVEL] prefab. This the root GameObject of your scene, **all other GameObject must be children of this GameObject.**
 1. Build your level geometry. **I recommend starting a few hundred units away from the origin, or you risk overlapping the original Take and Hold map's Navmesh. I have no idea what will happen if you do.** Make sure everything has a Collider, is set to the Environment layer, and has a "P Mat" script to set its physical properties. Also, hit the "Static" checkbox for all of your level geometry, or Navmesh/Occlusion data will not work later!
