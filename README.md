@@ -4,7 +4,7 @@ WurstMod is a mod for H3VR currently focusing on making it easy to create and im
 
 ## Installation
 
-Download the most recent release and unzip into your H3VR install folder. You can easily access this folder by right clicking H3VR in your steam library, going to Properties, the Local Files tab, Browse Local Files.
+Download the [most recent release of BepInEx](https://github.com/BepInEx/BepInEx/releases), followed by the [most recent release of WurstMod](https://github.com/Nolenz/Wurstmod/releases). Unzip *in that order* into your H3VR install folder. You can easily access this folder by right clicking H3VR in your steam library, going to Properties, the Local Files tab, Browse Local Files.
 
 If your folder looks like the image below, you're good to go. Just run the game as you normally would and load into Take And Hold. There will be arrows on the map image panel, pressing those will switch between installed maps.
 
