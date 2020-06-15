@@ -2,6 +2,23 @@
 
 ### **IMPORTANT NOTE:** By installing mods, you forfeit your right to bug the developers of a game. They've got enough on their plate anyway. It's never a good idea to report a game bug if you are running mods! Disable the mods first!
 
+Additionally, a message from Anton:
+
+>I have no problem beyond a couple caveats:
+>
+>- It's fully understood that I have my own objectives for the game, and this mode, and reserve the right to alter things as I need to, and that there is no implicit expectation that this content will not break in the future.
+>
+>- As I'm currently working on new Take & Hold map for the fall, major things about both the 'in mode' codebase, and some of the menu selection stuff will be changing. That will almost certainly break anything you make between now and then. I expect to hear no complaints about this.
+>
+>- Understand that Unity Asset bundles are NOT Unity version independent. If I ever need to update the engine version the game runs on, existing asset bundles will be rendered inoperable, and will only be fixable by whomever created them originally.
+>
+>- NO assets from the game (that means no models, no textures, no sounds) are to be in those asset bundles. Otherwise that's distribution of assets that I lack redistribution rights for, and thus cannot legally grant to you.
+>
+>- No-one bothers me about how the game functions, the codebase, how things function, or expects me to bug-hunt or respond to performance concerns for modded content like this. I already spend too many hours of the day on this to begin with, and work with the people I wish to work with. I have neither the time, nor inclination, to play 'fix-it' on content made by other people.
+>
+>- No bigoted and/or hateful shit in the content. I don't care if it's 'sarcastic' or 'just meming' or 'just a joke bro'. I will scour it from this sub-reddit and the steam forum with prejudice and ban all accounts related to it. No second chances.
+
+
 WurstMod is a mod for H3VR currently focusing on making it easy to create and import custom maps. Custom maps are currently limited to the Take and Hold gamemode.
 
 ## Installation
