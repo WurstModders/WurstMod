@@ -62,6 +62,11 @@ namespace WurstMod
                 strb.AppendLine(levelComponent.levelAuthor);
                 strb.AppendLine(levelComponent.levelDescription);
                 File.WriteAllText(directory + "info.txt", strb.ToString());
+
+                // Delete unnecessary files.
+                if (File.Exists(directory + "leveldata.MANIFEST")) File.Delete(directory + "leveldata.MANIFEST");
+                if (File.Exists(directory + scene.name)) File.Delete(directory + scene.name);
+                if (File.Exists(directory + scene.name + ".MANIFEST")) File.Delete(directory + scene.name + ".MANIFEST");
             }
         }
 
@@ -89,6 +94,13 @@ namespace WurstMod
             if (levelComponent.levelName.Contains('\n') || levelComponent.levelAuthor.Contains('\n'))
             {
                 return "Level Name and Level Author cannot contain newlines.";
+            }
+
+            // Must have exactly one scoreboard area.
+            TNH.ScoreboardArea[] sb = levelComponent.GetComponentsInChildren<TNH.ScoreboardArea>();
+            if (sb.Length != 1)
+            {
+                return "You must have exactly one Scoreboard Area.";
             }
 
             // UNVERIFIED Must have at least 2 Hold Points.
