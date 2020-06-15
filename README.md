@@ -1,5 +1,7 @@
 # WurstMod
 
+### **IMPORTANT NOTE:** By installing mods, you forfeit your right to bug the developers of a game. They've got enough on their plate anyway. It's never a good idea to report a game bug if you are running mods! Disable the mods first!
+
 WurstMod is a mod for H3VR currently focusing on making it easy to create and import custom maps. Custom maps are currently limited to the Take and Hold gamemode.
 
 ## Installation
