@@ -50,7 +50,7 @@ I plan to create a video walkthrough of level creation at some point. For now, h
 1. Generate Occlusion data by going to Window->Occlusion Culling. The defaults are fine, just hit Bake.
 1. Run H3VR/Export TNH from the menu bar to export the level. If there are no errors, it will be placed in AssetBundles/\<scene name\> in your Unity project folder.
 1. Install the level by copying its folder from WurstModWorkbench/AssetBundles to H3VR/CustomLevels/TakeAndHold.
-1. Add a thumb.png (roughly 16:9 aspect should be fine) to the folder for a level image.
+1. Add a thumb.png (roughly 2:1 aspect should be fine) to the folder for a level image.
 
 ## Contributing
 
