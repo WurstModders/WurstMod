@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -26,6 +27,29 @@ namespace WurstMod
                 return new List<Transform>();
             }
         }
+        #endregion
+
+        #region Reflection
+        // Reflection shortcuts.
+
+        public static object ReflectInvoke<T>(this T target, string methodName, params object[] parameters) where T : UnityEngine.Object
+        {
+            MethodInfo method = target.GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
+            return method.Invoke(target, parameters);
+        }
+
+        public static object ReflectGet<T>(this T target, string fieldName) where T : UnityEngine.Object
+        {
+            FieldInfo field = target.GetType().GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
+            return field.GetValue(target);
+        }
+
+        public static void ReflectSet<T>(this T target, string fieldName, object value) where T : UnityEngine.Object
+        {
+            FieldInfo field = target.GetType().GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
+            field.SetValue(target, value);
+        }
+
         #endregion
 
         #region Scene
