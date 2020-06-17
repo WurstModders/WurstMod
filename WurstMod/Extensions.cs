@@ -30,23 +30,70 @@ namespace WurstMod
         #endregion
 
         #region Reflection
-        // Reflection shortcuts.
+        // Reflection shortcuts with caching. A smidge less verbose than InvokeMember.
+        // Currently doesn't work for overloaded methods.
+        // Cross that bridge when we come to it, I guess.
+        private struct ReflectDef 
+        { 
+            public Type type;
+            public string name;
+            public ReflectDef(Type type, string name) 
+            { 
+                this.type = type;
+                this.name = name;
+            }
+        }
+        private static Dictionary<ReflectDef, MethodInfo> methodCache = new Dictionary<ReflectDef, MethodInfo>();
+        private static Dictionary<ReflectDef, FieldInfo> fieldCache = new Dictionary<ReflectDef, FieldInfo>();
 
         public static object ReflectInvoke<T>(this T target, string methodName, params object[] parameters) where T : UnityEngine.Object
         {
-            MethodInfo method = target.GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo method;
+            ReflectDef def = new ReflectDef(target.GetType(), methodName);
+            if (methodCache.ContainsKey(def))
+            {
+                method = methodCache[def];
+            }
+            else
+            {
+                method = target.GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
+                methodCache[def] = method;
+            }
+
             return method.Invoke(target, parameters);
         }
 
         public static object ReflectGet<T>(this T target, string fieldName) where T : UnityEngine.Object
         {
-            FieldInfo field = target.GetType().GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
+            FieldInfo field;
+            ReflectDef def = new ReflectDef(target.GetType(), fieldName);
+            if (fieldCache.ContainsKey(def))
+            {
+                field = fieldCache[def];
+            }
+            else
+            {
+                field = target.GetType().GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
+                fieldCache[def] = field;
+            }
+
             return field.GetValue(target);
         }
 
         public static void ReflectSet<T>(this T target, string fieldName, object value) where T : UnityEngine.Object
         {
-            FieldInfo field = target.GetType().GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
+            FieldInfo field;
+            ReflectDef def = new ReflectDef(target.GetType(), fieldName);
+            if (fieldCache.ContainsKey(def))
+            {
+                field = fieldCache[def];
+            }
+            else
+            {
+                field = target.GetType().GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
+                fieldCache[def] = field;
+            }
+
             field.SetValue(target, value);
         }
 
@@ -65,6 +112,11 @@ namespace WurstMod
                 }
             }
             return allGameObjects;
+        }
+
+        public static void RefreshShader(this Material mat)
+        {
+            mat.shader = Shader.Find(mat.shader.name);
         }
         #endregion
 

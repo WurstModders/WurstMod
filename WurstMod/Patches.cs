@@ -74,7 +74,6 @@ namespace WurstMod
 
                     // Force fields on the fake link to match the type of jump.
                     Vector3 jump = __instance.Agent.currentOffMeshLinkData.endPos - __instance.Agent.currentOffMeshLinkData.startPos;
-                    float totalMag = jump.magnitude;
                     float horzMag = new Vector3(jump.x, 0, jump.z).magnitude;
                     float vertMag = Mathf.Abs(jump.y);
                     bool jumpDown = jump.y < 0;
@@ -83,11 +82,8 @@ namespace WurstMod
                     else if (jumpDown && vertMag > (2 * horzMag)) fakeLink.Type = NavMeshLinkExtension.NavMeshLinkType.Drop;
                     else fakeLink.Type = NavMeshLinkExtension.NavMeshLinkType.LateralJump;
 
-                    // TODO These numbers may require more tweaking.
-                    if (fakeLink.Type == NavMeshLinkExtension.NavMeshLinkType.Climb) fakeLink.TimeToClear = 40f;
-                    else fakeLink.TimeToClear = 40f;
-
-                    fakeLink.ReflectSet("m_xySpeed", totalMag / fakeLink.TimeToClear);
+                    // Arbitrary number.
+                    fakeLink.ReflectSet("m_xySpeed", 0.5f);
                     
 
                     // Clean up the dictionary. Keep an eye on the counts for this...

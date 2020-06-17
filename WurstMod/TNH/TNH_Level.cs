@@ -14,5 +14,7 @@ namespace WurstMod.TNH
 
         [TextArea(15, 20)]
         public string levelDescription;
+
+        public Material skybox;
     }
 }

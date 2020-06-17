@@ -44,6 +44,7 @@ namespace WurstMod.TNH
                 currentLevelIndex = 0;
                 GatherReferences();
                 InitDirectories();
+                FixLevelNameSize();
                 SetupLevelDatas();
 
                 SetupButtons();
@@ -79,12 +80,20 @@ namespace WurstMod.TNH
             }
         }
 
+        private static void FixLevelNameSize()
+        {
+            RectTransform levelNameRect = levelNameText.transform as RectTransform;
+            levelNameRect.sizeDelta = new Vector2(860, 80);
+        }
+
         /// <summary>
         /// Create our own LevelData objects for the original level, and all loaded levels.
         /// </summary>
         private static void SetupLevelDatas()
         {
-            levels.Add(new LevelData(levelImage.sprite, levelNameText.text, "H3VR", levelDescriptionText.text, ""));
+            levels.Add(new LevelData(levelImage.sprite, "Classic", "H3VR", levelDescriptionText.text, ""));
+            //TODO TEST THIS Update information of original level for consistency with new format.
+            levels[0].SetLevel();
 
             foreach(string ii in Directory.GetDirectories(levelDir))
             {

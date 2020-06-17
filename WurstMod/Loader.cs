@@ -142,7 +142,6 @@ namespace WurstMod
         static FistVR.AudioEvent success;
         static FistVR.AudioEvent failure;
         static GameObject vfx;
-        static Shader shader;
         static GameObject[] barrierPrefabs = new GameObject[2];
         /// <summary>
         /// A wide variety of existing objects are needed for importing a new TNH scene.
@@ -173,11 +172,6 @@ namespace WurstMod
 
             // We need VFX_HoldWave prefab.
             vfx = sourceHoldPoint.VFX_HoldWave;
-
-            // We need the correct shader for hotswapping.
-            //TODO this is terrible, but I can't fix the right eye bug...
-            MeshRenderer mr = currentScene.GetAllGameObjectsInScene().Where(x => x.name == "SciHalls_Support_A").First().GetComponent<MeshRenderer>();
-            shader = mr.materials[0].shader;
 
             // We need barrier prefabs.
             FistVR.TNH_DestructibleBarrierPoint barrier = currentScene.GetAllGameObjectsInScene().Where(x => x.name == "Barrier_SpawnPoint").First().GetComponent<FistVR.TNH_DestructibleBarrierPoint>();
@@ -243,6 +237,7 @@ namespace WurstMod
         /// </summary>
         private static void ResolveAll()
         {
+            Resolve_Skybox();
             Resolve_Shaders();
             Resolve_PMats();
             Resolve_FVRReverbEnvironments();
@@ -258,10 +253,25 @@ namespace WurstMod
 
         #region Resolves
         /// <summary>
-        /// Steal a properly-formatted shader from an existing object.
-        /// This is required because using any other shader seems to break VR (at least in one eye).
-        /// I'm not sure what the deal is with this. I'm sure there's a solution, but for now
-        /// everything is going to have to have a simple shader.
+        /// Use the skybox of the imported level.
+        /// Requires GI Update to fix lighting.
+        /// </summary>
+        private static void Resolve_Skybox()
+        {
+            TNH.TNH_Level levelComponent = loadedRoot.GetComponent<TNH.TNH_Level>();
+            if (levelComponent.skybox != null)
+            {
+                RenderSettings.skybox = levelComponent.skybox;
+                RenderSettings.skybox.RefreshShader();
+                DynamicGI.UpdateEnvironment();
+            }
+        }
+
+
+        /// <summary>
+        /// Shaders, when imported from an assetbundle, become garbage.
+        /// Set them to themselves and bam, it works.
+        /// Unity 5 bugs sure were something.
         /// </summary>
         private static void Resolve_Shaders()
         {
@@ -269,7 +279,7 @@ namespace WurstMod
             {
                 foreach (Material jj in ii.materials)
                 {
-                    jj.shader = shader;
+                    jj.RefreshShader();
                 }
             }
         }
@@ -328,7 +338,6 @@ namespace WurstMod
                 Collider proxyCol = proxy.GetComponent<Collider>();
                 Vector3 extents = proxyCol.bounds.extents;
                 real.EndInteractionDistance = 2.5f * Mathf.Abs(Mathf.Max(extents.x, extents.y, extents.z));
-                Debug.Log("INTERACTION DISTANCE: " + real.EndInteractionDistance);
             }
         }
 

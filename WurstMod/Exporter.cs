@@ -35,6 +35,9 @@ namespace WurstMod
                 if (!choice) return;
             }
 
+            // Pre-save, grab the skybox.
+            levelComponent.skybox = RenderSettings.skybox;
+
             if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
             {
                 // Setup build options.
@@ -110,10 +113,13 @@ namespace WurstMod
                 return "You must have at least two Hold Points.";
             }
             // Hold points must have at least 9 defenders spawnpoints.
+            // NavBlockers must be disabled.
             foreach (TNH.TNH_HoldPoint hold in holds)
             {
                 if (hold.SpawnPoints_Sosigs_Defense.AsEnumerable().Count() < 9)
                     return "All holds must have at least 9 entries in SpawnPoints_Sosigs_Defense.";
+                if (hold.NavBlockers.activeSelf)
+                    return "All NavBlockers must be disabled before exporting.";
             }
 
             // UNVERIFIED Must have at least 3 Supply Points.
