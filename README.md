@@ -38,18 +38,19 @@ Maps consist of a folder with three files: *leveldata*, *info.txt*, and *thumb.p
 I plan to create a video walkthrough of level creation at some point. For now, here's a wall-of-text-style tutorial of the super basic requirements.
 
 1. You need a **specific version of Unity, Unity 5.6.3**. You can find that [Here](https://unity3d.com/get-unity/download/archive)
-1. Clone or Download this repository, it contains the WurstModWorkbench.unitypackage file
-1. Open Unity 5.6.3 and create a new project. In the new project, use Assets->Import Package->Custom Package to import WurstModWorkbench.unitypackage. The included TAHDebug scene includes a fully working level. You can use this to reference specific details of level creation.
+1. Clone or Download this repository, it contains the WurstModWorkbench.unitypackage and TagManager.asset files
+1. Open Unity 5.6.3 and create a new project. In the new project, use Assets->Import Package->Custom Package to import WurstModWorkbench.unitypackage. **Then, add the included TagManager.asset to your Unity project's ProjectSettings folder.**
+1. The included TAHDebug scene includes a fully working level. You can use this to reference specific details of level creation.
 1. Create and open a new Scene in the Assets/Scenes folder. **Delete Main Camera.**
-1. From the Prefabs folder, drag in the [TNHLEVEL] prefab. This the root GameObject of your scene, **all other GameObject must be children of this GameObject.**
+1. From the Prefabs folder, drag in the [TNHLEVEL] prefab. This the root GameObject of your scene, **all other GameObjects must be children of this GameObject.**
 1. Build your level geometry. **I recommend starting a few hundred units away from the origin, or you risk overlapping the original Take and Hold map's Navmesh. I have no idea what will happen if you do.** Make sure everything has a Collider, is set to the Environment layer, and has a "P Mat" script to set its physical properties. Also, hit the "Static" checkbox for all of your level geometry, or Navmesh/Occlusion data will not work later!
 1. Add the ScoreboardArea prefab somewhere (preferably unreachable.) This is where the player will be teleported at the end of the round.
 1. Start adding SupplyPoint and HoldPoint prefabs. These prefabs show ghosts to indicate position, feel free to edit the positions/counts of things like barriers, targets, spawn points, etc. If you are placing something and don't see a ghost, it's probably not set up correctly! NOTE: You must have at least 2 Hold Points and at least 3 Supply Points. Hold points must also have spawnpoints for at least 9 defenders. **There may be other minimums I've not tested.**
-1. Generate Navmesh data by going to Window->Navigation. On the Bake tab, you can modify various parameters. Hit bake and it will show blue on all of the areas that can be navigated by AI. Make sure everything is connected, the AI gets unhappy when there's no route.
+1. Generate Navmesh data by going to Window->Navigation. On the Bake tab, you can modify various parameters. Hit bake and it will show blue on all of the areas that can be navigated by AI. If nothing appears, make sure your level geometry is marked as static! Make sure everything is connected, the AI gets unhappy when there's no route.
 1. Generate Occlusion data by going to Window->Occlusion Culling. The defaults are fine, just hit Bake.
 1. Run H3VR/Export TNH from the menu bar to export the level. If there are no errors, it will be placed in AssetBundles/\<scene name\> in your Unity project folder.
 1. Install the level by copying its folder from WurstModWorkbench/AssetBundles to H3VR/CustomLevels/TakeAndHold.
-1. Add a thumb.png (roughly 16:9 aspect should be fine) to the folder for a level image.
+1. Add a thumb.png (roughly 2:1 aspect should be fine) to the folder for a level image.
 
 ## Contributing
 
