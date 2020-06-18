@@ -142,6 +142,12 @@ namespace WurstMod
                 Debug.LogWarning(warn);
                 warnings.Add(warn);
             }
+            
+            // Cannot have more than one ForcedSpawn component
+            if (levelComponent.GetComponentsInChildren<TNH.Extras.ForcedSpawn>().Length > 1)
+            {
+                return "You can only have one Supply Point with the ForcedSpawn component.";
+            }
 
             return "";
         }

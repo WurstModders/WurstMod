@@ -7,6 +7,7 @@ using FistVR;
 using HarmonyLib;
 using UnityEngine;
 using UnityEngine.AI;
+using WurstMod.TNH.Extras;
 
 namespace WurstMod
 {
@@ -120,5 +121,27 @@ namespace WurstMod
             return __instance.gameObject.GetComponent<Sosig>() == null;
         }
     }
+    #endregion
+
+    #region ForcedSpawn SpawnOnly Support
+
+    /// <summary>
+    /// To enforce a supply point as SpawnOnly, we need to remove it after its used
+    /// This patch lets us do that safely.
+    /// </summary>
+    [HarmonyPatch(typeof(TNH_Manager), "InitBeginningEquipment")]
+    public class Patch_TNH_Manager_InitBeginningEquipment
+    {
+        static void Postfix(TNH_Manager __instance)
+        {
+            ForcedSpawn forcedSpawn = __instance.SupplyPoints.Select(x => x.GetComponent<ForcedSpawn>()).FirstOrDefault(x => x != null);
+            if (forcedSpawn)
+            {
+                __instance.SupplyPoints = __instance.SupplyPoints.Where(x => x.gameObject != forcedSpawn.gameObject).ToList();
+                ((FistVR.TNH_PointSequence)__instance.ReflectGet("m_curPointSequence")).StartSupplyPointIndex = 0;
+            }
+        }
+    }
+
     #endregion
 }

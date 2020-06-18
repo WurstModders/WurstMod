@@ -116,7 +116,22 @@ namespace WurstMod
 
         public static void RefreshShader(this Material mat)
         {
-            mat.shader = Shader.Find(mat.shader.name);
+            if (mat != null)
+            {
+                Shader refreshed = Shader.Find(mat.shader.name);
+                if (refreshed != null)
+                {
+                    mat.shader = Shader.Find(mat.shader.name);
+                    return;
+                }
+                Debug.LogError("WARNING: Failed to refresh shader \"" + mat.shader.name + "\", objects with this shader may render incorrectly.");
+            }
+            else
+            {
+                mat = new Material(Shader.Find("Standard"));
+                Debug.LogError("WARNING: Attempted to refresh missing material, affected objects may render incorrectly.");
+            }
+            
         }
         #endregion
 

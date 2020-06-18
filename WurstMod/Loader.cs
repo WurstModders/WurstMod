@@ -6,6 +6,9 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using WurstMod.TNH.Extras;
+using FistVR;
+using Valve.VR.InteractionSystem;
 
 namespace WurstMod
 {
@@ -224,7 +227,7 @@ namespace WurstMod
 
             // Merge this newly loaded scene. 
             //! It *should* always be at the final index, but this might be imperfect.
-            //TODO Merging in other direction might allow lighting/skybox settings to be preserved?
+            // Merge must happen in this direction. Otherwise, restart scene will break (among other things.)
             SceneManager.MergeScenes(SceneManager.GetSceneAt(SceneManager.sceneCount - 1), SceneManager.GetActiveScene());
 
             // Grab a few objects we'll need later.
@@ -239,6 +242,7 @@ namespace WurstMod
         {
             Resolve_Skybox();
             Resolve_Shaders();
+            Resolve_Terrain();
             Resolve_PMats();
             Resolve_FVRReverbEnvironments();
             Resolve_FVRHandGrabPoints();
@@ -284,12 +288,35 @@ namespace WurstMod
             }
         }
 
+        private static void Resolve_Terrain()
+        {
+            foreach (Terrain ii in loadedRoot.GetComponentsInChildren<Terrain>(true))
+            {
+                ii.materialTemplate.RefreshShader();
+                ii.terrainData.treePrototypes.Select(x => x.prefab.layer = LayerMask.NameToLayer("Environment"));
+                foreach (TreePrototype jj in ii.terrainData.treePrototypes)
+                {
+                    jj.prefab.layer = LayerMask.NameToLayer("Environment");
+                    MeshRenderer[] mrs = jj.prefab.GetComponentsInChildren<MeshRenderer>();
+                    mrs.ForEach(x => x.material.RefreshShader());
+                }
+                foreach (TreeInstance jj in ii.terrainData.treeInstances)
+                {
+                    GameObject copiedTree = GameObject.Instantiate<GameObject>(ii.terrainData.treePrototypes[jj.prototypeIndex].prefab, ii.transform);
+                    copiedTree.transform.localPosition = new Vector3(ii.terrainData.size.x * jj.position.x, ii.terrainData.size.y * jj.position.y, ii.terrainData.size.z * jj.position.z);
+                    copiedTree.transform.localScale = new Vector3(jj.widthScale, jj.heightScale, jj.widthScale);
+                    copiedTree.transform.localEulerAngles = new Vector3(0f, jj.rotation, 0f);
+                }
+                ii.terrainData.treeInstances = new TreeInstance[0];
+            }
+        }
+
         /// <summary>
         /// Creates valid PMats from proxies.
         /// </summary>
         private static void Resolve_PMats()
         {
-            WurstMod.TNH.PMat[] pMatProxies = loadedRoot.GetComponentsInChildren<WurstMod.TNH.PMat>();
+            WurstMod.TNH.PMat[] pMatProxies = loadedRoot.GetComponentsInChildren<WurstMod.TNH.PMat>(true);
             foreach (var proxy in pMatProxies)
             {
                 GameObject owner = proxy.gameObject;
@@ -307,7 +334,7 @@ namespace WurstMod
         /// </summary>
         private static void Resolve_FVRReverbEnvironments()
         {
-            WurstMod.TNH.FVRReverbEnvironment[] reverbProxies = loadedRoot.GetComponentsInChildren<WurstMod.TNH.FVRReverbEnvironment>();
+            WurstMod.TNH.FVRReverbEnvironment[] reverbProxies = loadedRoot.GetComponentsInChildren<WurstMod.TNH.FVRReverbEnvironment>(true);
             foreach (var proxy in reverbProxies)
             {
                 GameObject owner = proxy.gameObject;
@@ -323,7 +350,7 @@ namespace WurstMod
         /// </summary>
         private static void Resolve_FVRHandGrabPoints()
         {
-            TNH.FVRHandGrabPoint[] grabProxies = loadedRoot.GetComponentsInChildren<TNH.FVRHandGrabPoint>();
+            TNH.FVRHandGrabPoint[] grabProxies = loadedRoot.GetComponentsInChildren<TNH.FVRHandGrabPoint>(true);
             foreach (var proxy in grabProxies)
             {
                 GameObject owner = proxy.gameObject;
@@ -347,7 +374,7 @@ namespace WurstMod
         private static void Resolve_AICoverPoints()
         {
             // NOTE: AICoverPoint currently isn't in the FistVR namespace.
-            TNH.AICoverPoint[] coverProxies = loadedRoot.GetComponentsInChildren<TNH.AICoverPoint>();
+            TNH.AICoverPoint[] coverProxies = loadedRoot.GetComponentsInChildren<TNH.AICoverPoint>(true);
             foreach (var proxy in coverProxies)
             {
                 GameObject owner = proxy.gameObject;
@@ -365,14 +392,14 @@ namespace WurstMod
         /// </summary>
         private static void Resolve_TNH_DestructibleBarrierPoints()
         {
-            TNH.TNH_DestructibleBarrierPoint[] coverProxies = loadedRoot.GetComponentsInChildren<TNH.TNH_DestructibleBarrierPoint>();
+            TNH.TNH_DestructibleBarrierPoint[] coverProxies = loadedRoot.GetComponentsInChildren<TNH.TNH_DestructibleBarrierPoint>(true);
             foreach (var proxy in coverProxies)
             {
                 GameObject owner = proxy.gameObject;
                 FistVR.TNH_DestructibleBarrierPoint real = owner.AddComponent<FistVR.TNH_DestructibleBarrierPoint>();
 
                 real.Obstacle = owner.GetComponent<UnityEngine.AI.NavMeshObstacle>();
-                real.CoverPoints = real.GetComponentsInChildren<AICoverPoint>().ToList();
+                real.CoverPoints = real.GetComponentsInChildren<AICoverPoint>(true).ToList();
                 real.BarrierDataSets = new List<FistVR.TNH_DestructibleBarrierPoint.BarrierDataSet>();
 
                 for (int ii = 0; ii < 2; ii++)
@@ -394,7 +421,7 @@ namespace WurstMod
         /// </summary>
         private static void Resolve_TNH_SupplyPoints()
         {
-            TNH.TNH_SupplyPoint[] supplyProxies = loadedRoot.GetComponentsInChildren<TNH.TNH_SupplyPoint>();
+            TNH.TNH_SupplyPoint[] supplyProxies = loadedRoot.GetComponentsInChildren<TNH.TNH_SupplyPoint>(true);
             foreach (var proxy in supplyProxies)
             {
                 GameObject owner = proxy.gameObject;
@@ -422,7 +449,7 @@ namespace WurstMod
         /// </summary>
         private static void Resolve_TNH_HoldPoints()
         {
-            TNH.TNH_HoldPoint[] holdProxies = loadedRoot.GetComponentsInChildren<TNH.TNH_HoldPoint>();
+            TNH.TNH_HoldPoint[] holdProxies = loadedRoot.GetComponentsInChildren<TNH.TNH_HoldPoint>(true);
             foreach (var proxy in holdProxies)
             {
                 GameObject owner = proxy.gameObject;
@@ -482,10 +509,10 @@ namespace WurstMod
         private static void Fix_TNH_Manager()
         {
             // Hold points need to be set.
-            manager.HoldPoints = loadedRoot.GetComponentsInChildren<FistVR.TNH_HoldPoint>().ToList();
+            manager.HoldPoints = loadedRoot.GetComponentsInChildren<FistVR.TNH_HoldPoint>(true).ToList();
 
             // Supply points need to be set.
-            manager.SupplyPoints = loadedRoot.GetComponentsInChildren<FistVR.TNH_SupplyPoint>().ToList();
+            manager.SupplyPoints = loadedRoot.GetComponentsInChildren<FistVR.TNH_SupplyPoint>(true).ToList();
 
             // Possible Sequences need to be generated at random.
             manager.PossibleSequnces = GenerateRandomPointSequences(10);
@@ -505,7 +532,17 @@ namespace WurstMod
             {
                 FistVR.TNH_PointSequence sequence = ScriptableObject.CreateInstance<FistVR.TNH_PointSequence>();
 
-                sequence.StartSupplyPointIndex = UnityEngine.Random.Range(0, manager.SupplyPoints.Count);
+                // Logic for forced spawn location.
+                ForcedSpawn forcedSpawn = loadedRoot.GetComponentInChildren<ForcedSpawn>();
+                if (forcedSpawn != null)
+                {
+                    sequence.StartSupplyPointIndex = manager.SupplyPoints.IndexOf(manager.SupplyPoints.First(x => x.gameObject == forcedSpawn.gameObject));
+                }
+                else
+                {
+                    sequence.StartSupplyPointIndex = UnityEngine.Random.Range(0, manager.SupplyPoints.Count);
+                }
+
                 sequence.HoldPoints = new List<int>()
                 {
                     //TODO This should only be 5, but I got an outofrange after the 4th hold so let's just add more... Maybe that'll fix it...
@@ -543,35 +580,38 @@ namespace WurstMod
             maxMatrix.Entries_HoldPoints = new List<FistVR.TNH_SafePositionMatrix.PositionEntry>();
             maxMatrix.Entries_SupplyPoints = new List<FistVR.TNH_SafePositionMatrix.PositionEntry>();
 
-            for (int ii = 0; ii < manager.HoldPoints.Count; ii++)
+            int effectiveHoldCount = manager.HoldPoints.Count;
+            int effectiveSupplyCount = manager.SupplyPoints.Where(x => x.GetComponent<ForcedSpawn>() == null).Count();
+
+            for (int ii = 0; ii < effectiveHoldCount; ii++)
             {
                 FistVR.TNH_SafePositionMatrix.PositionEntry entry = new FistVR.TNH_SafePositionMatrix.PositionEntry();
                 entry.SafePositions_HoldPoints = new List<bool>();
-                for (int jj = 0; jj < manager.HoldPoints.Count; jj++)
+                for (int jj = 0; jj < effectiveHoldCount; jj++)
                 {
                     entry.SafePositions_HoldPoints.Add(ii != jj);
                 }
 
                 entry.SafePositions_SupplyPoints = new List<bool>();
-                for (int jj = 0; jj < manager.SupplyPoints.Count; jj++)
+                for (int jj = 0; jj < effectiveSupplyCount; jj++)
                 {
-                    entry.SafePositions_SupplyPoints.Add(ii != jj);
+                    entry.SafePositions_SupplyPoints.Add(true);
                 }
 
                 maxMatrix.Entries_HoldPoints.Add(entry);
             }
 
-            for (int ii = 0; ii < manager.SupplyPoints.Count; ii++)
+            for (int ii = 0; ii < effectiveSupplyCount; ii++)
             {
                 FistVR.TNH_SafePositionMatrix.PositionEntry entry = new FistVR.TNH_SafePositionMatrix.PositionEntry();
                 entry.SafePositions_HoldPoints = new List<bool>();
-                for (int jj = 0; jj < manager.HoldPoints.Count; jj++)
+                for (int jj = 0; jj < effectiveHoldCount; jj++)
                 {
-                    entry.SafePositions_HoldPoints.Add(ii != jj);
+                    entry.SafePositions_HoldPoints.Add(true);
                 }
 
                 entry.SafePositions_SupplyPoints = new List<bool>();
-                for (int jj = 0; jj < manager.SupplyPoints.Count; jj++)
+                for (int jj = 0; jj < effectiveSupplyCount; jj++)
                 {
                     entry.SafePositions_SupplyPoints.Add(ii != jj);
                 }

@@ -65,6 +65,7 @@
     <Compile Include="Entrypoint.cs" />
     <Compile Include="Exporter.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="TNH\Extras\ForcedSpawn.cs" />
     <Compile Include="TNH\FVRHandGrabPoint.cs" />
     <Compile Include="TNH\FVRReverbEnvironment.cs" />
     <Compile Include="LevelSelector.cs" />
