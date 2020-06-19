@@ -604,9 +604,14 @@ namespace WurstMod
             GameObject spawnerBase = currentScene.GetAllGameObjectsInScene().Where(x => x.name == "ItemSpawner").First();
             foreach (Transform ii in itemSpawners)
             {
-                Debug.Log("Copying item spawner..."); // TODO REMOVE
-                GameObject spawnerCopy = GameObject.Instantiate(spawnerBase, loadedRoot.transform);
-                spawnerCopy.transform.position = ii.position + (0.8f * Vector3.up);
+                GameObject spawner = GameObject.Instantiate(spawnerBase, loadedRoot.transform);
+                //GameObject spawner = spawnerBase;
+                spawner.transform.position = ii.position + (0.8f * Vector3.up);
+                spawner.transform.localEulerAngles = ii.localEulerAngles;
+                spawner.SetActive(true);
+
+                Debug.Log(string.Join("\n", spawner.transform.AsEnumerable().Select(x => x.name + ", " + x.transform.position.ToString() ).ToArray()));
+                Debug.Log(spawner.transform.position);
             }
         }
 

@@ -58,9 +58,7 @@ namespace WurstMod
                 if (!choice) return;
             }
 
-            // Pre-save, grab the skybox.
-            // TODO Doesn't always work for some reason.
-            levelComponent.skybox = RenderSettings.skybox;
+            
 
             CreateBundle(scene);
         }
@@ -159,6 +157,14 @@ namespace WurstMod
             if (levelComponent.levelName.Contains('\n') || levelComponent.levelAuthor.Contains('\n'))
             {
                 return "Level Name and Level Author cannot contain newlines.";
+            }
+
+            // Warn empty skybox.
+            if (levelComponent.skybox == null && RenderSettings.skybox != null)
+            {
+                string warn = "WARNING: You didn't set your skybox on [LEVEL]!";
+                Debug.LogWarning(warn);
+                warnings.Add(warn);
             }
 
             return "";

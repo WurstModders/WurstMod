@@ -136,7 +136,7 @@ namespace WurstMod
         #endregion
 
         #region Gizmos
-        public static void GenericGizmoCube(Color color, Vector3 center, Vector3 size, bool drawFacing, params Transform[] markers)
+        public static void GenericGizmoCube(Color color, Vector3 center, Vector3 size, bool drawFacing, bool drawNegativeFacing, params Transform[] markers)
         {
             Gizmos.color = color;
             foreach (Transform ii in markers)
@@ -144,6 +144,7 @@ namespace WurstMod
                 Gizmos.matrix = ii.localToWorldMatrix;
                 Gizmos.DrawCube(center, size);
                 if (drawFacing) Gizmos.DrawLine(center, center + Vector3.forward);
+                if (drawNegativeFacing) Gizmos.DrawLine(center, center - Vector3.forward);
             }
         }
 

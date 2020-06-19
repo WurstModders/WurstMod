@@ -53,17 +53,17 @@ namespace WurstMod.TNH
         void OnDrawGizmos()
         {
             if (Bounds != null) Extensions.GenericGizmoCubeOutline(Color.white, Vector3.zero, Vector3.one, Bounds);
-            if (SpawnPoints_Panels != null) Extensions.GenericGizmoCube(new Color(0.4f, 0.4f, 0.9f, 0.5f), new Vector3(0f, 1.5f, 0.25f), new Vector3(2.3f, 1.2f, 0.5f), true, SpawnPoints_Panels.AsEnumerable().ToArray());
-            if (SpawnPoint_CaseLarge != null) Extensions.GenericGizmoCube(new Color(1f, 0.4f, 0.0f, 0.5f), new Vector3(0f, 0.12f, 0f), new Vector3(1.4f, 0.24f, 0.35f), true, SpawnPoint_CaseLarge);
-            if (SpawnPoint_CaseSmall != null) Extensions.GenericGizmoCube(new Color(1f, 0.4f, 0.0f, 0.5f), new Vector3(0f, 0.12f, 0f), new Vector3(0.6f, 0.24f, 0.35f), true, SpawnPoint_CaseSmall);
-            if (SpawnPoint_Tables != null) Extensions.GenericGizmoCube(new Color(0.5f, 0.5f, 0.5f, 0.5f), new Vector3(0f, 0.4f, 0.1f), new Vector3(0.7f, 0.8f, 1.5f), false, SpawnPoint_Tables.AsEnumerable().ToArray());
-            if (SpawnPoints_Boxes != null) Extensions.GenericGizmoCube(new Color(0.7f, 0.7f, 0.7f, 0.5f), Vector3.zero, 0.5f * Vector3.one, false, SpawnPoints_Boxes.AsEnumerable().ToArray());
+            if (SpawnPoints_Panels != null) Extensions.GenericGizmoCube(new Color(0.4f, 0.4f, 0.9f, 0.5f), new Vector3(0f, 1.5f, 0.25f), new Vector3(2.3f, 1.2f, 0.5f), true, false, SpawnPoints_Panels.AsEnumerable().ToArray());
+            if (SpawnPoint_CaseLarge != null) Extensions.GenericGizmoCube(new Color(1f, 0.4f, 0.0f, 0.5f), new Vector3(0f, 0.12f, 0f), new Vector3(1.4f, 0.24f, 0.35f), true, false, SpawnPoint_CaseLarge);
+            if (SpawnPoint_CaseSmall != null) Extensions.GenericGizmoCube(new Color(1f, 0.4f, 0.0f, 0.5f), new Vector3(0f, 0.12f, 0f), new Vector3(0.6f, 0.24f, 0.35f), true, false, SpawnPoint_CaseSmall);
+            if (SpawnPoint_Tables != null) Extensions.GenericGizmoCube(new Color(0.5f, 0.5f, 0.5f, 0.5f), new Vector3(0f, 0.4f, 0.1f), new Vector3(0.7f, 0.8f, 1.5f), false, false, SpawnPoint_Tables.AsEnumerable().ToArray());
+            if (SpawnPoints_Boxes != null) Extensions.GenericGizmoCube(new Color(0.7f, 0.7f, 0.7f, 0.5f), Vector3.zero, 0.5f * Vector3.one, false, false, SpawnPoints_Boxes.AsEnumerable().ToArray());
             if (SpawnPoints_Sosigs_Defense != null) Extensions.GenericGizmoSphere(new Color(0.8f, 0f, 0f, 0.5f), Vector3.zero, 0.25f, SpawnPoints_Sosigs_Defense.AsEnumerable().ToArray());
             if (SpawnPoints_Turrets != null) Extensions.GenericGizmoSphere(new Color(0.8f, 0f, 0f, 0.1f), Vector3.zero, 0.25f, SpawnPoints_Turrets.AsEnumerable().ToArray());
             if (SpawnPoint_Melee != null) Extensions.GenericGizmoSphere(new Color(0.0f, 0.8f, 0f, 0.5f), Vector3.zero, 0.2f, SpawnPoint_Melee);
             if (SpawnPoints_SmallItem != null) Extensions.GenericGizmoSphere(new Color(0.0f, 0.8f, 0f, 0.5f), Vector3.zero, 0.1f, SpawnPoints_SmallItem.AsEnumerable().ToArray());
             if (SpawnPoint_PlayerSpawn != null) Extensions.GenericGizmoSphere(new Color(0.0f, 0.8f, 0.8f, 0.5f), Vector3.zero, 0.25f, SpawnPoint_PlayerSpawn);
-            if (SpawnPoint_Shield != null) Extensions.GenericGizmoCube(new Color(0.0f, 0.8f, 0.0f, 0.1f), Vector3.zero, new Vector3(0.4f, 0.6f, 0.1f), false, SpawnPoint_Shield);
+            if (SpawnPoint_Shield != null) Extensions.GenericGizmoCube(new Color(0.0f, 0.8f, 0.0f, 0.1f), Vector3.zero, new Vector3(0.4f, 0.6f, 0.1f), false, false, SpawnPoint_Shield);
         }
     }
 }

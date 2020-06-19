@@ -81,9 +81,8 @@ namespace WurstMod
             }
 
             // Trimming positions we don't want and order by -z.
-            // TODO Not ordered properly?
             screenPositions = screenPositions.Where(x => x.z < -7f).ToList();
-            screenPositions = screenPositions.OrderByDescending(x => -x.z).ToList();
+            screenPositions = screenPositions.OrderByDescending(x => -x.z).ThenBy(x => Mathf.Abs(x.y - 4.15f)).ToList();
         }
 
         private static void InitObjects()

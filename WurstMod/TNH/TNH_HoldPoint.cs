@@ -43,7 +43,7 @@ namespace WurstMod.TNH
             if (SpawnPoint_SystemNode != null) Extensions.GenericGizmoSphere(new Color(0.0f, 0.8f, 0.8f), 1.5f * Vector3.up, 0.25f, SpawnPoint_SystemNode);
             if (SpawnPoints_Sosigs_Defense != null) Extensions.GenericGizmoSphere(new Color(0.8f, 0f, 0f, 0.5f), Vector3.zero, 0.25f, SpawnPoints_Sosigs_Defense.AsEnumerable().ToArray());
             if (SpawnPoints_Turrets != null) Extensions.GenericGizmoSphere(new Color(0.8f, 0f, 0f, 0.1f), Vector3.zero, 0.25f, SpawnPoints_Turrets.AsEnumerable().ToArray());
-            if (SpawnPoints_Targets != null) Extensions.GenericGizmoCube(new Color(1f, 0.0f, 0.0f, 0.5f), Vector3.zero, new Vector3(0.1f, 0.5f, 0.1f), false, SpawnPoints_Targets.AsEnumerable().ToArray());
+            if (SpawnPoints_Targets != null) Extensions.GenericGizmoCube(new Color(1f, 0.0f, 0.0f, 0.5f), Vector3.zero, new Vector3(0.1f, 0.5f, 0.1f), false, false, SpawnPoints_Targets.AsEnumerable().ToArray());
         }
     }
 }
