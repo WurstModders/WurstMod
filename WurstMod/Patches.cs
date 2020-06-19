@@ -144,4 +144,27 @@ namespace WurstMod
     }
 
     #endregion
+
+    #region Generic Level Support
+
+    [HarmonyPatch(typeof(MainMenuScenePointable), "OnPoint")]
+    public class Patch_MainMenuScenePointable_OnPoint
+    {
+        static bool Prefix(MainMenuScenePointable __instance, FVRViveHand hand)
+        {
+            if (hand.Input.TriggerDown)
+            {
+                if (__instance.name == "MODDEDSCREEN")
+                {
+                    Loader.levelToLoad = __instance.Def.Name.Split('\n')[1];
+                }
+                else
+                {
+                    Loader.levelToLoad = "";
+                }
+            }
+            return true;
+        }
+    }
+    #endregion
 }

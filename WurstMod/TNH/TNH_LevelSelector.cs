@@ -13,7 +13,7 @@ namespace WurstMod.TNH
     /// <summary>
     /// This class is responsible for modifying the level selector panel to actually function.
     /// </summary>
-    public static class LevelSelector
+    public static class TNH_LevelSelector
     {
         // Settings.
         private static readonly string levelDir = "CustomLevels/TakeAndHold";
@@ -221,9 +221,9 @@ namespace WurstMod.TNH
 
         public void SetLevel()
         {
-            LevelSelector.levelImage.sprite = levelImage;
-            LevelSelector.levelNameText.text = levelName + "\nby " + levelAuthor;
-            LevelSelector.levelDescriptionText.text = levelDescription;
+            TNH_LevelSelector.levelImage.sprite = levelImage;
+            TNH_LevelSelector.levelNameText.text = levelName + "\nby " + levelAuthor;
+            TNH_LevelSelector.levelDescriptionText.text = levelDescription;
             Loader.levelToLoad = levelDataPath;
         }
     }

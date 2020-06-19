@@ -34,7 +34,9 @@ namespace WurstMod
         private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode mode)
         {
             StartCoroutine(Loader.HandleTAH(scene));
-            TNH.LevelSelector.SetupLevelSelector(scene);
+            StartCoroutine(Loader.HandleGeneric(scene));
+            TNH.TNH_LevelSelector.SetupLevelSelector(scene);
+            Generic_LevelPopulator.SetupLevelPopulator(scene);
         }
     }
 }

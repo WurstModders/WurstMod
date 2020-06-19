@@ -14,7 +14,7 @@ namespace WurstMod
 {
     public static class Loader
     {
-        private static readonly List<string> whitelistedObjects = new List<string>()
+        private static readonly List<string> whitelistedObjectsTNH = new List<string>()
         {
             "[BullshotCamera]",
             "[CameraRig]Fixed",
@@ -30,7 +30,26 @@ namespace WurstMod
             "[FXPoolManager](Clone)",
             "MuzzleFlash_AlloyLight(Clone)"
         };
-        private static readonly List<string> blacklistedObjects = new List<string>()
+        private static readonly List<string> whitelistedObjectsGeneric = new List<string>()
+        {
+            "[BullshotCamera]",
+            "[CameraRig]Fixed",
+            "[SceneSettings_IndoorRange]",
+            "[SteamVR]",
+            "_AIManager",
+            "_AmbientAudio",
+            "_CoverPointManager",
+            "_FinalScore",
+            "_ReverbSystem",
+            "BangerDetonator",
+            "Destructobin",
+            "ItemSpawner",
+            "SosigSpawner",
+            "SosigTestingPanels",
+            "WhizzBangADinger2"
+
+        };
+        private static readonly List<string> blacklistedObjectsTNH = new List<string>()
         {
             "HoldPoint_0",
             "HoldPoint_1",
@@ -69,6 +88,17 @@ namespace WurstMod
             "SupplyPoint_13",
             "Tiles"
         };
+        private static readonly List<string> blacklistedObjectsGeneric = new List<string>()
+        {
+            "_Animator_Spawning_Red",
+            "_Animator_Spawning_Blue",
+            "_Boards",
+            "_Env",
+            "AILadderTest1",
+            "AILadderTest1 (1)",
+            "AILadderTest1 (2)",
+            "AILadderTest1 (3)"
+        };
 
 
         // Marks which level we are loading or loaded most recently. 
@@ -87,18 +117,20 @@ namespace WurstMod
             // Handle TAH load if we're loading a non-vanilla scene.
             if (loaded.name == "TakeAndHoldClassic" && levelToLoad != "")
             {
+                Reset();
                 currentScene = SceneManager.GetActiveScene();
+                LevelType type = LevelType.TNH;
 
                 // Certain objects need to be interrupted before they can initialize, otherwise everything breaks.
                 // Once everything has been overwritten, we re-enable these.
-                SetWhitelistedStates(false);
+                SetWhitelistedStates(false, type);
 
                 // There are a handful of vars that are pretty difficult to get our hands on.
                 // So let's just steal them off existing objects before we delete them.
-                CollectRequiredObjects();
+                CollectRequiredTNHObjects();
 
                 // Destroy everything we no longer need.
-                CleanByBlacklist();
+                CleanByBlacklist(type);
 
                 // Time to merge in the new scene.
                 Entrypoint.self.StartCoroutine(MergeInScene());
@@ -110,11 +142,38 @@ namespace WurstMod
                 yield return null;
 
                 // Resolve scene proxies to real TNH objects.
-                ResolveAll();
+                ResolveAll(type);
 
                 // Everything is set up, re-enable everything.
-                SetWhitelistedStates(true);
+                SetWhitelistedStates(true, type);
             }
+        }
+
+        public static IEnumerator HandleGeneric(Scene loaded)
+        {
+            if (loaded.name == "ProvingGround" && levelToLoad != "")
+            {
+                Reset();
+                currentScene = SceneManager.GetActiveScene();
+                LevelType type = LevelType.Generic;
+
+                SetWhitelistedStates(false, type);
+                CleanByBlacklist(type);
+                Entrypoint.self.StartCoroutine(MergeInScene());
+
+                yield return null;
+                yield return null;
+                yield return null;
+                yield return null;
+
+                ResolveAll(type);
+                SetWhitelistedStates(true, type);
+            }
+        }
+
+        private static void Reset()
+        {
+            originalStates.Clear();
         }
 
         static Dictionary<string, bool> originalStates = new Dictionary<string, bool>();
@@ -122,10 +181,22 @@ namespace WurstMod
         /// When state == false, Prevent whitelisted objects from initializing by quickly disabling them.
         /// When state == true, whitelisted objects will be set back to their original state.
         /// </summary>
-        private static void SetWhitelistedStates(bool state)
+        private static void SetWhitelistedStates(bool state, LevelType type)
         {
-            // Gather up whitelisted objects.
-            List<GameObject> whitelisted = currentScene.GetAllGameObjectsInScene().Where(x => whitelistedObjects.Contains(x.name)).ToList();
+            // Decide which list to use
+            List<string> whitelist = null;
+            switch (type)
+            {
+                case LevelType.TNH:
+                    whitelist = whitelistedObjectsTNH;
+                    break;
+                case LevelType.Generic:
+                    whitelist = whitelistedObjectsGeneric;
+                    break;
+            }
+
+
+            List<GameObject> whitelisted = currentScene.GetAllGameObjectsInScene().Where(x => whitelist.Contains(x.name)).ToList();
 
             // If we're running this for the first time, record initial state.
             // We do this because some whitelisted objects are disabled already.
@@ -150,7 +221,7 @@ namespace WurstMod
         /// A wide variety of existing objects are needed for importing a new TNH scene.
         /// This function grabs all of them.
         /// </summary>
-        private static void CollectRequiredObjects()
+        private static void CollectRequiredTNHObjects()
         {
             // We need HoldPoint AudioEvents.
             FistVR.TNH_HoldPoint sourceHoldPoint = currentScene.GetRootGameObjects().Where(x => x.name == "HoldPoint_0").First().GetComponent<FistVR.TNH_HoldPoint>();
@@ -185,13 +256,25 @@ namespace WurstMod
         /// <summary>
         /// Nukes most objects in the TNH scene by blacklist.
         /// </summary>
-        private static void CleanByBlacklist()
+        private static void CleanByBlacklist(LevelType type)
         {
-            //! It just so happens the whole blacklist exists on the root. 
-            //! This will break if we need blacklist a non-root object!
+            // Decide which blacklist to use.
+            List<string> blacklist = null;
+            switch (type)
+            {
+                case LevelType.TNH:
+                    blacklist = blacklistedObjectsTNH;
+                    break;
+                case LevelType.Generic:
+                    blacklist = blacklistedObjectsGeneric;
+                    break;
+            }
+
+            // It just so happens the whole blacklist exists on the root. 
+            // This will break if we need blacklist a non-root object!
             foreach (GameObject ii in currentScene.GetRootGameObjects())
             {
-                if (blacklistedObjects.Contains(ii.name)) GameObject.Destroy(ii);
+                if (blacklist.Contains(ii.name)) GameObject.Destroy(ii);
             }
         }
 
@@ -209,10 +292,7 @@ namespace WurstMod
             }
             else
             {
-                //bundle = AssetBundle.LoadFromFile(levelToLoad);
-                AssetBundleCreateRequest bundleReq = AssetBundle.LoadFromFileAsync(levelToLoad);
-                yield return bundleReq;
-                bundle = bundleReq.assetBundle;
+                bundle = AssetBundle.LoadFromFile(levelToLoad);
                 loadedBundles[levelToLoad] = bundle;
             }
 
@@ -231,14 +311,19 @@ namespace WurstMod
             SceneManager.MergeScenes(SceneManager.GetSceneAt(SceneManager.sceneCount - 1), SceneManager.GetActiveScene());
 
             // Grab a few objects we'll need later.
-            loadedRoot = currentScene.GetRootGameObjects().Single(x => x.name == "[TNHLEVEL]");
-            manager = currentScene.GetRootGameObjects().Single(x => x.name == "_GameManager").GetComponent<FistVR.TNH_Manager>();
+            loadedRoot = currentScene.GetRootGameObjects().Single(x => x.name == "[TNHLEVEL]" || x.name == "[LEVEL]");
+
+            GameObject managerObj = currentScene.GetRootGameObjects().Where(x => x.name == "_GameManager").FirstOrDefault();
+            if (managerObj != null)
+            {
+                manager = managerObj.GetComponent<FistVR.TNH_Manager>();
+            }
         }
 
         /// <summary>
         /// Resolve all proxies into valid TNH components.
         /// </summary>
-        private static void ResolveAll()
+        private static void ResolveAll(LevelType type)
         {
             Resolve_Skybox();
             Resolve_Shaders();
@@ -247,12 +332,15 @@ namespace WurstMod
             Resolve_FVRReverbEnvironments();
             Resolve_FVRHandGrabPoints();
             Resolve_AICoverPoints();
-            Resolve_TNH_DestructibleBarrierPoints();
-            Resolve_TNH_SupplyPoints();
-            Resolve_TNH_HoldPoints();
-            Resolve_ScoreboardArea();
+            if (type == LevelType.TNH) Resolve_TNH_DestructibleBarrierPoints();
+            if (type == LevelType.TNH) Resolve_TNH_SupplyPoints();
+            if (type == LevelType.TNH) Resolve_TNH_HoldPoints();
+            if (type == LevelType.TNH) Resolve_ScoreboardArea();
+            if (type == LevelType.Generic) Resolve_Spawn();
+            if (type == LevelType.Generic) Resolve_ItemSpawners();
 
-            Fix_TNH_Manager();
+
+            if (type == LevelType.TNH) Fix_TNH_Manager();
         }
 
         #region Resolves
@@ -501,6 +589,25 @@ namespace WurstMod
             resetPoint.transform.position = proxy.transform.position;
             finalScore.transform.position = proxy.transform.position + new Vector3(0f, 1.8f, 7.5f);
 
+        }
+
+        private static void Resolve_Spawn()
+        {
+            Transform spawnPoint = loadedRoot.GetComponentInChildren<Generic.Spawn>().transform;
+            GameObject cameraRig = currentScene.GetAllGameObjectsInScene().Where(x => x.name == "[CameraRig]Fixed").First();
+            cameraRig.transform.position = spawnPoint.position;
+        }
+
+        private static void Resolve_ItemSpawners()
+        {
+            Transform[] itemSpawners = loadedRoot.GetComponentsInChildren<Generic.ItemSpawner>().Select(x => x.transform).ToArray();
+            GameObject spawnerBase = currentScene.GetAllGameObjectsInScene().Where(x => x.name == "ItemSpawner").First();
+            foreach (Transform ii in itemSpawners)
+            {
+                Debug.Log("Copying item spawner..."); // TODO REMOVE
+                GameObject spawnerCopy = GameObject.Instantiate(spawnerBase, loadedRoot.transform);
+                spawnerCopy.transform.position = ii.position + (0.8f * Vector3.up);
+            }
         }
 
         /// <summary>

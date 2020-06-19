@@ -59,6 +59,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Generic\ItemSpawner.cs" />
+    <Compile Include="Generic\Spawn.cs" />
+    <Compile Include="Generic_LevelPopulator.cs" />
     <Compile Include="Patches.cs" />
     <Compile Include="TNH\AICoverPoint.cs" />
     <Compile Include="TNH\AttackVector.cs" />
@@ -68,7 +71,7 @@
     <Compile Include="TNH\Extras\ForcedSpawn.cs" />
     <Compile Include="TNH\FVRHandGrabPoint.cs" />
     <Compile Include="TNH\FVRReverbEnvironment.cs" />
-    <Compile Include="LevelSelector.cs" />
+    <Compile Include="TNH\TNH_LevelSelector.cs" />
     <Compile Include="TNH\PMat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Loader.cs" />
