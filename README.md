@@ -19,7 +19,7 @@ Additionally, a message from Anton:
 >- No bigoted and/or hateful shit in the content. I don't care if it's 'sarcastic' or 'just meming' or 'just a joke bro'. I will scour it from this sub-reddit and the steam forum with prejudice and ban all accounts related to it. No second chances.
 
 
-WurstMod is a mod for H3VR currently focusing on making it easy to create and import custom maps. Custom maps are currently limited to the Take and Hold gamemode.
+WurstMod is a mod for H3VR that makes it easy to create and import custom maps. It currently supports Take and Hold as well as Generic sandbox levels.
 
 ## Installation
 
@@ -33,9 +33,9 @@ If your folder looks like the image below, you're good to go. Just run the game 
 
 Maps consist of a folder with three files: *leveldata*, *info.txt*, and *thumb.png*. When you download a map someone has made, put its folder into H3VR/CustomLevels/TakeAndHold and it will be selectable next time you start the game.
 
-## Making Maps
+## Making a TNH Map
 
-I plan to create a video walkthrough of level creation at some point. For now, here's a wall-of-text-style tutorial of the super basic requirements.
+I plan to create a video walkthrough of level creation at some point. For now, here's a wall-of-text-style tutorial of the super basic requirements. Making a generic map is a very similar process, but the only prefabs you *need* are [LEVEL] and Spawnpoint. Real (actual useful) documentation pending, but check the included scenes for reference.
 
 1. You need a **specific version of Unity, Unity 5.6.3**. You can find that [Here](https://unity3d.com/get-unity/download/archive)
 1. Clone or Download this repository, it contains the WurstModWorkbench.unitypackage and TagManager.asset files
