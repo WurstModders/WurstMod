@@ -9,6 +9,8 @@ using UnityEngine.SceneManagement;
 using WurstMod.TNH.Extras;
 using FistVR;
 using Valve.VR.InteractionSystem;
+using UnityEngine.Rendering;
+using WurstMod.Any;
 
 namespace WurstMod
 {
@@ -332,12 +334,14 @@ namespace WurstMod
             Resolve_FVRReverbEnvironments();
             Resolve_FVRHandGrabPoints();
             Resolve_AICoverPoints();
+            Resolve_Targets();
             if (type == LevelType.TNH) Resolve_TNH_DestructibleBarrierPoints();
             if (type == LevelType.TNH) Resolve_TNH_SupplyPoints();
             if (type == LevelType.TNH) Resolve_TNH_HoldPoints();
             if (type == LevelType.TNH) Resolve_ScoreboardArea();
             if (type == LevelType.Generic) Resolve_Spawn();
             if (type == LevelType.Generic) Resolve_ItemSpawners();
+            if (type == LevelType.Generic) Resolve_GenericPrefabs();
 
 
             if (type == LevelType.TNH) Fix_TNH_Manager();
@@ -614,6 +618,57 @@ namespace WurstMod
                 Debug.Log(spawner.transform.position);
             }
         }
+
+        private static Dictionary<Generic.Prefab, GameObject> baseObjects = new Dictionary<Generic.Prefab, GameObject>();
+        private static void Resolve_GenericPrefabs()
+        {
+            // For populating list cleanly.
+            void Add(Generic.Prefab type, string objName)
+            {
+                baseObjects[type] = currentScene.GetAllGameObjectsInScene().Where(x => x.name == objName).First();
+                baseObjects[type].SetActive(false);
+            }
+
+            Transform[] prefabs = loadedRoot.GetComponentsInChildren<Generic.GenericPrefab>().Select(x => x.transform).ToArray();
+            Add(Generic.Prefab.ItemSpawner, "ItemSpawner");
+            Add(Generic.Prefab.Destructobin, "Destructobin");
+            Add(Generic.Prefab.SosigSpawner, "SosigSpawner");
+            Add(Generic.Prefab.WhizzBangADinger, "WhizzBangADinger2");
+            Add(Generic.Prefab.WhizzBangADingerDetonator, "BangerDetonator");
+
+            // Create objects based on type.
+            Generic.GenericPrefab[] genericPrefabs = loadedRoot.GetComponentsInChildren<Generic.GenericPrefab>();
+            foreach (Generic.GenericPrefab ii in genericPrefabs)
+            {
+                GameObject copy = GameObject.Instantiate(baseObjects[ii.objectType], loadedRoot.transform);
+                copy.transform.position = ii.transform.position;
+                copy.transform.localEulerAngles = ii.transform.localEulerAngles;
+                copy.SetActive(true);
+            }
+        }
+
+        private static void Resolve_Targets()
+        {
+            Target[] targets = loadedRoot.GetComponentsInChildren<Any.Target>().ToArray();
+            foreach (Target ii in targets)
+            {
+                ReactiveSteelTarget baseTarget = ii.gameObject.AddComponent<ReactiveSteelTarget>();
+                baseTarget.HitEvent = new AudioEvent();
+                baseTarget.HitEvent.Clips = ii.clips;
+                baseTarget.HitEvent.VolumeRange = ii.volumeRange;
+                baseTarget.HitEvent.PitchRange = ii.pitchRange;
+                baseTarget.HitEvent.ClipLengthRange = ii.speedRange;
+
+                if (baseTarget.HitEvent.Clips.Count == 0)
+                {
+                    baseTarget.HitEvent.Clips = new List<AudioClip>();
+                    baseTarget.HitEvent.Clips.Add(new AudioClip());
+                }
+
+                baseTarget.BulletHolePrefabs = new GameObject[0];
+            }
+        }
+
 
         /// <summary>
         /// Base function for setting up the TNH Manager object to handle a custom level.

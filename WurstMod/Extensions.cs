@@ -133,18 +133,34 @@ namespace WurstMod
             }
             
         }
+
+        public static T GetComponentBidirectional<T>(this Component mb) where T : Component
+        {
+            // Easy, builtin for checking self and children.
+            T found = mb.GetComponentInChildren<T>();
+            if (found != null) return found;
+
+            // Annoying and hacky, checking parents.
+            Transform parent = mb.transform.parent;
+            while (parent != null)
+            {
+                found = parent.GetComponent<T>();
+                if (found != null) return found;
+                parent = parent.parent;
+            }
+            return null;
+        }
         #endregion
 
         #region Gizmos
-        public static void GenericGizmoCube(Color color, Vector3 center, Vector3 size, bool drawFacing, bool drawNegativeFacing, params Transform[] markers)
+        public static void GenericGizmoCube(Color color, Vector3 center, Vector3 size, Vector3 forward, params Transform[] markers)
         {
             Gizmos.color = color;
             foreach (Transform ii in markers)
             {
                 Gizmos.matrix = ii.localToWorldMatrix;
                 Gizmos.DrawCube(center, size);
-                if (drawFacing) Gizmos.DrawLine(center, center + Vector3.forward);
-                if (drawNegativeFacing) Gizmos.DrawLine(center, center - Vector3.forward);
+                Gizmos.DrawLine(center, center + forward);
             }
         }
 

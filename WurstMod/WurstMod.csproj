@@ -59,8 +59,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Any\Trigger.cs" />
+    <Compile Include="Generic\GenericPrefab.cs" />
     <Compile Include="Generic\ItemSpawner.cs" />
     <Compile Include="Generic\Spawn.cs" />
+    <Compile Include="Any\Target.cs" />
     <Compile Include="Generic_LevelPopulator.cs" />
     <Compile Include="Patches.cs" />
     <Compile Include="TNH\AICoverPoint.cs" />

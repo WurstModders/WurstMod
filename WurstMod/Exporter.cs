@@ -60,10 +60,10 @@ namespace WurstMod
 
             
 
-            CreateBundle(scene);
+            CreateBundle(scene, type);
         }
 
-        private static void CreateBundle(Scene scene)
+        private static void CreateBundle(Scene scene, LevelType type)
         {
             if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
             {
@@ -72,7 +72,8 @@ namespace WurstMod
                 AssetBundleBuild build = default(AssetBundleBuild);
                 build.assetBundleName = "leveldata";
                 build.assetNames = new string[] { scene.path };
-                string directory = "AssetBundles/" + scene.name + "/";
+                string prefix = type.ToString() + "-";
+                string directory = "AssetBundles/" + prefix + scene.name + "/";
 
                 // Create directory if it doesn't exist.
                 Directory.CreateDirectory(directory);
@@ -80,8 +81,8 @@ namespace WurstMod
                 // Nuke files if already exist because asset bundles are fickle.
                 if (File.Exists(directory + "leveldata")) File.Delete(directory + "leveldata");
                 if (File.Exists(directory + "leveldata.MANIFEST")) File.Delete(directory + "leveldata.MANIFEST");
-                if (File.Exists(directory + scene.name)) File.Delete(directory + scene.name);
-                if (File.Exists(directory + scene.name + ".MANIFEST")) File.Delete(directory + scene.name + ".MANIFEST");
+                if (File.Exists(directory + prefix + scene.name)) File.Delete(directory + prefix + scene.name);
+                if (File.Exists(directory + prefix + scene.name + ".MANIFEST")) File.Delete(directory + prefix + scene.name + ".MANIFEST");
 
                 // Export
                 BuildPipeline.BuildAssetBundles(directory, new AssetBundleBuild[] { build }, buildOptions, BuildTarget.StandaloneWindows64);
@@ -95,8 +96,8 @@ namespace WurstMod
 
                 // Delete unnecessary files.
                 if (File.Exists(directory + "leveldata.MANIFEST")) File.Delete(directory + "leveldata.MANIFEST");
-                if (File.Exists(directory + scene.name)) File.Delete(directory + scene.name);
-                if (File.Exists(directory + scene.name + ".MANIFEST")) File.Delete(directory + scene.name + ".MANIFEST");
+                if (File.Exists(directory + prefix + scene.name)) File.Delete(directory + prefix + scene.name);
+                if (File.Exists(directory + prefix + scene.name + ".MANIFEST")) File.Delete(directory + prefix + scene.name + ".MANIFEST");
             }
         }
 
@@ -245,6 +246,17 @@ namespace WurstMod
             if (levelComponent.GetComponentsInChildren<Generic.Spawn>().Length != 1)
             {
                 return "You must have exactly one Spawnpoint prefab in a generic level.";
+            }
+            return "";
+        }
+
+        private static string CheckDeprecated(Scene scene, List<string> warnings)
+        {
+            if (levelComponent.GetComponentsInChildren<Generic.ItemSpawner>().Length != 0)
+            {
+                string warn = "WARNING: ItemSpawner prefab is deprecated, please use the new \"GenericPrefab\" and select ItemSpawner in the dropdown instead!";
+                Debug.LogWarning(warn);
+                warnings.Add(warn);
             }
             return "";
         }

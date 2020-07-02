@@ -13,7 +13,7 @@ namespace WurstMod.TNH
 
         private void OnDrawGizmos()
         {
-            Extensions.GenericGizmoCube(new Color(0.0f, 0.6f, 0.0f, 0.5f), new Vector3(0, 1, 0), new Vector3(1, 2, 0.1f), false, false, transform);
+            Extensions.GenericGizmoCube(new Color(0.0f, 0.6f, 0.0f, 0.5f), new Vector3(0, 1, 0), new Vector3(1, 2, 0.1f), Vector3.zero, transform);
         }
     }
 }

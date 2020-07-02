@@ -7,6 +7,7 @@ using FistVR;
 using HarmonyLib;
 using UnityEngine;
 using UnityEngine.AI;
+using WurstMod.Any;
 using WurstMod.TNH.Extras;
 
 namespace WurstMod
@@ -87,7 +88,7 @@ namespace WurstMod
                     fakeLink.ReflectSet("m_xySpeed", 0.5f);
                     
 
-                    // Clean up the dictionary. Keep an eye on the counts for this...
+                    // Clean up the dictionary.
                     // Destroyed Unity objects sure have some confusing properties.
                     List<Sosig> nullCheck = new List<Sosig>();
                     foreach(var pair in genData)
@@ -163,6 +164,47 @@ namespace WurstMod
                     Loader.levelToLoad = "";
                 }
             }
+            return true;
+        }
+    }
+    #endregion
+
+    #region Target Event Support
+    [HarmonyPatch(typeof(ReactiveSteelTarget), "Damage")]
+    public class Patch_ReactiveSteelTarget_Damage
+    {
+        static Dictionary<ReactiveSteelTarget, Target> targetComponents = new Dictionary<ReactiveSteelTarget, Target>();
+        static bool Prefix(ReactiveSteelTarget __instance, Damage dam)
+        {
+            // Cache Target components.
+            Target ourTarget = null;
+            if (targetComponents.ContainsKey(__instance))
+            {
+                ourTarget = targetComponents[__instance];
+            }
+            else
+            {
+                ourTarget = __instance.GetComponent<Target>();
+                targetComponents[__instance] = ourTarget;
+            }
+
+            // Clear cache as necessary, using weird Unity destroyed behaviour.
+            List<ReactiveSteelTarget> nullCheck = new List<ReactiveSteelTarget>();
+            foreach (var pair in targetComponents)
+            {
+                if (pair.Key == null) nullCheck.Add(pair.Key);
+            }
+            foreach (ReactiveSteelTarget destroyed in nullCheck)
+            {
+                targetComponents.Remove(destroyed);
+            }
+
+            // Run event logic.
+            if (ourTarget != null)
+            {
+                if (ourTarget.shotEvent != null) ourTarget.shotEvent.Invoke();
+            }
+
             return true;
         }
     }
