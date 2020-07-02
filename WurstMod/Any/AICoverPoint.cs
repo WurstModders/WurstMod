@@ -4,13 +4,11 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace WurstMod.TNH
+namespace WurstMod.Any
 {
     /// <summary>
     /// AI take cover here. Place on floor, rotation doesn't matter.
     /// </summary>
-    [Obsolete("This class has been moved to the WurstMod.Any namespace, use that script instead!")]
-    [AddComponentMenu("")]
     public class AICoverPoint : MonoBehaviour
     {
         private void OnDrawGizmos()

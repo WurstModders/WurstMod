@@ -12,6 +12,8 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -59,6 +61,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Any\AICoverPoint.cs" />
+    <Compile Include="Any\FVRHandGrabPoint.cs" />
+    <Compile Include="Any\FVRReverbEnvironment.cs" />
+    <Compile Include="Any\PMat.cs" />
     <Compile Include="Any\Trigger.cs" />
     <Compile Include="Generic\GenericPrefab.cs" />
     <Compile Include="Generic\ItemSpawner.cs" />

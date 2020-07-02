@@ -4,10 +4,8 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace WurstMod.TNH
+namespace WurstMod.Any
 {
-    [Obsolete("This class has been moved to the WurstMod.Any namespace, use that script instead!")]
-    [AddComponentMenu("")]
     public class PMat : MonoBehaviour
     {
         private readonly string[] DefResourcePaths = new string[]

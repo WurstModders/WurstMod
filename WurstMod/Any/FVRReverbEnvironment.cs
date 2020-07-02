@@ -4,13 +4,11 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace WurstMod.TNH
+namespace WurstMod.Any
 {
     /// <summary>
     /// Placed on an object with a non-trigger box collider, on the NoCol layer.
     /// </summary>
-    [Obsolete("This class has been moved to the WurstMod.Any namespace, use that script instead!")]
-    [AddComponentMenu("")]
     public class FVRReverbEnvironment : MonoBehaviour
     {
         public enum FVRSoundEnvironment

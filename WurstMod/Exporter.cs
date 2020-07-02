@@ -10,7 +10,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-
 namespace WurstMod
 {
     public enum LevelType { TNH, Generic };

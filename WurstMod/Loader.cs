@@ -330,17 +330,20 @@ namespace WurstMod
             Resolve_Skybox();
             Resolve_Shaders();
             Resolve_Terrain();
+            Resolve_Particles();
+            Resolve_Legacy(type);
             Resolve_PMats();
             Resolve_FVRReverbEnvironments();
             Resolve_FVRHandGrabPoints();
             Resolve_AICoverPoints();
             Resolve_Targets();
+
             if (type == LevelType.TNH) Resolve_TNH_DestructibleBarrierPoints();
             if (type == LevelType.TNH) Resolve_TNH_SupplyPoints();
             if (type == LevelType.TNH) Resolve_TNH_HoldPoints();
             if (type == LevelType.TNH) Resolve_ScoreboardArea();
+
             if (type == LevelType.Generic) Resolve_Spawn();
-            if (type == LevelType.Generic) Resolve_ItemSpawners();
             if (type == LevelType.Generic) Resolve_GenericPrefabs();
 
 
@@ -403,11 +406,20 @@ namespace WurstMod
             }
         }
 
-        /// <summary>
-        /// Creates valid PMats from proxies.
-        /// </summary>
-        private static void Resolve_PMats()
+        private static void Resolve_Particles()
         {
+            foreach (ParticleSystemRenderer ii in loadedRoot.GetComponentsInChildren<ParticleSystemRenderer>(true))
+            {
+                ii.materials.ForEach(x => x.RefreshShader());
+            }
+        }
+
+        /// <summary>
+        /// Resolve certain obsolete components.
+        /// </summary>
+        private static void Resolve_Legacy(LevelType type)
+        {
+            // Obsolete PMat
             WurstMod.TNH.PMat[] pMatProxies = loadedRoot.GetComponentsInChildren<WurstMod.TNH.PMat>(true);
             foreach (var proxy in pMatProxies)
             {
@@ -419,6 +431,84 @@ namespace WurstMod
 
                 real.MatDef = Resources.Load<FistVR.MatDef>("matdefs/" + proxy.GetMatDef((int)proxy.matDef));
             }
+
+            // Obsolete FVRReverbEnvironment
+            WurstMod.TNH.FVRReverbEnvironment[] reverbProxies = loadedRoot.GetComponentsInChildren<WurstMod.TNH.FVRReverbEnvironment>(true);
+            foreach (var proxy in reverbProxies)
+            {
+                GameObject owner = proxy.gameObject;
+                FistVR.FVRReverbEnvironment real = owner.AddComponent<FistVR.FVRReverbEnvironment>();
+
+                real.Environment = (FistVR.FVRSoundEnvironment)proxy.Environment;
+                real.Priority = proxy.Priority;
+            }
+
+            // Obsolete FVRHandGrabPoint
+            TNH.FVRHandGrabPoint[] grabProxies = loadedRoot.GetComponentsInChildren<TNH.FVRHandGrabPoint>(true);
+            foreach (var proxy in grabProxies)
+            {
+                GameObject owner = proxy.gameObject;
+                FistVR.FVRHandGrabPoint real = owner.AddComponent<FistVR.FVRHandGrabPoint>();
+
+                real.UXGeo_Hover = proxy.UXGeo_Hover;
+                real.UXGeo_Held = proxy.UXGeo_Held;
+                real.PositionInterpSpeed = 1;
+                real.RotationInterpSpeed = 1;
+
+                // Messy math for interaction distance.
+                Collider proxyCol = proxy.GetComponent<Collider>();
+                Vector3 extents = proxyCol.bounds.extents;
+                real.EndInteractionDistance = 2.5f * Mathf.Abs(Mathf.Max(extents.x, extents.y, extents.z));
+            }
+
+            // Obsolete AICoverPoint
+            TNH.AICoverPoint[] coverProxies = loadedRoot.GetComponentsInChildren<TNH.AICoverPoint>(true);
+            foreach (var proxy in coverProxies)
+            {
+                GameObject owner = proxy.gameObject;
+                AICoverPoint real = owner.AddComponent<AICoverPoint>();
+
+                // These seem to be constant, and Calc and CalcNew are an enigma.
+                real.Heights = new float[] { 3f, 0.5f, 1.1f, 1.5f };
+                real.Calc();
+                real.CalcNew();
+            }
+
+            if (type == LevelType.Generic)
+            {
+                // Obsolete ItemSpawner
+                Transform[] itemSpawners = loadedRoot.GetComponentsInChildren<Generic.ItemSpawner>(true).Select(x => x.transform).ToArray();
+                GameObject spawnerBase = currentScene.GetAllGameObjectsInScene().Where(x => x.name == "ItemSpawner").First();
+                foreach (Transform ii in itemSpawners)
+                {
+                    GameObject spawner = GameObject.Instantiate(spawnerBase, loadedRoot.transform);
+                    //GameObject spawner = spawnerBase;
+                    spawner.transform.position = ii.position + (0.8f * Vector3.up);
+                    spawner.transform.localEulerAngles = ii.localEulerAngles;
+                    spawner.SetActive(true);
+
+                    Debug.Log(string.Join("\n", spawner.transform.AsEnumerable().Select(x => x.name + ", " + x.transform.position.ToString()).ToArray()));
+                    Debug.Log(spawner.transform.position);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Creates valid PMats from proxies.
+        /// </summary>
+        private static void Resolve_PMats()
+        {
+            WurstMod.Any.PMat[] pMatProxies = loadedRoot.GetComponentsInChildren<WurstMod.Any.PMat>(true);
+            foreach (var proxy in pMatProxies)
+            {
+                GameObject owner = proxy.gameObject;
+                FistVR.PMat real = owner.AddComponent<FistVR.PMat>();
+
+                if (proxy.def == WurstMod.Any.PMat.Def.None) real.Def = null;
+                else real.Def = Resources.Load<FistVR.PMaterialDefinition>("pmaterialdefinitions/" + proxy.GetDef((int)proxy.def));
+
+                real.MatDef = Resources.Load<FistVR.MatDef>("matdefs/" + proxy.GetMatDef((int)proxy.matDef));
+            }
         }
 
         /// <summary>
@@ -426,7 +516,7 @@ namespace WurstMod
         /// </summary>
         private static void Resolve_FVRReverbEnvironments()
         {
-            WurstMod.TNH.FVRReverbEnvironment[] reverbProxies = loadedRoot.GetComponentsInChildren<WurstMod.TNH.FVRReverbEnvironment>(true);
+            WurstMod.Any.FVRReverbEnvironment[] reverbProxies = loadedRoot.GetComponentsInChildren<WurstMod.Any.FVRReverbEnvironment>(true);
             foreach (var proxy in reverbProxies)
             {
                 GameObject owner = proxy.gameObject;
@@ -442,7 +532,7 @@ namespace WurstMod
         /// </summary>
         private static void Resolve_FVRHandGrabPoints()
         {
-            TNH.FVRHandGrabPoint[] grabProxies = loadedRoot.GetComponentsInChildren<TNH.FVRHandGrabPoint>(true);
+            WurstMod.Any.FVRHandGrabPoint[] grabProxies = loadedRoot.GetComponentsInChildren<WurstMod.Any.FVRHandGrabPoint>(true);
             foreach (var proxy in grabProxies)
             {
                 GameObject owner = proxy.gameObject;
@@ -466,7 +556,7 @@ namespace WurstMod
         private static void Resolve_AICoverPoints()
         {
             // NOTE: AICoverPoint currently isn't in the FistVR namespace.
-            TNH.AICoverPoint[] coverProxies = loadedRoot.GetComponentsInChildren<TNH.AICoverPoint>(true);
+            WurstMod.Any.AICoverPoint[] coverProxies = loadedRoot.GetComponentsInChildren<WurstMod.Any.AICoverPoint>(true);
             foreach (var proxy in coverProxies)
             {
                 GameObject owner = proxy.gameObject;
@@ -586,7 +676,7 @@ namespace WurstMod
         /// </summary>
         private static void Resolve_ScoreboardArea()
         {
-            GameObject proxy = loadedRoot.GetComponentInChildren<TNH.ScoreboardArea>().gameObject;
+            GameObject proxy = loadedRoot.GetComponentInChildren<TNH.ScoreboardArea>(true).gameObject;
             GameObject finalScore = currentScene.GetAllGameObjectsInScene().Where(x => x.name == "_FinalScore").First();
             GameObject resetPoint = currentScene.GetAllGameObjectsInScene().Where(x => x.name == "[ResetPoint]").First();
 
@@ -597,26 +687,9 @@ namespace WurstMod
 
         private static void Resolve_Spawn()
         {
-            Transform spawnPoint = loadedRoot.GetComponentInChildren<Generic.Spawn>().transform;
+            Transform spawnPoint = loadedRoot.GetComponentInChildren<Generic.Spawn>(true).transform;
             GameObject cameraRig = currentScene.GetAllGameObjectsInScene().Where(x => x.name == "[CameraRig]Fixed").First();
             cameraRig.transform.position = spawnPoint.position;
-        }
-
-        private static void Resolve_ItemSpawners()
-        {
-            Transform[] itemSpawners = loadedRoot.GetComponentsInChildren<Generic.ItemSpawner>().Select(x => x.transform).ToArray();
-            GameObject spawnerBase = currentScene.GetAllGameObjectsInScene().Where(x => x.name == "ItemSpawner").First();
-            foreach (Transform ii in itemSpawners)
-            {
-                GameObject spawner = GameObject.Instantiate(spawnerBase, loadedRoot.transform);
-                //GameObject spawner = spawnerBase;
-                spawner.transform.position = ii.position + (0.8f * Vector3.up);
-                spawner.transform.localEulerAngles = ii.localEulerAngles;
-                spawner.SetActive(true);
-
-                Debug.Log(string.Join("\n", spawner.transform.AsEnumerable().Select(x => x.name + ", " + x.transform.position.ToString() ).ToArray()));
-                Debug.Log(spawner.transform.position);
-            }
         }
 
         private static Dictionary<Generic.Prefab, GameObject> baseObjects = new Dictionary<Generic.Prefab, GameObject>();
@@ -637,7 +710,7 @@ namespace WurstMod
             Add(Generic.Prefab.WhizzBangADingerDetonator, "BangerDetonator");
 
             // Create objects based on type.
-            Generic.GenericPrefab[] genericPrefabs = loadedRoot.GetComponentsInChildren<Generic.GenericPrefab>();
+            Generic.GenericPrefab[] genericPrefabs = loadedRoot.GetComponentsInChildren<Generic.GenericPrefab>(true);
             foreach (Generic.GenericPrefab ii in genericPrefabs)
             {
                 GameObject copy = GameObject.Instantiate(baseObjects[ii.objectType], loadedRoot.transform);
@@ -649,7 +722,7 @@ namespace WurstMod
 
         private static void Resolve_Targets()
         {
-            Target[] targets = loadedRoot.GetComponentsInChildren<Any.Target>().ToArray();
+            Target[] targets = loadedRoot.GetComponentsInChildren<Any.Target>(true);
             foreach (Target ii in targets)
             {
                 ReactiveSteelTarget baseTarget = ii.gameObject.AddComponent<ReactiveSteelTarget>();
@@ -712,9 +785,6 @@ namespace WurstMod
 
                 sequence.HoldPoints = new List<int>()
                 {
-                    //TODO This should only be 5, but I got an outofrange after the 4th hold so let's just add more... Maybe that'll fix it...
-                    UnityEngine.Random.Range(0, manager.HoldPoints.Count),
-                    UnityEngine.Random.Range(0, manager.HoldPoints.Count),
                     UnityEngine.Random.Range(0, manager.HoldPoints.Count),
                     UnityEngine.Random.Range(0, manager.HoldPoints.Count),
                     UnityEngine.Random.Range(0, manager.HoldPoints.Count),
