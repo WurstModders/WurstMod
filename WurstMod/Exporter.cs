@@ -34,6 +34,10 @@ namespace WurstMod
         private static void Export(LevelType type)
         {
             Scene scene = EditorSceneManager.GetActiveScene();
+            
+            // Let the proxied components know we're about to export
+            foreach (var proxy in scene.GetRootGameObjects().SelectMany(x => x.GetComponentsInChildren<ComponentProxy>())) proxy.OnExport();
+            
             List<string> warnings = new List<string>();
             string error = "";
             switch(type)
