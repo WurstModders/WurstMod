@@ -327,6 +327,10 @@ namespace WurstMod
         /// </summary>
         private static void ResolveAll(LevelType type)
         {
+            // Resolve component proxies
+            foreach (var proxy in loadedRoot.GetComponentsInChildren<ComponentProxy>()) proxy.ResolveProxy();
+            
+            // Resolve legacy proxies
             Resolve_Skybox();
             Resolve_Shaders();
             Resolve_Terrain();
