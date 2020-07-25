@@ -22,7 +22,7 @@ namespace WurstMod.Generic
         public Text Text;
         public Renderer Rend;
 
-        protected override void InitializeComponent()
+        protected override bool InitializeComponent()
         {
             var proxied = gameObject.AddComponent<FVRPointableButton>();
             proxied.ColorUnselected = ColorUnselected;
@@ -40,6 +40,8 @@ namespace WurstMod.Generic
 
             // Force an update or something. Idk.
             proxied.ForceUpdate();
+
+            return true;
         }
     }
 }

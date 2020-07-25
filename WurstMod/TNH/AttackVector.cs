@@ -20,11 +20,10 @@ namespace WurstMod.TNH
         [Tooltip("Usually {3,8}.")]
         public Vector2 GrenadeVelRange;
 
-
         private void OnDrawGizmos()
         {
-            Extensions.GenericGizmoSphere(new Color(0.8f, 0f, 0f, 0.5f), Vector3.zero, 0.25f, SpawnPoints_Sosigs_Attack.ToArray());
-            Extensions.GenericGizmoCube(new Color(0.1f, 0.5f, 0.1f, 0.5f), Vector3.zero, 0.5f * Vector3.one, Vector3.forward, GrenadeVector);
+            if (SpawnPoints_Sosigs_Attack != null && SpawnPoints_Sosigs_Attack.Count != 0) Extensions.GenericGizmoSphere(new Color(0.8f, 0f, 0f, 0.5f), Vector3.zero, 0.25f, SpawnPoints_Sosigs_Attack.ToArray());
+            if (GrenadeVector != null) Extensions.GenericGizmoCube(new Color(0.1f, 0.5f, 0.1f, 0.5f), Vector3.zero, 0.5f * Vector3.one, Vector3.forward, GrenadeVector);
         }
     }
 }

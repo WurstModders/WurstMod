@@ -8,7 +8,7 @@ namespace WurstMod.TNH
 {
     [Obsolete("This class has been moved to the WurstMod.Any namespace, use that script instead!")]
     [AddComponentMenu("")]
-    public class PMat : MonoBehaviour
+    public class PMat : ComponentProxy
     {
         private readonly string[] DefResourcePaths = new string[]
         {
@@ -246,5 +246,17 @@ namespace WurstMod.TNH
         public Def def;
         [Tooltip("It seems like all static colliders (anything a bullet might hit) have a matDef.")]
         public MatDef matDef;
+
+        protected override bool InitializeComponent()
+        {
+            FistVR.PMat real = gameObject.AddComponent<FistVR.PMat>();
+
+            if (def == Def.None) real.Def = null;
+            else real.Def = Resources.Load<FistVR.PMaterialDefinition>("pmaterialdefinitions/" + GetDef((int)def));
+
+            real.MatDef = Resources.Load<FistVR.MatDef>("matdefs/" + GetMatDef((int)matDef));
+
+            return true;
+        }
     }
 }

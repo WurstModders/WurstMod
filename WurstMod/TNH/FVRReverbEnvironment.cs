@@ -11,7 +11,7 @@ namespace WurstMod.TNH
     /// </summary>
     [Obsolete("This class has been moved to the WurstMod.Any namespace, use that script instead!")]
     [AddComponentMenu("")]
-    public class FVRReverbEnvironment : MonoBehaviour
+    public class FVRReverbEnvironment : ComponentProxy
     {
         public enum FVRSoundEnvironment
         {
@@ -35,5 +35,14 @@ namespace WurstMod.TNH
         public FVRSoundEnvironment Environment;
         public int Priority;
 
+        protected override bool InitializeComponent()
+        {
+            FistVR.FVRReverbEnvironment real = gameObject.AddComponent<FistVR.FVRReverbEnvironment>();
+
+            real.Environment = (FistVR.FVRSoundEnvironment)Environment;
+            real.Priority = Priority;
+
+            return true;
+        }
     }
 }

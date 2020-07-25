@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace WurstMod.TNH
 {
-    public class TNH_SupplyPoint : MonoBehaviour
+    public class TNH_SupplyPoint : ComponentProxy
     {
         [Tooltip("A DISABLED mesh (usually a cube) that encompasses the entire Supply Point. No collider.")]
         public Transform Bounds;
@@ -64,6 +64,28 @@ namespace WurstMod.TNH
             if (SpawnPoints_SmallItem != null) Extensions.GenericGizmoSphere(new Color(0.0f, 0.8f, 0f, 0.5f), Vector3.zero, 0.1f, SpawnPoints_SmallItem.AsEnumerable().ToArray());
             if (SpawnPoint_PlayerSpawn != null) Extensions.GenericGizmoSphere(new Color(0.0f, 0.8f, 0.8f, 0.5f), Vector3.zero, 0.25f, SpawnPoint_PlayerSpawn);
             if (SpawnPoint_Shield != null) Extensions.GenericGizmoCube(new Color(0.0f, 0.8f, 0.0f, 0.1f), Vector3.zero, new Vector3(0.4f, 0.6f, 0.1f), Vector3.zero, SpawnPoint_Shield);
+        }
+
+        protected override bool InitializeComponent()
+        {
+            FistVR.TNH_SupplyPoint real = gameObject.AddComponent<FistVR.TNH_SupplyPoint>();
+
+            real.M = ObjectReferences.ManagerDonor;
+            real.Bounds = Bounds;
+            real.CoverPoints = CoverPoints.AsEnumerable().Select(x => x.gameObject.GetComponent<global::AICoverPoint>()).ToList();
+            real.SpawnPoint_PlayerSpawn = SpawnPoint_PlayerSpawn;
+            real.SpawnPoints_Sosigs_Defense = SpawnPoints_Sosigs_Defense.AsEnumerable().ToList();
+            real.SpawnPoints_Turrets = SpawnPoints_Turrets.AsEnumerable().ToList();
+            real.SpawnPoints_Panels = SpawnPoints_Panels.AsEnumerable().ToList();
+            real.SpawnPoints_Boxes = SpawnPoints_Boxes.AsEnumerable().ToList();
+            real.SpawnPoint_Tables = SpawnPoint_Tables.AsEnumerable().ToList();
+            real.SpawnPoint_CaseLarge = SpawnPoint_CaseLarge;
+            real.SpawnPoint_CaseSmall = SpawnPoint_CaseSmall;
+            real.SpawnPoint_Melee = SpawnPoint_Melee;
+            real.SpawnPoints_SmallItem = SpawnPoints_SmallItem.AsEnumerable().ToList();
+            real.SpawnPoint_Shield = SpawnPoint_Shield;
+
+            return true;
         }
     }
 }

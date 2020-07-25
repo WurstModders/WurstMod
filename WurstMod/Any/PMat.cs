@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace WurstMod.Any
 {
-    public class PMat : MonoBehaviour
+    public class PMat : ComponentProxy
     {
         private readonly string[] DefResourcePaths = new string[]
         {
@@ -244,5 +244,18 @@ namespace WurstMod.Any
         public Def def;
         [Tooltip("It seems like all static colliders (anything a bullet might hit) have a matDef.")]
         public MatDef matDef;
+
+
+        protected override bool InitializeComponent()
+        {
+            FistVR.PMat real = gameObject.AddComponent<FistVR.PMat>();
+
+            if (def == Def.None) real.Def = null;
+            else real.Def = Resources.Load<FistVR.PMaterialDefinition>("pmaterialdefinitions/" + GetDef((int)def));
+
+            real.MatDef = Resources.Load<FistVR.MatDef>("matdefs/" + GetMatDef((int)matDef));
+
+            return true;
+        }
     }
 }

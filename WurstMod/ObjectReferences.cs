@@ -2,8 +2,10 @@
 using System.Linq;
 using System.Reflection;
 using FistVR;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using WurstMod.TNH;
 using Object = UnityEngine.Object;
 
 namespace WurstMod
@@ -11,7 +13,33 @@ namespace WurstMod
     public static class ObjectReferences
     {
         [ObjectReference]
-        public static FVRPointableButton ButtonDonor;
+        public static FistVR.FVRPointableButton ButtonDonor;
+        [ObjectReference]
+        public static FistVR.TNH_DestructibleBarrierPoint BarrierDonor;
+        [ObjectReference]
+        public static FistVR.TNH_Manager ManagerDonor;
+        [ObjectReference]
+        public static FistVR.TNH_HoldPoint HoldPointDonor;
+
+        [ObjectReference("ItemSpawner")]
+        public static GameObject ItemSpawnerDonor;
+        [ObjectReference("Destructobin")]
+        public static GameObject DestructobinDonor;
+        [ObjectReference("SosigSpawner")]
+        public static GameObject SosigSpawnerDonor;
+        [ObjectReference("WhizzBangADinger2")]
+        public static GameObject WhizzBangADingerDonor;
+        [ObjectReference("BangerDetonator")]
+        public static GameObject BangerDetonatorDonor;
+
+        [ObjectReference] // TODO Slightly dangerous I think? Remember this and doublecheck it.
+        public static TNH_Level Level;
+        [ObjectReference("[CameraRig]Fixed")]
+        public static GameObject CameraRig;
+        [ObjectReference("_FinalScore")]
+        public static GameObject FinalScore;
+        [ObjectReference("[ResetPoint]")]
+        public static GameObject ResetPoint;
 
 
         /// <summary>
@@ -36,7 +64,9 @@ namespace WurstMod
                 foreach (var reference in attributes)
                 {
                     // If the field's value is already set, break.
-                    if (field.GetValue(null) != null) break;
+                    // NOTE: Objects are "deleted" on scene load, but reflection will not necessarily return null immediately.
+                    // This method is only run on scene load anyway, so the duplicate checking isn't super necessary.
+                    //if (field.GetValue(null) != null) break;
 
                     // If the field type is GameObject, just find the GameObject normally
                     Object found;

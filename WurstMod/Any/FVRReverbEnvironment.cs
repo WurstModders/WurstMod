@@ -9,7 +9,7 @@ namespace WurstMod.Any
     /// <summary>
     /// Placed on an object with a non-trigger box collider, on the NoCol layer.
     /// </summary>
-    public class FVRReverbEnvironment : MonoBehaviour
+    public class FVRReverbEnvironment : ComponentProxy
     {
         public enum FVRSoundEnvironment
         {
@@ -33,5 +33,14 @@ namespace WurstMod.Any
         public FVRSoundEnvironment Environment;
         public int Priority;
 
+        protected override bool InitializeComponent()
+        {
+            FistVR.FVRReverbEnvironment real = gameObject.AddComponent<FistVR.FVRReverbEnvironment>();
+
+            real.Environment = (FistVR.FVRSoundEnvironment)Environment;
+            real.Priority = Priority;
+
+            return true;
+        }
     }
 }
