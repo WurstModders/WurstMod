@@ -6,7 +6,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using BepInEx;
-
+using System.Reflection;
 
 namespace WurstMod
 {
@@ -19,6 +19,7 @@ namespace WurstMod
             self = this;
             RegisterListeners();
             InitDetours();
+            InitAppDomain();
         }
 
         void RegisterListeners()
@@ -29,6 +30,21 @@ namespace WurstMod
         void InitDetours()
         {
             Patches.Patch();
+        }
+
+        private static Dictionary<string, Assembly> assemblies = new Dictionary<string, Assembly>();
+        void InitAppDomain()
+        {
+            AppDomain.CurrentDomain.AssemblyLoad += (sender, e) =>
+            {
+                assemblies[e.LoadedAssembly.FullName] = e.LoadedAssembly;
+            };
+            AppDomain.CurrentDomain.AssemblyResolve += (sender, e) =>
+            {
+                Assembly assembly = null;
+                assemblies.TryGetValue(e.Name, out assembly);
+                return assembly;
+            };
         }
 
         private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode mode)

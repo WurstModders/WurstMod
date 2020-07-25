@@ -11,6 +11,7 @@ using FistVR;
 using Valve.VR.InteractionSystem;
 using UnityEngine.Rendering;
 using WurstMod.Any;
+using System.Reflection;
 
 namespace WurstMod
 {
@@ -280,7 +281,7 @@ namespace WurstMod
             }
         }
 
-        static Dictionary<string, AssetBundle> loadedBundles = new Dictionary<string, AssetBundle>();
+        private static Dictionary<string, AssetBundle> loadedBundles = new Dictionary<string, AssetBundle>();
         /// <summary>
         /// Merges the custom level scene into the TNH scene.
         /// </summary>
@@ -296,6 +297,17 @@ namespace WurstMod
             {
                 bundle = AssetBundle.LoadFromFile(levelToLoad);
                 loadedBundles[levelToLoad] = bundle;
+
+                // Also load the assembly if it exists.
+                string dll = Directory.GetFiles(Path.GetDirectoryName(levelToLoad), "*.dll").FirstOrDefault();
+                if (!string.IsNullOrEmpty(dll))
+                {
+                    Debug.Log("LOADING ASSEMBLY: " + dll);
+                    Assembly loadedAsm = Assembly.LoadFile(dll);
+                    AppDomain.CurrentDomain.Load(loadedAsm.GetName());
+                    yield return null;
+                    Debug.Log(string.Join(", ", loadedAsm.GetTypes().Select(x => x.Name).ToArray()));
+                }
             }
 
             // Get the scene from the bundle and load it.

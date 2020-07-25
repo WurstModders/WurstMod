@@ -28,7 +28,7 @@ namespace WurstMod.Any
         
         private int numInside = 0;
        
-        // TODO Rigidbody is the only tigger currently working.
+        // TODO Rigidbody is the only trigger currently working.
         void OnTriggerEnter(Collider other)
         {
             Debug.Log("SOMETHING entered trigger: " + other.gameObject.name);
