@@ -72,6 +72,7 @@
     <Compile Include="Any\Trigger.cs" />
     <Compile Include="ComponentProxy.cs" />
     <Compile Include="Generic\GenericPrefab.cs" />
+    <Compile Include="Generic\GroundPanel.cs" />
     <Compile Include="Generic\ItemSpawner.cs" />
     <Compile Include="Generic\PointableButton.cs" />
     <Compile Include="Generic\Spawn.cs" />

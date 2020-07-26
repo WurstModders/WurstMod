@@ -297,7 +297,7 @@ namespace WurstMod
         private static void ResolveAll(LevelType type)
         {
             // Resolve component proxies
-            foreach (var proxy in loadedRoot.GetComponentsInChildren<ComponentProxy>().OrderByDescending(x => x.GetImportance())) proxy.ResolveProxy();
+            foreach (var proxy in loadedRoot.GetComponentsInChildren<ComponentProxy>().OrderByDescending(x => x.ResolveOrder)) proxy.InitializeComponent();
 
             if (type == LevelType.TNH) Fix_TNH_Manager();
         }

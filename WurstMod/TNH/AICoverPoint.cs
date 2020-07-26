@@ -21,9 +21,9 @@ namespace WurstMod.TNH
         }
 
 
-        public override int GetImportance() => 3;
+        public override int ResolveOrder => 3;
 
-        protected override bool InitializeComponent()
+        public override void InitializeComponent()
         {
             global::AICoverPoint real = gameObject.AddComponent<global::AICoverPoint>();
 
@@ -32,7 +32,7 @@ namespace WurstMod.TNH
             real.Calc();
             real.CalcNew();
 
-            return true;
+            Destroy(this);
         }
     }
 }

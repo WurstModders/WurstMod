@@ -247,7 +247,7 @@ namespace WurstMod.TNH
         [Tooltip("It seems like all static colliders (anything a bullet might hit) have a matDef.")]
         public MatDef matDef;
 
-        protected override bool InitializeComponent()
+        public override void InitializeComponent()
         {
             FistVR.PMat real = gameObject.AddComponent<FistVR.PMat>();
 
@@ -256,7 +256,7 @@ namespace WurstMod.TNH
 
             real.MatDef = Resources.Load<FistVR.MatDef>("matdefs/" + GetMatDef((int)matDef));
 
-            return true;
+            Destroy(this);
         }
     }
 }

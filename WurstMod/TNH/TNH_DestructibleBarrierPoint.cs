@@ -16,9 +16,9 @@ namespace WurstMod.TNH
             Extensions.GenericGizmoCube(new Color(0.0f, 0.6f, 0.0f, 0.5f), new Vector3(0, 1, 0), new Vector3(1, 2, 0.1f), Vector3.zero, transform);
         }
 
-        public override int GetImportance() => 2;
+        public override int ResolveOrder => 2;
 
-        protected override bool InitializeComponent()
+        public override void InitializeComponent()
         {
             FistVR.TNH_DestructibleBarrierPoint real = gameObject.AddComponent<FistVR.TNH_DestructibleBarrierPoint>();
 
@@ -38,7 +38,7 @@ namespace WurstMod.TNH
             // This should only be run in the editor, but OH WELL.
             real.BakePoints();
 
-            return true;
+            Destroy(this);
         }
     }
 }

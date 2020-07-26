@@ -36,7 +36,6 @@ namespace WurstMod.TNH
         public Transform SpawnPoints_Sosigs_Defense;
 
 
-
         private void OnDrawGizmos()
         {
             if (Bounds != null) Extensions.GenericGizmoCubeOutline(Color.white, Vector3.zero, Vector3.one, Bounds.ToArray());
@@ -46,7 +45,7 @@ namespace WurstMod.TNH
             if (SpawnPoints_Targets != null) Extensions.GenericGizmoCube(new Color(1f, 0.0f, 0.0f, 0.5f), Vector3.zero, new Vector3(0.1f, 0.5f, 0.1f), Vector3.zero, SpawnPoints_Targets.AsEnumerable().ToArray());
         }
 
-        protected override bool InitializeComponent()
+        public override void InitializeComponent()
         {
             FistVR.TNH_HoldPoint real = gameObject.AddComponent<FistVR.TNH_HoldPoint>();
 
@@ -58,7 +57,7 @@ namespace WurstMod.TNH
             real.SpawnPoint_SystemNode = SpawnPoint_SystemNode;
             real.SpawnPoints_Targets = SpawnPoints_Targets.AsEnumerable().ToList();
             real.SpawnPoints_Turrets = SpawnPoints_Turrets.AsEnumerable().ToList();
-            real.AttackVectors = AttackVectors.AsEnumerable().Select(x => Resolve_AttackVector(x.GetComponent<TNH.AttackVector>())).ToList();
+            real.AttackVectors = AttackVectors.AsEnumerable().Select(x => Resolve_AttackVector(x.GetComponent<TNH.AttackVector>())).Cast<FistVR.TNH_HoldPoint.AttackVector>().ToList();
             real.SpawnPoints_Sosigs_Defense = SpawnPoints_Sosigs_Defense.AsEnumerable().ToList();
 
             FistVR.AudioEvent wave = new FistVR.AudioEvent();
@@ -84,10 +83,11 @@ namespace WurstMod.TNH
             real.AUDEvent_Failure = failure;
             real.VFX_HoldWave = ObjectReferences.HoldPointDonor.VFX_HoldWave;
 
-            return true;
+            Destroy(this);
         }
 
-        private FistVR.TNH_HoldPoint.AttackVector Resolve_AttackVector(TNH.AttackVector proxy)
+
+        private object Resolve_AttackVector(TNH.AttackVector proxy)
         {
             GameObject owner = proxy.gameObject;
             FistVR.TNH_HoldPoint.AttackVector real = new FistVR.TNH_HoldPoint.AttackVector();

@@ -20,7 +20,7 @@ namespace WurstMod.TNH
         [Tooltip("A DISABLED gameObject visualizing you grabbing this object. This is the glowy bit when you are grabbing a ladder.")]
         public GameObject UXGeo_Held;
 
-        protected override bool InitializeComponent()
+        public override void InitializeComponent()
         {
             FistVR.FVRHandGrabPoint real = gameObject.AddComponent<FistVR.FVRHandGrabPoint>();
 
@@ -34,7 +34,7 @@ namespace WurstMod.TNH
             Vector3 extents = proxyCol.bounds.extents;
             real.EndInteractionDistance = 2.5f * Mathf.Abs(Mathf.Max(extents.x, extents.y, extents.z));
 
-            return true;
+            Destroy(this);
         }
     }
 }

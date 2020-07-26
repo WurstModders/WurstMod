@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace WurstMod.Generic
 {
@@ -13,11 +9,10 @@ namespace WurstMod.Generic
             Extensions.GenericGizmoSphere(new Color(0.0f, 0.8f, 0.8f, 0.5f), Vector3.zero, 0.25f, transform);
         }
 
-        protected override bool InitializeComponent()
+        public override void InitializeComponent()
         {
             ObjectReferences.CameraRig.transform.position = transform.position;
-
-            return true;
+            Destroy(this);
         }
     }
 }
