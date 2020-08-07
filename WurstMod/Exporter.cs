@@ -88,10 +88,6 @@ namespace WurstMod
                 if (File.Exists(directory + prefix + scene.name)) File.Delete(directory + prefix + scene.name);
                 if (File.Exists(directory + prefix + scene.name + ".MANIFEST")) File.Delete(directory + prefix + scene.name + ".MANIFEST");
 
-                // Copy renamed assembly over.
-                // TODO Assembly loading does not map properly, investigation required.
-                //CopyAssembly(scene, directory);
-
                 // Export
                 BuildPipeline.BuildAssetBundles(directory, new AssetBundleBuild[] { build }, buildOptions, BuildTarget.StandaloneWindows64);
 
@@ -106,20 +102,6 @@ namespace WurstMod
                 if (File.Exists(directory + "leveldata.MANIFEST")) File.Delete(directory + "leveldata.MANIFEST");
                 if (File.Exists(directory + prefix + scene.name)) File.Delete(directory + prefix + scene.name);
                 if (File.Exists(directory + prefix + scene.name + ".MANIFEST")) File.Delete(directory + prefix + scene.name + ".MANIFEST");
-            }
-        }
-
-        private static void CopyAssembly(Scene scene, string directory)
-        {
-            string assemblyPath = "Library/ScriptAssemblies/Assembly-CSharp.dll";
-            string newAsmName = scene.name + "-code";
-            if (File.Exists(assemblyPath))
-            {
-                AssemblyDefinition asm = AssemblyDefinition.ReadAssembly(assemblyPath);
-                asm.Name = new AssemblyNameDefinition(newAsmName, new Version("1.0.0.0"));
-                asm.MainModule.Name = newAsmName; // Necessary?
-                asm.Write(directory + newAsmName + ".dll");
-                asm.Dispose();
             }
         }
 
