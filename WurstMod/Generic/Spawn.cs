@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FistVR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,8 @@ namespace WurstMod.Generic
         protected override bool InitializeComponent()
         {
             ObjectReferences.CameraRig.transform.position = transform.position;
-
+			if (ManagerSingleton<GM>.Instance != null && GM.CurrentSceneSettings != null)
+				GM.CurrentSceneSettings.DeathResetPoint = transform;
             return true;
         }
     }
