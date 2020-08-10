@@ -7,6 +7,7 @@ using FistVR;
 using HarmonyLib;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 using WurstMod.Any;
 using WurstMod.TNH.Extras;
 
@@ -59,7 +60,7 @@ namespace WurstMod
         {
             if (__instance.Agent.isOnOffMeshLink && __instance.Agent.currentOffMeshLinkData.offMeshLink == null)
             {
-                if (!(bool)__instance.ReflectGet("m_isOnOffMeshLink"))
+                if (!__instance.ReflectGet<bool>("m_isOnOffMeshLink"))
                 {
                     // Setup fake link, which is added as a component to the Sosig.
                     NavMeshLinkExtension fakeLink;
@@ -139,7 +140,7 @@ namespace WurstMod
             if (forcedSpawn)
             {
                 __instance.SupplyPoints = __instance.SupplyPoints.Where(x => x.gameObject != forcedSpawn.gameObject).ToList();
-                ((FistVR.TNH_PointSequence)__instance.ReflectGet("m_curPointSequence")).StartSupplyPointIndex = 0;
+                (__instance.ReflectGet<FistVR.TNH_PointSequence>("m_curPointSequence")).StartSupplyPointIndex = 0;
             }
         }
     }
@@ -203,6 +204,48 @@ namespace WurstMod
             if (ourTarget != null)
             {
                 if (ourTarget.shotEvent != null) ourTarget.shotEvent.Invoke();
+            }
+
+            return true;
+        }
+    }
+    #endregion
+
+    #region Whizzbanger Support
+    /// <summary>
+    /// This patched method will run on the disabled donor detonator in generic sandbox levels
+    /// whenever a new banger is created by any whizzbanger, adding the new banger to all other
+    /// detonators lists.
+    /// 
+    /// With this patch, any banger created by any whizzbanger can be detonated by any detonator in the scene.
+    /// </summary>
+    [HarmonyPatch(typeof(BangerDetonator), "RegisterBanger")]
+    public class Patch_BangerDetonator_RegisterBanger
+    {
+        static List<BangerDetonator> detonators = new List<BangerDetonator>();
+
+        static bool Prefix(BangerDetonator __instance, Banger b)
+        {
+            if (Loader.levelToLoad != "")
+            {
+                // We are in a custom level.
+                if (detonators.Count == 0 || detonators[0] == null)
+                {
+                    // We have loaded a new custom level, recreate the cache.
+                    detonators.Clear();
+                    detonators.AddRange(UnityEngine.Object.FindObjectsOfType<BangerDetonator>());
+                }
+
+                // Add banger to all detonators in cache.
+                foreach(BangerDetonator ii in detonators)
+                {
+                    if (!ii.ReflectGet<List<Banger>>("m_bangers").Contains(b))
+                    {
+                        ii.ReflectGet<List<Banger>>("m_bangers").Add(b);
+                    }
+                }
+
+                return false;
             }
 
             return true;

@@ -46,7 +46,7 @@ namespace WurstMod
         private static Dictionary<ReflectDef, MethodInfo> methodCache = new Dictionary<ReflectDef, MethodInfo>();
         private static Dictionary<ReflectDef, FieldInfo> fieldCache = new Dictionary<ReflectDef, FieldInfo>();
 
-        public static object ReflectInvoke<T>(this T target, string methodName, params object[] parameters) where T : UnityEngine.Object
+        public static object ReflectInvoke(this UnityEngine.Object target, string methodName, params object[] parameters)
         {
             MethodInfo method;
             ReflectDef def = new ReflectDef(target.GetType(), methodName);
@@ -63,7 +63,7 @@ namespace WurstMod
             return method.Invoke(target, parameters);
         }
 
-        public static object ReflectGet<T>(this T target, string fieldName) where T : UnityEngine.Object
+        public static T ReflectGet<T>(this UnityEngine.Object target, string fieldName)
         {
             FieldInfo field;
             ReflectDef def = new ReflectDef(target.GetType(), fieldName);
@@ -77,10 +77,10 @@ namespace WurstMod
                 fieldCache[def] = field;
             }
 
-            return field.GetValue(target);
+            return (T)field.GetValue(target);
         }
 
-        public static void ReflectSet<T>(this T target, string fieldName, object value) where T : UnityEngine.Object
+        public static void ReflectSet(this UnityEngine.Object target, string fieldName, object value) 
         {
             FieldInfo field;
             ReflectDef def = new ReflectDef(target.GetType(), fieldName);
