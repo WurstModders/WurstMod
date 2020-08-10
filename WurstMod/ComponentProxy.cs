@@ -8,7 +8,7 @@ namespace WurstMod
         /// Certain components MUST be initialized before others. Override this
         /// to ensure ordering. HIGH values run before lower values, default importance is 1.
         /// </summary>
-        public virtual int ResolveOrder => 0;
+        public virtual int ResolveOrder => 1;
         
         /// <summary>
         ///     This is called at run-time to resolve the proxied component.
