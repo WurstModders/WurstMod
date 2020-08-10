@@ -1,8 +1,5 @@
-﻿using FistVR;
-using System;
+using FistVR;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace WurstMod.Generic
@@ -39,25 +36,25 @@ namespace WurstMod.Generic
         }
 
 
-        private static Dictionary<Generic.Prefab, GameObject> baseObjects = new Dictionary<Generic.Prefab, GameObject>();
-        protected override bool InitializeComponent()
+        private static Dictionary<Prefab, GameObject> baseObjects = new Dictionary<Prefab, GameObject>();
+        public override void InitializeComponent()
         {
             if (baseObjects.Count == 0)
             {
                 // Initialize dictionary of baseObjects.
-                void Add(Generic.Prefab type, GameObject obj)
+                void Add(Prefab type, GameObject obj)
                 {
                     baseObjects[type] = obj;
                     baseObjects[type].SetActive(false);
                 }
 
-                Add(Generic.Prefab.ItemSpawner, ObjectReferences.ItemSpawnerDonor);
-                Add(Generic.Prefab.Destructobin, ObjectReferences.DestructobinDonor);
-                Add(Generic.Prefab.SosigSpawner, ObjectReferences.SosigSpawnerDonor);
-                Add(Generic.Prefab.WhizzBangADinger, ObjectReferences.WhizzBangADingerDonor);
-                Add(Generic.Prefab.WhizzBangADingerDetonator, ObjectReferences.BangerDetonatorDonor);
+                Add(Prefab.ItemSpawner, ObjectReferences.ItemSpawnerDonor);
+                Add(Prefab.Destructobin, ObjectReferences.DestructobinDonor);
+                Add(Prefab.SosigSpawner, ObjectReferences.SosigSpawnerDonor);
+                Add(Prefab.WhizzBangADinger, ObjectReferences.WhizzBangADingerDonor);
+                Add(Prefab.WhizzBangADingerDetonator, ObjectReferences.BangerDetonatorDonor);
             }
-            GameObject copy = GameObject.Instantiate(baseObjects[objectType], ObjectReferences.Level.transform);
+            GameObject copy = Instantiate(baseObjects[objectType], ObjectReferences.Level.transform);
             copy.transform.position = transform.position;
             copy.transform.localEulerAngles = transform.localEulerAngles;
             copy.SetActive(true);
@@ -65,7 +62,7 @@ namespace WurstMod.Generic
 			if (objectType == Generic.Prefab.WhizzBangADingerDetonator && copy.GetComponent<BangerDetonator>() != null && UnityEngine.Object.FindObjectOfType<Whizzbangadinger>())
 				UnityEngine.Object.FindObjectOfType<Whizzbangadinger>().Detonator = copy.GetComponent<BangerDetonator>();
 
-            return true;
+            Destroy(this);
         }
     }
 }

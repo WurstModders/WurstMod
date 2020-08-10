@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
-
-namespace WurstMod.Any
+﻿namespace WurstMod.Any
 {
     /// <summary>
     /// Placed on an object with a non-trigger box collider, on the NoCol layer.
@@ -33,14 +27,14 @@ namespace WurstMod.Any
         public FVRSoundEnvironment Environment;
         public int Priority;
 
-        protected override bool InitializeComponent()
+        public override void InitializeComponent()
         {
             FistVR.FVRReverbEnvironment real = gameObject.AddComponent<FistVR.FVRReverbEnvironment>();
 
-            real.Environment = (FistVR.FVRSoundEnvironment)Environment;
+            real.Environment = (FistVR.FVRSoundEnvironment) Environment;
             real.Priority = Priority;
 
-            return true;
+            Destroy(this);
         }
     }
 }

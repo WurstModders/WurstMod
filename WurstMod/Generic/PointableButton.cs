@@ -8,8 +8,8 @@ namespace WurstMod.Generic
     public class PointableButton : ComponentProxy
     {
         // These are the colors for almost every button in the game
-        public Color ColorUnselected = new Color(0.107f, 0.286f, 0.609f, 0.628f);
-        public Color ColorSelected = new Color(0.750f, 0.793f, 0.872f, 0.847f);
+        public Color ColorUnselected = new Color32(0x29, 0x6E, 0xEA, 0xFF);
+        public Color ColorSelected = new Color32(0xB1, 0xC9, 0xF4, 0xFF);
 
         [Tooltip("I think this is used for setting the color of a material? Not sure. Leave as-is.")]
         public string ColorName = "_Color";
@@ -22,7 +22,7 @@ namespace WurstMod.Generic
         public Text Text;
         public Renderer Rend;
 
-        protected override bool InitializeComponent()
+        public override void InitializeComponent()
         {
             var proxied = gameObject.AddComponent<FVRPointableButton>();
             proxied.ColorUnselected = ColorUnselected;
@@ -33,15 +33,21 @@ namespace WurstMod.Generic
             proxied.Rend = Rend;
             proxied.ColorName = ColorName;
 
-            // 'Borrow' the sprite and font from the donor
+            // Borrow the sprite
             proxied.Image.sprite = ObjectReferences.ButtonDonor.Image.sprite;
-            // TODO: This produces a NullReferenceException. Investigate.
-            //proxied.Text.font = ObjectReferences.ButtonDonor.Text.font;
 
             // Force an update or something. Idk.
             proxied.ForceUpdate();
 
-            return true;
+           Destroy(this);
+        }
+
+        public override void OnExport()
+        {
+            // Set the collider's size
+            var collider = GetComponent<BoxCollider>();
+            var size = GetComponent<RectTransform>().sizeDelta;
+            collider.size = new Vector3(size.x, size.y, 1);
         }
     }
 }

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 using Valve.VR.InteractionSystem;
 
 namespace WurstMod.TNH
@@ -23,7 +21,7 @@ namespace WurstMod.TNH
             skybox = RenderSettings.skybox;
         }
 
-        protected override bool InitializeComponent()
+        public override void InitializeComponent()
         {
             // This component is responsible for resolving many of the global/builtin things about a level.
             // Skybox
@@ -53,25 +51,29 @@ namespace WurstMod.TNH
             foreach (Terrain ii in GetComponentsInChildren<Terrain>(true))
             {
                 ii.materialTemplate.RefreshShader();
-                ii.terrainData.treePrototypes.Select(x => x.prefab.layer = LayerMask.NameToLayer("Environment"));
+                ii.terrainData.treePrototypes.ForEach(x => x.prefab.layer = LayerMask.NameToLayer("Environment"));
                 foreach (TreePrototype jj in ii.terrainData.treePrototypes)
                 {
                     jj.prefab.layer = LayerMask.NameToLayer("Environment");
                     MeshRenderer[] mrs = jj.prefab.GetComponentsInChildren<MeshRenderer>();
                     mrs.ForEach(x => x.material.RefreshShader());
                 }
+
                 foreach (TreeInstance jj in ii.terrainData.treeInstances)
                 {
-                    GameObject copiedTree = GameObject.Instantiate<GameObject>(ii.terrainData.treePrototypes[jj.prototypeIndex].prefab, ii.transform);
+                    GameObject copiedTree = Instantiate(ii.terrainData.treePrototypes[jj.prototypeIndex].prefab, ii.transform);
                     copiedTree.transform.localPosition = new Vector3(ii.terrainData.size.x * jj.position.x, ii.terrainData.size.y * jj.position.y, ii.terrainData.size.z * jj.position.z);
                     copiedTree.transform.localScale = new Vector3(jj.widthScale, jj.heightScale, jj.widthScale);
                     copiedTree.transform.localEulerAngles = new Vector3(0f, jj.rotation, 0f);
                 }
+
                 ii.terrainData.treeInstances = new TreeInstance[0];
             }
 
-            // Component must persist after initialize, return false to prevent deletion.
-            return false;
+            // Copy font data to all text components.
+            Font font = ObjectReferences.ButtonDonor.GetComponentInChildren<Text>().font;
+            foreach (Text text in GetComponentsInChildren<Text>(true))
+                text.font = font;
         }
     }
 }

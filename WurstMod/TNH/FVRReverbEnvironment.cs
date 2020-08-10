@@ -35,14 +35,14 @@ namespace WurstMod.TNH
         public FVRSoundEnvironment Environment;
         public int Priority;
 
-        protected override bool InitializeComponent()
+        public override void InitializeComponent()
         {
             FistVR.FVRReverbEnvironment real = gameObject.AddComponent<FistVR.FVRReverbEnvironment>();
 
             real.Environment = (FistVR.FVRSoundEnvironment)Environment;
             real.Priority = Priority;
 
-            return true;
+            Destroy(this);
         }
     }
 }

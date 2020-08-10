@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace WurstMod.Any
 {
@@ -18,9 +14,9 @@ namespace WurstMod.Any
             Gizmos.DrawSphere(Vector3.zero, 0.1f);
         }
 
-        public override int GetImportance() => 3;
+        public override int ResolveOrder => 3;
 
-        protected override bool InitializeComponent()
+        public override void InitializeComponent()
         {
             global::AICoverPoint real = gameObject.AddComponent<global::AICoverPoint>();
 
@@ -29,7 +25,7 @@ namespace WurstMod.Any
             real.Calc();
             real.CalcNew();
 
-            return true;
+            Destroy(this);
         }
     }
 }
