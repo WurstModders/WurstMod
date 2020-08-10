@@ -254,16 +254,14 @@ namespace WurstMod
                 loadedBundles[levelToLoad] = bundle;
 
                 // Also load the assembly if it exists.
-                string dll = Directory.GetFiles(Path.GetDirectoryName(levelToLoad), "*.dll").FirstOrDefault();
-                if (!string.IsNullOrEmpty(dll))
+                string[] dlls = Directory.GetFiles(Path.GetDirectoryName(levelToLoad), "*.dll").ToArray();
+                foreach (string dll in dlls)
                 {
                     Debug.Log("LOADING ASSEMBLY: " + dll);
                     Assembly loadedAsm = Assembly.LoadFile(dll);
                     AppDomain.CurrentDomain.Load(loadedAsm.GetName());
                     yield return null;
-                    Debug.Log(string.Join(", ", loadedAsm.GetTypes().Select(x => x.Name).ToArray()));
-
-                    // TODO Might need to give it a nudge by manually instantiating a component? JIT is weird.
+                    Debug.Log("LOADED TYPES: " + string.Join(", ", loadedAsm.GetTypes().Select(x => x.Name).ToArray()));
                 }
             }
 

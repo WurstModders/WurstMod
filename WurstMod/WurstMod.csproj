@@ -71,6 +71,7 @@
     <Compile Include="Any\PMat.cs" />
     <Compile Include="Any\Trigger.cs" />
     <Compile Include="ComponentProxy.cs" />
+    <Compile Include="FileIDUtil.cs" />
     <Compile Include="Generic\GenericPrefab.cs" />
     <Compile Include="Generic\GroundPanel.cs" />
     <Compile Include="Generic\ItemSpawner.cs" />
