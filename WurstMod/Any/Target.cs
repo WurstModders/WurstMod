@@ -45,8 +45,6 @@ namespace WurstMod.Any
             }
 
             baseTarget.BulletHolePrefabs = new GameObject[0];
-
-            Destroy(this);
         }
     }
 }
