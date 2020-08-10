@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+using FistVR;
+using UnityEngine;
 
 namespace WurstMod.Generic
 {
@@ -12,6 +13,8 @@ namespace WurstMod.Generic
         public override void InitializeComponent()
         {
             ObjectReferences.CameraRig.transform.position = transform.position;
+            if (ManagerSingleton<GM>.Instance != null && GM.CurrentSceneSettings != null)
+                GM.CurrentSceneSettings.DeathResetPoint = transform;
             Destroy(this);
         }
     }

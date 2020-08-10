@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using FistVR;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace WurstMod.Generic
@@ -57,6 +58,9 @@ namespace WurstMod.Generic
             copy.transform.position = transform.position;
             copy.transform.localEulerAngles = transform.localEulerAngles;
             copy.SetActive(true);
+			
+			if (objectType == Generic.Prefab.WhizzBangADingerDetonator && copy.GetComponent<BangerDetonator>() != null && UnityEngine.Object.FindObjectOfType<Whizzbangadinger>())
+				UnityEngine.Object.FindObjectOfType<Whizzbangadinger>().Detonator = copy.GetComponent<BangerDetonator>();
 
             Destroy(this);
         }
