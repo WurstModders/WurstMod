@@ -66,7 +66,7 @@ namespace WurstMod.TNH
             if (SpawnPoint_Shield != null) Extensions.GenericGizmoCube(new Color(0.0f, 0.8f, 0.0f, 0.1f), Vector3.zero, new Vector3(0.4f, 0.6f, 0.1f), Vector3.zero, SpawnPoint_Shield);
         }
 
-        protected override bool InitializeComponent()
+        public override void InitializeComponent()
         {
             FistVR.TNH_SupplyPoint real = gameObject.AddComponent<FistVR.TNH_SupplyPoint>();
 
@@ -85,7 +85,7 @@ namespace WurstMod.TNH
             real.SpawnPoints_SmallItem = SpawnPoints_SmallItem.AsEnumerable().ToList();
             real.SpawnPoint_Shield = SpawnPoint_Shield;
 
-            return true;
+            Destroy(this);
         }
     }
 }

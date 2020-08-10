@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace WurstMod.Any
 {
@@ -18,7 +14,7 @@ namespace WurstMod.Any
         [Tooltip("A DISABLED gameObject visualizing you grabbing this object. This is the glowy bit when you are grabbing a ladder.")]
         public GameObject UXGeo_Held;
 
-        protected override bool InitializeComponent()
+        public override void InitializeComponent()
         {
             FistVR.FVRHandGrabPoint real = gameObject.AddComponent<FistVR.FVRHandGrabPoint>();
 
@@ -32,7 +28,7 @@ namespace WurstMod.Any
             Vector3 extents = proxyCol.bounds.extents;
             real.EndInteractionDistance = 2.5f * Mathf.Abs(Mathf.Max(extents.x, extents.y, extents.z));
 
-            return true;
+            Destroy(this);
         }
     }
 }

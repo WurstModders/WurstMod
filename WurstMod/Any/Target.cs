@@ -29,7 +29,7 @@ namespace WurstMod.Any
         [Tooltip("A Unity event, useful for triggering events that exist in base Unity code.")]
         public UnityEvent shotEvent;
 
-        protected override bool InitializeComponent()
+        public override void InitializeComponent()
         {
             FistVR.ReactiveSteelTarget baseTarget = gameObject.AddComponent<FistVR.ReactiveSteelTarget>();
             baseTarget.HitEvent = new FistVR.AudioEvent();
@@ -46,7 +46,7 @@ namespace WurstMod.Any
 
             baseTarget.BulletHolePrefabs = new GameObject[0];
 
-            return false;
+            Destroy(this);
         }
     }
 }

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace WurstMod.Generic
@@ -14,14 +11,14 @@ namespace WurstMod.Generic
             Extensions.GenericGizmoCube(new Color(0.4f, 0.4f, 0.9f, 0.5f), new Vector3(0f, 1.5f, 0.25f), new Vector3(2.3f, 1.2f, 0.5f), Vector3.forward, transform);
         }
 
-        protected override bool InitializeComponent()
+        public override void InitializeComponent()
         {
-            GameObject spawner = GameObject.Instantiate(ObjectReferences.ItemSpawnerDonor, ObjectReferences.Level.transform);
+            GameObject spawner = Instantiate(ObjectReferences.ItemSpawnerDonor, ObjectReferences.Level.transform);
             spawner.transform.position = transform.position + (0.8f * Vector3.up);
             spawner.transform.localEulerAngles = transform.localEulerAngles;
             spawner.SetActive(true);
 
-            return true;
+            Destroy(this);
         }
     }
 }

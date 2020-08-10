@@ -32,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
       <HintPath>..\Libs\0Harmony.dll</HintPath>
@@ -71,8 +74,8 @@
     <Compile Include="Any\PMat.cs" />
     <Compile Include="Any\Trigger.cs" />
     <Compile Include="ComponentProxy.cs" />
-    <Compile Include="FileIDUtil.cs" />
     <Compile Include="Generic\GenericPrefab.cs" />
+    <Compile Include="Generic\GroundPanel.cs" />
     <Compile Include="Generic\ItemSpawner.cs" />
     <Compile Include="Generic\PointableButton.cs" />
     <Compile Include="Generic\Spawn.cs" />
@@ -100,4 +103,7 @@
     <Compile Include="TNH\TNH_SupplyPoint.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>$(SolutionDir)pdb2mdb.exe $(TargetPath)</PostBuildEvent>
+  </PropertyGroup>
 </Project>

@@ -5,6 +5,7 @@ using FistVR;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using WurstMod.TNH;
 using Object = UnityEngine.Object;
 
@@ -20,6 +21,8 @@ namespace WurstMod
         public static FistVR.TNH_Manager ManagerDonor;
         [ObjectReference]
         public static FistVR.TNH_HoldPoint HoldPointDonor;
+        [ObjectReference]
+        public static SosigTestingPanel1 GroundPanel;
 
         [ObjectReference("ItemSpawner")]
         public static GameObject ItemSpawnerDonor;
