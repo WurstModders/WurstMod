@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Any\AICoverPoint.cs" />
+    <Compile Include="Any\AnvilPrefab.cs" />
     <Compile Include="Any\FVRHandGrabPoint.cs" />
     <Compile Include="Any\FVRReverbEnvironment.cs" />
     <Compile Include="Any\PMat.cs" />
