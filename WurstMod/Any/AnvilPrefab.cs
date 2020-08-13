@@ -10,15 +10,8 @@ namespace WurstMod.Any
 
         public override void InitializeComponent()
         {
-            var asset = new Anvil.AssetID();
-            asset.Guid = Guid;
-            asset.Bundle = Bundle;
-            asset.AssetName = AssetName;
-            Debug.Log("Asset bundle name: " + Bundle);
-
-            var callback = AnvilManager.LoadAsync(asset);
+            var callback = AnvilManager.LoadAsync(new Anvil.AssetID {Guid = Guid, Bundle = Bundle, AssetName = AssetName});
             callback.CompleteNow();
-
             var prefab = Instantiate(callback.Result, transform.position, transform.rotation);
             prefab.SetActive(true);
         }
