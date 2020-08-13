@@ -1,15 +1,11 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Reflection;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using Mono.Cecil;
 
 namespace WurstMod
 {
@@ -250,17 +246,6 @@ namespace WurstMod
             if (levelComponent.GetComponentsInChildren<Generic.Spawn>().Length != 1)
             {
                 return "You must have exactly one Spawnpoint prefab in a generic level.";
-            }
-            return "";
-        }
-
-        private static string CheckDeprecated(Scene scene, List<string> warnings)
-        {
-            if (levelComponent.GetComponentsInChildren<Generic.ItemSpawner>().Length != 0)
-            {
-                string warn = "WARNING: ItemSpawner prefab is deprecated, please use the new \"GenericPrefab\" and select ItemSpawner in the dropdown instead!";
-                Debug.LogWarning(warn);
-                warnings.Add(warn);
             }
             return "";
         }
