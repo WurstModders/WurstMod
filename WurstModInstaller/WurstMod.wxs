@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="f05db5cd-676a-4502-876f-cff18d275ea4" Name="WurstMod" Language="1033" Codepage="Windows-1252" Version="1.0.0.0" UpgradeCode="f05db5cd-676a-4502-876f-cff17d275ea3" Manufacturer="Nick">
+    <Package InstallerVersion="200" Compressed="yes" SummaryCodepage="Windows-1252" Languages="1033" />
+    <Media Id="1" Cabinet="WurstMod.cab" EmbedCab="yes" />
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="H3DIR" Name="root1">
+
+        <Component Id="Component.test.txt_1636812145" Guid="f05db5cd-676a-4502-876f-cff1c55baf00">
+          <File Id="test.txt_1636812145" Source="test.txt" />
+        </Component>
+
+      </Directory>
+    </Directory>
+
+    <UI />
+
+    <CustomAction Id="WixSharp_InitRuntime_Action" BinaryKey="WixSharp_InitRuntime_Action_File" DllEntry="WixSharp_InitRuntime_Action" Return="check" Execute="immediate" />
+    <CustomAction Id="WixSharp_Load_Action" BinaryKey="WixSharp_InitRuntime_Action_File" DllEntry="WixSharp_Load_Action" Return="check" Execute="immediate" />
+
+    <Binary Id="WixSharp_InitRuntime_Action_File" SourceFile="WixSharp.CA.dll" />
+
+    <Property Id="WixSharp_Load_Handlers" Value="WurstModInstaller, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null|WurstModInstaller.InstallerBuilder|Project_Load" />
+
+    <Feature Id="Complete" Title="Complete" Absent="allow" Level="1">
+      <ComponentRef Id="Component.test.txt_1636812145" />
+    </Feature>
+
+    <InstallExecuteSequence>
+      <Custom Action="WixSharp_InitRuntime_Action" Before="AppSearch"> (1) </Custom>
+      <Custom Action="WixSharp_Load_Action" Before="AppSearch">1</Custom>
+    </InstallExecuteSequence>
+
+  </Product>
+</Wix>
+
