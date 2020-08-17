@@ -7,6 +7,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using WurstMod.MappingComponents;
+using WurstMod.MappingComponents.Generic;
 using WurstMod.MappingComponents.TakeAndHold;
 using WurstMod.UnityEditor;
 
@@ -119,6 +120,7 @@ namespace WurstMod.Runtime
             {
                 Reset();
                 currentScene = SceneManager.GetActiveScene();
+                ObjectReferences.FindReferences(currentScene);
                 LevelType type = LevelType.TNH;
 
                 // Certain objects need to be interrupted before they can initialize, otherwise everything breaks.
@@ -151,6 +153,7 @@ namespace WurstMod.Runtime
             {
                 Reset();
                 currentScene = SceneManager.GetActiveScene();
+                ObjectReferences.FindReferences(currentScene);
                 LevelType type = LevelType.Generic;
 
                 SetWhitelistedStates(false, type);
@@ -278,6 +281,7 @@ namespace WurstMod.Runtime
 
             // Grab a few objects we'll need later.
             loadedRoot = currentScene.GetRootGameObjects().Single(x => x.name == "[TNHLEVEL]" || x.name == "[LEVEL]");
+            ObjectReferences.LevelInfo = loadedRoot.GetComponent<LevelInfo>();
 
             GameObject managerObj = currentScene.GetRootGameObjects().Where(x => x.name == "_GameManager").FirstOrDefault();
             if (managerObj != null)

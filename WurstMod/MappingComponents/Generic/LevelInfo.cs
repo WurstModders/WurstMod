@@ -75,7 +75,7 @@ namespace WurstMod.MappingComponents.Generic
             // Copy font data to all text components.
             Font font = ObjectReferences.ButtonDonor.GetComponentInChildren<Text>().font;
             foreach (Text text in GetComponentsInChildren<Text>(true))
-                text.font = font;
+                if (text.font || text.font.name == "Arial") text.font = font;
         }
     }
 }

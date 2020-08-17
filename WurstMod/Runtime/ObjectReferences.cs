@@ -33,8 +33,7 @@ namespace WurstMod.Runtime
         public static GameObject WhizzBangADingerDonor;
         [ObjectReference("BangerDetonator")]
         public static GameObject BangerDetonatorDonor;
-
-        [ObjectReference] // TODO Slightly dangerous I think? Remember this and doublecheck it.
+        
         public static LevelInfo LevelInfo;
         [ObjectReference("[CameraRig]Fixed")]
         public static GameObject CameraRig;
