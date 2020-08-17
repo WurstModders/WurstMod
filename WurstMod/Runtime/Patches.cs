@@ -6,6 +6,7 @@ using HarmonyLib;
 using UnityEngine;
 using WurstMod.MappingComponents.Generic;
 using WurstMod.MappingComponents.TakeAndHold;
+using WurstMod.Shared;
 
 namespace WurstMod.Runtime
 {
@@ -155,10 +156,12 @@ namespace WurstMod.Runtime
                 if (__instance.name == "MODDEDSCREEN")
                 {
                     Loader.levelToLoad = __instance.Def.Name.Split('\n')[1];
+                    NewLoader.LevelToLoad = LevelInfo.FromFile(__instance.Def.Name.Split('\n')[1]);
                 }
                 else
                 {
                     Loader.levelToLoad = "";
+                    NewLoader.LevelToLoad = null;
                 }
             }
             return true;

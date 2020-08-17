@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
+using WurstMod.Shared;
 
 namespace WurstMod.MappingComponents.Generic
 {

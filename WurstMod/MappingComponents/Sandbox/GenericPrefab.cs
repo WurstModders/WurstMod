@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using WurstMod.Runtime;
+using WurstMod.Shared;
 
 namespace WurstMod.MappingComponents.Sandbox
 {
@@ -54,7 +55,7 @@ namespace WurstMod.MappingComponents.Sandbox
                 Add(Prefab.WhizzBangADinger, ObjectReferences.WhizzBangADingerDonor);
                 Add(Prefab.WhizzBangADingerDetonator, ObjectReferences.BangerDetonatorDonor);
             }
-            GameObject copy = Instantiate(baseObjects[objectType], ObjectReferences.LevelInfo.transform);
+            GameObject copy = Instantiate(baseObjects[objectType], ObjectReferences.CustomScene.transform);
             copy.transform.position = transform.position;
             copy.transform.localEulerAngles = transform.localEulerAngles;
             copy.SetActive(true);

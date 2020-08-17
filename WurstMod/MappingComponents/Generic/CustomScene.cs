@@ -2,18 +2,18 @@
 using UnityEngine.UI;
 using Valve.VR.InteractionSystem;
 using WurstMod.Runtime;
+using WurstMod.Shared;
 
 namespace WurstMod.MappingComponents.Generic
 {
-    public class LevelInfo : ComponentProxy
+    public class CustomScene : ComponentProxy
     {
         // Used by exporter to generate an info file I guess?
-        public string LevelName;
-        public string LevelAuthor;
-        public string LevelGamemode;
-
+        public string SceneName;
+        public string Author;
+        public string Gamemode;
         [TextArea(15, 20)]
-        public string LevelDescription;
+        public string Description;
 
         [HideInInspector]
         public Material Skybox;

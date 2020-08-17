@@ -5,42 +5,40 @@ using FistVR;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using WurstMod.MappingComponents.Generic;
-using WurstMod.MappingComponents.TakeAndHold;
+using WurstMod.Shared;
 using Object = UnityEngine.Object;
+
+// ReSharper disable UnassignedField.Global
 
 namespace WurstMod.Runtime
 {
     public static class ObjectReferences
     {
-        [ObjectReference]
-        public static FistVR.FVRPointableButton ButtonDonor;
-        [ObjectReference]
-        public static FistVR.TNH_DestructibleBarrierPoint BarrierDonor;
-        [ObjectReference]
-        public static FistVR.TNH_Manager ManagerDonor;
-        [ObjectReference]
-        public static FistVR.TNH_HoldPoint HoldPointDonor;
-        [ObjectReference]
-        public static SosigTestingPanel1 GroundPanel;
+        #region Auto-set fields
 
-        [ObjectReference("ItemSpawner")]
-        public static GameObject ItemSpawnerDonor;
-        [ObjectReference("Destructobin")]
-        public static GameObject DestructobinDonor;
-        [ObjectReference("SosigSpawner")]
-        public static GameObject SosigSpawnerDonor;
-        [ObjectReference("WhizzBangADinger2")]
-        public static GameObject WhizzBangADingerDonor;
-        [ObjectReference("BangerDetonator")]
-        public static GameObject BangerDetonatorDonor;
-        
-        public static LevelInfo LevelInfo;
-        [ObjectReference("[CameraRig]Fixed")]
-        public static GameObject CameraRig;
-        [ObjectReference("_FinalScore")]
-        public static GameObject FinalScore;
-        [ObjectReference("[ResetPoint]")]
-        public static GameObject ResetPoint;
+        [ObjectReference] public static FVRPointableButton ButtonDonor;
+        [ObjectReference] public static TNH_DestructibleBarrierPoint BarrierDonor;
+        [ObjectReference] public static TNH_Manager ManagerDonor;
+        [ObjectReference] public static TNH_HoldPoint HoldPointDonor;
+        [ObjectReference] public static SosigTestingPanel1 GroundPanel;
+
+        [ObjectReference("ItemSpawner")] public static GameObject ItemSpawnerDonor;
+        [ObjectReference("Destructobin")] public static GameObject DestructobinDonor;
+        [ObjectReference("SosigSpawner")] public static GameObject SosigSpawnerDonor;
+        [ObjectReference("WhizzBangADinger2")] public static GameObject WhizzBangADingerDonor;
+        [ObjectReference("BangerDetonator")] public static GameObject BangerDetonatorDonor;
+
+        [ObjectReference("[CameraRig]Fixed")] public static GameObject CameraRig;
+        [ObjectReference("_FinalScore")] public static GameObject FinalScore;
+        [ObjectReference("[ResetPoint]")] public static GameObject ResetPoint;
+
+        #endregion
+
+        #region Manually-set fields
+
+        public static CustomScene CustomScene;
+
+        #endregion
 
 
         /// <summary>

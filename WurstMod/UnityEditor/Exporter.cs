@@ -10,6 +10,8 @@ using WurstMod.MappingComponents;
 using WurstMod.MappingComponents.Generic;
 using WurstMod.MappingComponents.Sandbox;
 using WurstMod.MappingComponents.TakeAndHold;
+using WurstMod.Shared;
+using LevelInfo = WurstMod.Shared.LevelInfo;
 
 namespace WurstMod.UnityEditor
 {
@@ -18,7 +20,7 @@ namespace WurstMod.UnityEditor
     {
         // TODO Prevent naming objects based on whitelisted names.
 
-        private static LevelInfo _levelInfoComponent;
+        private static CustomScene _customSceneComponent;
 
         [MenuItem("H3VR/Export TNH")]
         public static void ExportTNH()
@@ -92,11 +94,12 @@ namespace WurstMod.UnityEditor
                 BuildPipeline.BuildAssetBundles(directory, new AssetBundleBuild[] { build }, buildOptions, BuildTarget.StandaloneWindows64);
 
                 // Create name/author/desc file.
-                StringBuilder strb = new StringBuilder();
-                strb.AppendLine(_levelInfoComponent.LevelName);
-                strb.AppendLine(_levelInfoComponent.LevelAuthor);
-                strb.AppendLine(_levelInfoComponent.LevelDescription);
-                File.WriteAllText(directory + "info.txt", strb.ToString());
+                // TODO: Update this to use a JSON file and include the game mode
+                var sb = new StringBuilder();
+                sb.AppendLine(_customSceneComponent.SceneName);
+                sb.AppendLine(_customSceneComponent.Author);
+                sb.AppendLine(_customSceneComponent.Description);
+                File.WriteAllText(directory + "info.txt", sb.ToString());
 
                 // Delete unnecessary files.
                 if (File.Exists(directory + "leveldata.MANIFEST")) File.Delete(directory + "leveldata.MANIFEST");
@@ -146,12 +149,13 @@ namespace WurstMod.UnityEditor
             {
                 return "You must have a single object named [LEVEL] at the root of the scene. All other objects must be children of this object.";
             }
-            _levelInfoComponent = roots[0].GetComponent<LevelInfo>();
-            if (_levelInfoComponent == null)
+            _customSceneComponent = roots[0].GetComponent<CustomScene>();
+            if (_customSceneComponent == null)
             {
                 return "You must add a TNH_Level component to [LEVEL] and set your level's name, author, and description.";
             }
-            if (_levelInfoComponent.LevelName == "" || _levelInfoComponent.LevelAuthor == "" || _levelInfoComponent.LevelDescription == "")
+            
+            if (_customSceneComponent.SceneName == "" || _customSceneComponent.Author == "" || _customSceneComponent.Description == "")
             {
                 string warn = "WARNING: You didn't set one of the fields on [LEVEL]! Please add your level's name, author, and description.";
                 Debug.LogWarning(warn);
@@ -159,13 +163,13 @@ namespace WurstMod.UnityEditor
             }
 
             // levelName and levelAuthor cannot contain newlines.
-            if (_levelInfoComponent.LevelName.Contains('\n') || _levelInfoComponent.LevelAuthor.Contains('\n'))
+            if (_customSceneComponent.SceneName.Contains('\n') || _customSceneComponent.Author.Contains('\n'))
             {
                 return "Level Name and Level Author cannot contain newlines.";
             }
 
             // Warn empty skybox.
-            if (_levelInfoComponent.Skybox == null && RenderSettings.skybox != null)
+            if (_customSceneComponent.Skybox == null && RenderSettings.skybox != null)
             {
                 string warn = "WARNING: You didn't set your skybox on [LEVEL]!";
                 Debug.LogWarning(warn);
@@ -178,7 +182,7 @@ namespace WurstMod.UnityEditor
         private static string CheckScoreboard(Scene scene, List<string> warnings)
         {
             // Must have exactly one scoreboard area.
-            ScoreboardArea[] sb = _levelInfoComponent.GetComponentsInChildren<ScoreboardArea>();
+            ScoreboardArea[] sb = _customSceneComponent.GetComponentsInChildren<ScoreboardArea>();
             if (sb.Length != 1)
             {
                 return "You must have exactly one Scoreboard Area.";
@@ -189,7 +193,7 @@ namespace WurstMod.UnityEditor
         private static string CheckHoldPoints(Scene scene, List<string> warnings)
         {
             // UNVERIFIED Must have at least 2 Hold Points.
-            TNH_HoldPoint[] holds = _levelInfoComponent.GetComponentsInChildren<TNH_HoldPoint>();
+            TNH_HoldPoint[] holds = _customSceneComponent.GetComponentsInChildren<TNH_HoldPoint>();
             if (holds.Length < 2)
             {
                 return "You must have at least two Hold Points.";
@@ -209,7 +213,7 @@ namespace WurstMod.UnityEditor
         private static string CheckSupplyPoints(Scene scene, List<string> warnings)
         {
             // UNVERIFIED Must have at least 3 Supply Points.
-            TNH_SupplyPoint[] supplies = _levelInfoComponent.GetComponentsInChildren<TNH_SupplyPoint>();
+            TNH_SupplyPoint[] supplies = _customSceneComponent.GetComponentsInChildren<TNH_SupplyPoint>();
             if (supplies.Length < 3)
             {
                 return "You must have at least three Supply Points.";
@@ -238,7 +242,7 @@ namespace WurstMod.UnityEditor
         private static string CheckForcedSpawn(Scene scene, List<string> warnings)
         {
             // Cannot have more than one ForcedSpawn component
-            if (_levelInfoComponent.GetComponentsInChildren<ForcedSpawn>().Length > 1)
+            if (_customSceneComponent.GetComponentsInChildren<ForcedSpawn>().Length > 1)
             {
                 return "You can only have one Supply Point with the ForcedSpawn component.";
             }
@@ -247,7 +251,7 @@ namespace WurstMod.UnityEditor
 
         private static string CheckSpawn(Scene scene, List<string> warnings)
         {
-            if (_levelInfoComponent.GetComponentsInChildren<Spawn>().Length != 1)
+            if (_customSceneComponent.GetComponentsInChildren<Spawn>().Length != 1)
             {
                 return "You must have exactly one Spawnpoint prefab in a generic level.";
             }

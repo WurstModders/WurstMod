@@ -6,6 +6,7 @@ using FistVR;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using WurstMod.Shared;
 
 namespace WurstMod.Runtime.ScenePatchers
 {

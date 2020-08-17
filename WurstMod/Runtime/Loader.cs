@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 using WurstMod.MappingComponents;
 using WurstMod.MappingComponents.Generic;
 using WurstMod.MappingComponents.TakeAndHold;
+using WurstMod.Shared;
 using WurstMod.UnityEditor;
 
 namespace WurstMod.Runtime
@@ -281,7 +282,7 @@ namespace WurstMod.Runtime
 
             // Grab a few objects we'll need later.
             loadedRoot = currentScene.GetRootGameObjects().Single(x => x.name == "[TNHLEVEL]" || x.name == "[LEVEL]");
-            ObjectReferences.LevelInfo = loadedRoot.GetComponent<LevelInfo>();
+            ObjectReferences.CustomScene = loadedRoot.GetComponent<CustomScene>();
 
             GameObject managerObj = currentScene.GetRootGameObjects().Where(x => x.name == "_GameManager").FirstOrDefault();
             if (managerObj != null)
