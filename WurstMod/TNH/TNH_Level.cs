@@ -11,8 +11,7 @@ namespace WurstMod.TNH
         public string levelName;
         public string levelAuthor;
 
-        [TextArea(15, 20)]
-        public string levelDescription;
+        [TextArea(15, 20)] public string levelDescription;
 
         public Material skybox;
 
@@ -70,10 +69,12 @@ namespace WurstMod.TNH
                 ii.terrainData.treeInstances = new TreeInstance[0];
             }
 
-            // Copy font data to all text components.
+            // Copy font data to all text components using the default font.
             Font font = ObjectReferences.ButtonDonor.GetComponentInChildren<Text>().font;
             foreach (Text text in GetComponentsInChildren<Text>(true))
-                text.font = font;
+            {
+                if (text.font == null || text.font.name == "Arial") text.font = font;
+            }
         }
     }
 }
