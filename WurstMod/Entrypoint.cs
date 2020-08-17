@@ -49,7 +49,6 @@ namespace WurstMod
 
         private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            ObjectReferences.FindReferences(scene);
             StartCoroutine(Loader.HandleTAH(scene));
             StartCoroutine(Loader.HandleGeneric(scene));
             TNH.TNH_LevelSelector.SetupLevelSelector(scene);

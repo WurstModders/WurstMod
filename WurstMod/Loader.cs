@@ -12,6 +12,7 @@ using Valve.VR.InteractionSystem;
 using UnityEngine.Rendering;
 using WurstMod.Any;
 using System.Reflection;
+using WurstMod.TNH;
 
 namespace WurstMod
 {
@@ -120,8 +121,10 @@ namespace WurstMod
             // Handle TAH load if we're loading a non-vanilla scene.
             if (loaded.name == "TakeAndHoldClassic" && levelToLoad != "")
             {
+                
                 Reset();
                 currentScene = SceneManager.GetActiveScene();
+                ObjectReferences.FindReferences(currentScene);
                 LevelType type = LevelType.TNH;
 
                 // Certain objects need to be interrupted before they can initialize, otherwise everything breaks.
@@ -154,6 +157,7 @@ namespace WurstMod
             {
                 Reset();
                 currentScene = SceneManager.GetActiveScene();
+                ObjectReferences.FindReferences(currentScene);
                 LevelType type = LevelType.Generic;
 
                 SetWhitelistedStates(false, type);
@@ -281,6 +285,7 @@ namespace WurstMod
 
             // Grab a few objects we'll need later.
             loadedRoot = currentScene.GetRootGameObjects().Single(x => x.name == "[TNHLEVEL]" || x.name == "[LEVEL]");
+            ObjectReferences.Level = loadedRoot.GetComponent<TNH_Level>();
 
             GameObject managerObj = currentScene.GetRootGameObjects().Where(x => x.name == "_GameManager").FirstOrDefault();
             if (managerObj != null)

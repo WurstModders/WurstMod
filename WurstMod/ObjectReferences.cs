@@ -2,25 +2,25 @@
 using System.Linq;
 using System.Reflection;
 using FistVR;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 using WurstMod.TNH;
 using Object = UnityEngine.Object;
+using TNH_DestructibleBarrierPoint = FistVR.TNH_DestructibleBarrierPoint;
+using TNH_HoldPoint = FistVR.TNH_HoldPoint;
 
 namespace WurstMod
 {
     public static class ObjectReferences
     {
         [ObjectReference]
-        public static FistVR.FVRPointableButton ButtonDonor;
+        public static FVRPointableButton ButtonDonor;
         [ObjectReference]
-        public static FistVR.TNH_DestructibleBarrierPoint BarrierDonor;
+        public static TNH_DestructibleBarrierPoint BarrierDonor;
         [ObjectReference]
-        public static FistVR.TNH_Manager ManagerDonor;
+        public static TNH_Manager ManagerDonor;
         [ObjectReference]
-        public static FistVR.TNH_HoldPoint HoldPointDonor;
+        public static TNH_HoldPoint HoldPointDonor;
         [ObjectReference]
         public static SosigTestingPanel1 GroundPanel;
 
@@ -34,8 +34,7 @@ namespace WurstMod
         public static GameObject WhizzBangADingerDonor;
         [ObjectReference("BangerDetonator")]
         public static GameObject BangerDetonatorDonor;
-
-        [ObjectReference] // TODO Slightly dangerous I think? Remember this and doublecheck it.
+        
         public static TNH_Level Level;
         [ObjectReference("[CameraRig]Fixed")]
         public static GameObject CameraRig;
