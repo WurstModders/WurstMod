@@ -95,7 +95,9 @@
     <Compile Include="Runtime\ObjectReferences.cs" />
     <Compile Include="Runtime\Patches.cs" />
     <Compile Include="Runtime\CustomSceneLoader.cs" />
+    <Compile Include="Runtime\ScenePatcher.cs" />
     <Compile Include="Runtime\ScenePatchers\Generic_LevelPopulator.cs" />
+    <Compile Include="Runtime\ScenePatchers\MainMenuScenePatcher.cs" />
     <Compile Include="Runtime\ScenePatchers\TNH_LevelSelector.cs" />
     <Compile Include="Runtime\SpriteLoader.cs" />
     <Compile Include="Shared\Constants.cs" />

@@ -22,6 +22,7 @@ namespace WurstMod.Runtime
     }
 
     #region Scoreboard Disabling
+
     /// <summary>
     /// This patch prevents high scores from being submitted online when playing
     /// a custom level, preserving the legitimacy of the leaderboards.
@@ -34,15 +35,18 @@ namespace WurstMod.Runtime
             if (Loader.levelToLoad != "")
             {
                 // Returning false on a prefix prevents the original method from running.
-                UnityEngine.Debug.Log("Ignoring high score for custom level.");
+                Debug.Log("Ignoring high score for custom level.");
                 return false;
             }
+
             return true;
         }
     }
+
     #endregion
 
     #region Auto-Generated Off-Mesh Link Support
+
     /// <summary>
     /// Sosig's don't actually support automatically generated off-mesh links.
     /// This patch prevents some console spam and maybe a crash possibility?
@@ -84,25 +88,27 @@ namespace WurstMod.Runtime
 
                     // Arbitrary number.
                     fakeLink.ReflectSet("m_xySpeed", 0.5f);
-                    
+
 
                     // Clean up the dictionary.
                     // Destroyed Unity objects sure have some confusing properties.
                     List<Sosig> nullCheck = new List<Sosig>();
-                    foreach(var pair in genData)
+                    foreach (var pair in genData)
                     {
                         if (pair.Key == null) nullCheck.Add(pair.Key);
                     }
+
                     foreach (Sosig destroyed in nullCheck)
                     {
                         genData.Remove(destroyed);
                     }
-                    
+
 
                     __instance.ReflectSet("m_isOnOffMeshLink", true);
                     __instance.ReflectInvoke("InitiateLink", fakeLink);
                 }
             }
+
             return true;
         }
     }
@@ -120,6 +126,7 @@ namespace WurstMod.Runtime
             return __instance.gameObject.GetComponent<Sosig>() == null;
         }
     }
+
     #endregion
 
     #region ForcedSpawn SpawnOnly Support
@@ -133,12 +140,10 @@ namespace WurstMod.Runtime
     {
         static void Postfix(TNH_Manager __instance)
         {
-            ForcedSpawn forcedSpawn = __instance.SupplyPoints.Select(x => x.GetComponent<ForcedSpawn>()).FirstOrDefault(x => x != null);
-            if (forcedSpawn)
-            {
-                __instance.SupplyPoints = __instance.SupplyPoints.Where(x => x.gameObject != forcedSpawn.gameObject).ToList();
-                (__instance.ReflectGet<FistVR.TNH_PointSequence>("m_curPointSequence")).StartSupplyPointIndex = 0;
-            }
+            var forcedSpawn = __instance.SupplyPoints.Select(x => x.GetComponent<ForcedSpawn>()).FirstOrDefault(x => x != null);
+            if (forcedSpawn == null) return;
+            __instance.SupplyPoints = __instance.SupplyPoints.Where(x => x.gameObject != forcedSpawn.gameObject).ToList();
+            __instance.ReflectGet<TNH_PointSequence>("m_curPointSequence").StartSupplyPointIndex = 0;
         }
     }
 
@@ -164,16 +169,20 @@ namespace WurstMod.Runtime
                     NewLoader.LevelToLoad = null;
                 }
             }
+
             return true;
         }
     }
+
     #endregion
 
     #region Target Event Support
+
     [HarmonyPatch(typeof(ReactiveSteelTarget), "Damage")]
     public class Patch_ReactiveSteelTarget_Damage
     {
         static Dictionary<ReactiveSteelTarget, Target> targetComponents = new Dictionary<ReactiveSteelTarget, Target>();
+
         static bool Prefix(ReactiveSteelTarget __instance, Damage dam)
         {
             // Cache Target components.
@@ -194,6 +203,7 @@ namespace WurstMod.Runtime
             {
                 if (pair.Key == null) nullCheck.Add(pair.Key);
             }
+
             foreach (ReactiveSteelTarget destroyed in nullCheck)
             {
                 targetComponents.Remove(destroyed);
@@ -208,9 +218,11 @@ namespace WurstMod.Runtime
             return true;
         }
     }
+
     #endregion
 
     #region Whizzbanger Support
+
     /// <summary>
     /// This patched method will run on the disabled donor detonator in generic sandbox levels
     /// whenever a new banger is created by any whizzbanger, adding the new banger to all other
@@ -232,11 +244,11 @@ namespace WurstMod.Runtime
                 {
                     // We have loaded a new custom level, recreate the cache.
                     detonators.Clear();
-                    detonators.AddRange(UnityEngine.Object.FindObjectsOfType<BangerDetonator>());
+                    detonators.AddRange(Object.FindObjectsOfType<BangerDetonator>());
                 }
 
                 // Add banger to all detonators in cache.
-                foreach(BangerDetonator ii in detonators)
+                foreach (BangerDetonator ii in detonators)
                 {
                     if (!ii.ReflectGet<List<Banger>>("m_bangers").Contains(b))
                     {
@@ -250,5 +262,6 @@ namespace WurstMod.Runtime
             return true;
         }
     }
+
     #endregion
 }

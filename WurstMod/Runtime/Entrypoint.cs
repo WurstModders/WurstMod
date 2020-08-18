@@ -30,17 +30,16 @@ namespace WurstMod.Runtime
             Patches.Patch();
         }
 
-        private static Dictionary<string, Assembly> assemblies = new Dictionary<string, Assembly>();
+        private static readonly Dictionary<string, Assembly> Assemblies = new Dictionary<string, Assembly>();
         void InitAppDomain()
         {
             AppDomain.CurrentDomain.AssemblyLoad += (sender, e) =>
             {
-                assemblies[e.LoadedAssembly.FullName] = e.LoadedAssembly;
+                Assemblies[e.LoadedAssembly.FullName] = e.LoadedAssembly;
             };
             AppDomain.CurrentDomain.AssemblyResolve += (sender, e) =>
             {
-                Assembly assembly = null;
-                assemblies.TryGetValue(e.Name, out assembly);
+                Assemblies.TryGetValue(e.Name, out var assembly);
                 return assembly;
             };
         }
@@ -51,6 +50,7 @@ namespace WurstMod.Runtime
             StartCoroutine(Loader.HandleGeneric(scene));
             TNH_LevelSelector.SetupLevelSelector(scene);
             Generic_LevelPopulator.SetupLevelPopulator(scene);
+            ScenePatcher.PatchScene(scene.name);
         }
     }
 }

@@ -23,14 +23,17 @@ namespace WurstMod.Runtime
         public static void OnSceneLoad(Scene scene)
         {
             // If we're trying to load a custom scene
+            var sceneName = scene.name;
             if (LevelToLoad.HasValue)
             {
                 var level = LevelToLoad.Value;
                 LoadCustomAssemblies(level);
                 LoadCustomScene(level);
+                sceneName = level.SceneName;
             }
+
+            // Let the scene patchers for the scene do their thing
             
-            // TODO: This is where scene patches can then patch scenes.
         }
 
         /// <summary>
@@ -40,11 +43,11 @@ namespace WurstMod.Runtime
         {
             foreach (var assembly in Directory.GetFiles(level.Location, "*.dll"))
             {
-                if (_loadedAssemblies.Contains(assembly)) continue;
+                if (LoadedAssemblies.Contains(assembly)) continue;
                 var loadedAsm = Assembly.LoadFile(assembly);
                 AppDomain.CurrentDomain.Load(loadedAsm.GetName());
                 Debug.Log("LOADED TYPES: " + string.Join(", ", loadedAsm.GetTypes().Select(x => x.Name).ToArray()));
-                _loadedAssemblies.Add(assembly);
+                LoadedAssemblies.Add(assembly);
             }
         }
         
@@ -103,12 +106,12 @@ namespace WurstMod.Runtime
         {
             // If we've already loaded the bundle, take it from the dict, otherwise load it.
             AssetBundle bundle;
-            if (!_loadedBundles.ContainsKey(level.AssetBundlePath))
+            if (!LoadedBundles.ContainsKey(level.AssetBundlePath))
             {
                 bundle = AssetBundle.LoadFromFile(level.AssetBundlePath);
-                _loadedBundles.Add(level.AssetBundlePath, bundle);
+                LoadedBundles.Add(level.AssetBundlePath, bundle);
             }
-            else bundle = _loadedBundles[level.AssetBundlePath];
+            else bundle = LoadedBundles[level.AssetBundlePath];
             var sceneName = Path.GetFileNameWithoutExtension(bundle.GetAllScenePaths()[0]);
             
             // Let Unity load the custom scene and merge it into the current scene
@@ -127,8 +130,8 @@ namespace WurstMod.Runtime
         private static Scene _loadedScene;
         
         // Keep track of which assemblies and asset bundles we've already loaded
-        private static Dictionary<string, AssetBundle> _loadedBundles = new Dictionary<string, AssetBundle>();
-        private static List<string> _loadedAssemblies = new List<string>();
+        private static readonly Dictionary<string, AssetBundle> LoadedBundles = new Dictionary<string, AssetBundle>();
+        private static readonly List<string> LoadedAssemblies = new List<string>();
         
         // Public field to set which level we'll load
         public static LevelInfo? LevelToLoad = null;
