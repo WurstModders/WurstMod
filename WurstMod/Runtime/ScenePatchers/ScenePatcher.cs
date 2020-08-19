@@ -2,30 +2,31 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace WurstMod.Runtime
 {
     public abstract class ScenePatcher
     {
-        public abstract void PatchScene();
+        public abstract void PatchScene(Scene scene);
 
         /// <summary>
         /// Enumerates a list of scene patchers for the given scene name
         /// </summary>
-        public static void PatchScene(string sceneName)
+        public static void RunPatches(Scene scene)
         {
             var types = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(a => a.GetTypes())
                 .Where(t => t.IsSubclassOf(typeof(ScenePatcher)));
 
             Debug.Log("Found " + types.Count() + " patchers");
-            
+
             foreach (var patcher in
                 from type in types
                 let attributes = type.GetCustomAttributes(typeof(ScenePatcherAttribute), false)
                 where attributes.Length != 0
-                where ((ScenePatcherAttribute) attributes[0]).SceneName == sceneName
-                select (ScenePatcher) Activator.CreateInstance(type)) patcher.PatchScene();
+                where ((ScenePatcherAttribute) attributes[0]).SceneName == scene.name
+                select (ScenePatcher) Activator.CreateInstance(type)) patcher.PatchScene(scene);
         }
     }
 

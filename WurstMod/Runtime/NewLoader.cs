@@ -23,17 +23,18 @@ namespace WurstMod.Runtime
         public static void OnSceneLoad(Scene scene)
         {
             // If we're trying to load a custom scene
-            var sceneName = scene.name;
             if (LevelToLoad.HasValue)
             {
                 var level = LevelToLoad.Value;
                 LoadCustomAssemblies(level);
                 LoadCustomScene(level);
-                sceneName = level.SceneName;
             }
+            
+            // If we're not loading a custom scene, find the static scene references
+            else ObjectReferences.FindReferences(scene);
 
             // Let the scene patchers for the scene do their thing
-            
+            ScenePatcher.RunPatches(scene);
         }
 
         /// <summary>
@@ -50,7 +51,7 @@ namespace WurstMod.Runtime
                 LoadedAssemblies.Add(assembly);
             }
         }
-        
+
         /// <summary>
         /// This method is called to load a custom scene 
         /// </summary>
@@ -64,10 +65,10 @@ namespace WurstMod.Runtime
                 Debug.LogError($"No SceneLoader found for the gamemode '{level.Gamemode}'! Cannot load level.");
                 return;
             }
-            
+
             // Step 1: Let the custom loaders do their PRELOAD method
             sceneLoader.PreLoad();
-            
+
             // Step 2: Disable all currently active objects.
             var disabledObjects = new List<GameObject>();
             var objects = _loadedScene.GetRootGameObjects();
@@ -77,25 +78,26 @@ namespace WurstMod.Runtime
                 disabledObjects.Add(gameObject);
                 gameObject.SetActive(false);
             }
-            
+
             // Step 3: Destroy all unused objects
             foreach (var gameObject in objects.SelectMany(o => o.GetComponentsInChildren<Transform>()))
             foreach (var filter in DestroyOnLoad)
                 if (gameObject.name.Contains(filter))
                     Object.Destroy(gameObject.gameObject);
-            
+
             // Step 4: Load the modded scene and merge it into the loaded scene
             var loadedRoot = MergeCustomScene(level);
-            
-            // Step 5: Resolve component proxies
+            sceneLoader.LevelRoot = loadedRoot;
+
+            // Step 5: Resolve component proxies and the scene loader to do what it needs to do
             foreach (var proxy in loadedRoot.GetComponentsInChildren<ComponentProxy>().OrderByDescending(x => x.ResolveOrder)) proxy.InitializeComponent();
-            
+            sceneLoader.Resolve();
+
             // Step 6: Re-enable disabled objects
             foreach (var gameObject in disabledObjects) gameObject.SetActive(true);
-            
+
             // Step 7: Let the custom loaders do their POSTLOAD method
             sceneLoader.PostLoad();
-
         }
 
         /// <summary>
@@ -112,12 +114,13 @@ namespace WurstMod.Runtime
                 LoadedBundles.Add(level.AssetBundlePath, bundle);
             }
             else bundle = LoadedBundles[level.AssetBundlePath];
+
             var sceneName = Path.GetFileNameWithoutExtension(bundle.GetAllScenePaths()[0]);
-            
+
             // Let Unity load the custom scene and merge it into the current scene
             SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
             SceneManager.MergeScenes(SceneManager.GetSceneAt(SceneManager.sceneCount - 1), SceneManager.GetActiveScene());
-            
+
             // Find the level component
             ObjectReferences.CustomScene = _loadedScene.GetRootGameObjects()
                 .Single(x => x.name == "[TNHLEVEL]" || x.name == "[LEVEL]")
@@ -128,16 +131,17 @@ namespace WurstMod.Runtime
 
         // Reference to the currently loaded scene
         private static Scene _loadedScene;
-        
+
         // Keep track of which assemblies and asset bundles we've already loaded
         private static readonly Dictionary<string, AssetBundle> LoadedBundles = new Dictionary<string, AssetBundle>();
         private static readonly List<string> LoadedAssemblies = new List<string>();
-        
+
         // Public field to set which level we'll load
         public static LevelInfo? LevelToLoad = null;
-        
+
         // List of GameObjects we want to destroy on load.
-        private static readonly string[] DestroyOnLoad = {
+        private static readonly string[] DestroyOnLoad =
+        {
             ""
         };
     }

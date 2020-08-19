@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using UnityEngine;
+using WurstMod.MappingComponents.Generic;
 
 namespace WurstMod.Runtime
 {
@@ -8,6 +10,8 @@ namespace WurstMod.Runtime
     /// </summary>
     public abstract class CustomSceneLoader
     {
+        public CustomScene LevelRoot { get; set; }
+        
         /// <summary>
         /// This method is called by the loader class before it has done anything. The original scene will be intact
         /// and unmodified
@@ -25,6 +29,14 @@ namespace WurstMod.Runtime
         {
         }
 
+        /// <summary>
+        /// Called when the loader is finished resolving components but just before everything is re-activated.
+        /// </summary>
+        public virtual void Resolve()
+        {
+            
+        }
+        
         public static CustomSceneLoader GetSceneLoaderForGamemode(string gamemode)
         {
             // Get a list of all types in the app domain that derive from CustomSceneLoader

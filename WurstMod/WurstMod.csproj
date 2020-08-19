@@ -89,24 +89,23 @@
     <Compile Include="MappingComponents\TakeAndHold\TNH_HoldPoint.cs" />
     <Compile Include="MappingComponents\TakeAndHold\TNH_SupplyPoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Runtime\CustomLevelFinder.cs" />
     <Compile Include="Runtime\Entrypoint.cs" />
     <Compile Include="Runtime\Loader.cs" />
     <Compile Include="Runtime\NewLoader.cs" />
     <Compile Include="Runtime\ObjectReferences.cs" />
     <Compile Include="Runtime\Patches.cs" />
-    <Compile Include="Runtime\CustomSceneLoader.cs" />
-    <Compile Include="Runtime\ScenePatcher.cs" />
+    <Compile Include="Runtime\SceneLoaders\CustomSceneLoader.cs" />
+    <Compile Include="Runtime\SceneLoaders\TakeAndHoldSceneLoader.cs" />
     <Compile Include="Runtime\ScenePatchers\Generic_LevelPopulator.cs" />
     <Compile Include="Runtime\ScenePatchers\MainMenuScenePatcher.cs" />
+    <Compile Include="Runtime\ScenePatchers\ScenePatcher.cs" />
     <Compile Include="Runtime\ScenePatchers\TNH_LevelSelector.cs" />
     <Compile Include="Runtime\SpriteLoader.cs" />
     <Compile Include="Shared\Constants.cs" />
     <Compile Include="Shared\Extensions.cs" />
     <Compile Include="Shared\LevelInfo.cs" />
     <Compile Include="UnityEditor\Exporter.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Runtime\SceneLoaders" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
