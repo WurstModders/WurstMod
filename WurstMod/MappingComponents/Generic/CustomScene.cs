@@ -12,11 +12,9 @@ namespace WurstMod.MappingComponents.Generic
         public string SceneName;
         public string Author;
         public string Gamemode;
-        [TextArea(15, 20)]
-        public string Description;
+        [TextArea(15, 20)] public string Description;
 
-        [HideInInspector]
-        public Material Skybox;
+        [HideInInspector] public Material Skybox;
 
         public override void OnExport()
         {
@@ -73,9 +71,11 @@ namespace WurstMod.MappingComponents.Generic
             }
 
             // Copy font data to all text components.
-            Font font = ObjectReferences.ButtonDonor.GetComponentInChildren<Text>().font;
-            foreach (Text text in GetComponentsInChildren<Text>(true))
-                if (text.font || text.font.name == "Arial") text.font = font;
+
+            var font = ObjectReferences.ButtonDonor.GetComponentInChildren<Text>().font;
+            foreach (var text in GetComponentsInChildren<Text>(true))
+                if (text.font || text.font.name == "Arial")
+                    text.font = font;
         }
     }
 }

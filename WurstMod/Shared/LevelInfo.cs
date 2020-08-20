@@ -23,14 +23,13 @@ namespace WurstMod.Shared
 
         public static LevelInfo? FromFile(string path)
         {
-            var lines = File.ReadAllText(path).Split('\n');
+            // If we were not given the path to a directory, go up a level and re-create the path with the level info file
+            if ((File.GetAttributes(path) & FileAttributes.Directory) != FileAttributes.Directory)
+                path = Path.Combine(Path.GetDirectoryName(path) ?? string.Empty, Constants.FilenameLevelInfo);
+            
+            var lines = File.ReadAllText(path).Replace("\r", "").Split('\n');
 
-            if (lines.Length < 4)
-            {
-                Debug.LogError("Invalid level info file at " + path + "!");
-                return null;
-            }
-            else
+            if (lines.Length >= 4)
                 return new LevelInfo
                 {
                     SceneName = lines[0],
@@ -39,6 +38,9 @@ namespace WurstMod.Shared
                     Description = string.Join("\n", lines.Skip(3).ToArray()),
                     Location = Path.GetDirectoryName(path)
                 };
+            Debug.LogError("Invalid level info file at " + path + "!");
+            return null;
+
         }
 
         public void ToFile(string path)

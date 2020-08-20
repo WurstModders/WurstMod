@@ -96,6 +96,7 @@
     <Compile Include="Runtime\ObjectReferences.cs" />
     <Compile Include="Runtime\Patches.cs" />
     <Compile Include="Runtime\SceneLoaders\CustomSceneLoader.cs" />
+    <Compile Include="Runtime\SceneLoaders\SandboxSceneLoader.cs" />
     <Compile Include="Runtime\SceneLoaders\TakeAndHoldSceneLoader.cs" />
     <Compile Include="Runtime\ScenePatchers\Generic_LevelPopulator.cs" />
     <Compile Include="Runtime\ScenePatchers\MainMenuScenePatcher.cs" />
