@@ -222,7 +222,7 @@ namespace WurstMod.Runtime.ScenePatchers
             TNH_LevelSelector.levelImage.sprite = levelImage;
             TNH_LevelSelector.levelNameText.text = levelName + "\nby " + levelAuthor;
             TNH_LevelSelector.levelDescriptionText.text = levelDescription;
-            Loader.levelToLoad = levelDataPath;
+            Loader.LevelToLoad = LevelInfo.FromFile(levelDataPath);
         }
     }
 }

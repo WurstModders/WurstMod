@@ -32,7 +32,7 @@ namespace WurstMod.Runtime
     {
         static bool Prefix(int score)
         {
-            if (Loader.levelToLoad != "")
+            if (Loader.LevelToLoad != null)
             {
                 // Returning false on a prefix prevents the original method from running.
                 Debug.Log("Ignoring high score for custom level.");
@@ -156,19 +156,7 @@ namespace WurstMod.Runtime
     {
         static bool Prefix(MainMenuScenePointable __instance, FVRViveHand hand)
         {
-            if (hand.Input.TriggerDown)
-            {
-                if (__instance.name == "MODDEDSCREEN")
-                {
-                    Loader.levelToLoad = __instance.Def.Name.Split('\n')[1];
-                    NewLoader.LevelToLoad = LevelInfo.FromFile(__instance.Def.Name.Split('\n')[1]);
-                }
-                else
-                {
-                    Loader.levelToLoad = "";
-                    NewLoader.LevelToLoad = null;
-                }
-            }
+            if (hand.Input.TriggerDown) Loader.LevelToLoad = __instance.name == "MODDEDSCREEN" ? LevelInfo.FromFile(__instance.Def.Name.Split('\n')[1]) : null;
 
             return true;
         }
@@ -237,7 +225,7 @@ namespace WurstMod.Runtime
 
         static bool Prefix(BangerDetonator __instance, Banger b)
         {
-            if (Loader.levelToLoad != "")
+            if (Loader.LevelToLoad != null)
             {
                 // We are in a custom level.
                 if (detonators.Count == 0 || detonators[0] == null)

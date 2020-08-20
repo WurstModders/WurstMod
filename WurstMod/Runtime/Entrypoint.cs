@@ -50,7 +50,7 @@ namespace WurstMod.Runtime
             //StartCoroutine(Loader.HandleGeneric(scene));
             TNH_LevelSelector.SetupLevelSelector(scene);
             Generic_LevelPopulator.SetupLevelPopulator(scene);
-            StartCoroutine(NewLoader.OnSceneLoad(scene));
+            StartCoroutine(Loader.OnSceneLoad(scene));
         }
     }
 }

@@ -92,7 +92,6 @@
     <Compile Include="Runtime\CustomLevelFinder.cs" />
     <Compile Include="Runtime\Entrypoint.cs" />
     <Compile Include="Runtime\Loader.cs" />
-    <Compile Include="Runtime\NewLoader.cs" />
     <Compile Include="Runtime\ObjectReferences.cs" />
     <Compile Include="Runtime\Patches.cs" />
     <Compile Include="Runtime\SceneLoaders\CustomSceneLoader.cs" />

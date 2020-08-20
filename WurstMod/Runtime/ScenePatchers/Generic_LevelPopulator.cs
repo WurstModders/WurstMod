@@ -44,7 +44,7 @@ namespace WurstMod.Runtime.ScenePatchers
 
         private static void Reset()
         {
-            Loader.levelToLoad = "";
+            Loader.LevelToLoad = null;
             screenPositions.Clear();
             screens.Clear();
             levelPaths.Clear();
