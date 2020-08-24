@@ -8,7 +8,7 @@ using WurstMod.Runtime.ScenePatchers;
 
 namespace WurstMod.Runtime
 {
-    [BepInPlugin("com.koba.plugins.wurstmod", "WurstMod", "1.3.0.0")]
+    [BepInPlugin("com.koba.plugins.wurstmod", "WurstMod", "2.0.0.0")]
     public class Entrypoint : BaseUnityPlugin
     {
         public static BaseUnityPlugin self;

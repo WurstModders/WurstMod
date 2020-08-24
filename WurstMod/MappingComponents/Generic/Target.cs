@@ -9,7 +9,7 @@ namespace WurstMod.MappingComponents.Generic
     /// You can assign a sound that plays on hit and define a range for random volume, pitch, and play speed.
     /// Additionally, you can include a Unity event for some advanced behaviour.
     /// </summary>
-    class Target : ComponentProxy
+    public class Target : ComponentProxy
     {
         [Tooltip("Clip to be played when shot.")]
         public List<AudioClip> clips;

@@ -8,7 +8,7 @@ namespace WurstMod.MappingComponents.Generic
 
     [RequireComponent(typeof(Collider))]
     [AddComponentMenu("")] // TODO Disabled for now, need to figure out how to handle layer wonkiness... Force require box collider only and use bounds overlap?
-    class Trigger : MonoBehaviour
+    public class Trigger : MonoBehaviour
     {
         // Inspectables
         [Tooltip("What is this triggered by?")]

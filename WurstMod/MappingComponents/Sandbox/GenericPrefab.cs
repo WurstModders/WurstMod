@@ -5,7 +5,7 @@ using WurstMod.Runtime;
 namespace WurstMod.MappingComponents.Sandbox
 {
     public enum Prefab { ItemSpawner, Destructobin, SosigSpawner, WhizzBangADinger, WhizzBangADingerDetonator}
-    class GenericPrefab : ComponentProxy
+    public class GenericPrefab : ComponentProxy
     {
         /// <summary>
         /// Select what kind of object this is, the ghost will update to match.
