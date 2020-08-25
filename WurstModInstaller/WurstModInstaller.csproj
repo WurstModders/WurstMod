@@ -74,6 +74,12 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WurstMod\WurstMod.csproj">
+      <Project>{43e34e28-2c7e-42f4-92ca-c731aecff593}</Project>
+      <Name>WurstMod</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\WixSharp.bin.1.14.7\build\WixSharp.bin.targets" Condition="Exists('..\packages\WixSharp.bin.1.14.7\build\WixSharp.bin.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
