@@ -85,6 +85,8 @@
     <Compile Include="MappingComponents\Sandbox\Spawn.cs" />
     <Compile Include="MappingComponents\TakeAndHold\AttackVector.cs" />
     <Compile Include="MappingComponents\TakeAndHold\ForcedSpawn.cs" />
+    <Compile Include="MappingComponents\TakeAndHold\Respawn.cs" />
+    <Compile Include="MappingComponents\TakeAndHold\Scoreboard.cs" />
     <Compile Include="MappingComponents\TakeAndHold\ScoreboardArea.cs" />
     <Compile Include="MappingComponents\TakeAndHold\TNH_DestructibleBarrierPoint.cs" />
     <Compile Include="MappingComponents\TakeAndHold\TNH_HoldPoint.cs" />
