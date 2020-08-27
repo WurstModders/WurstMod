@@ -1,9 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using WurstMod.Runtime;
 using WurstMod.Shared;
 
 namespace WurstMod.MappingComponents.TakeAndHold
 {
+    [Obsolete]
+    [AddComponentMenu("")]
     public class ScoreboardArea : ComponentProxy
     {
         private void OnDrawGizmos()
