@@ -8,7 +8,7 @@ namespace WurstMod.MappingComponents.TakeAndHold
     public class TNH_DestructibleBarrierPoint : ComponentProxy
     {
         [Tooltip("All cover points which become active when this barrier exists.")]
-        public List<AICoverPoint> CoverPoints;
+        public List<Generic.AICoverPoint> CoverPoints;
 
         private void OnDrawGizmos()
         {
