@@ -22,6 +22,8 @@ namespace WurstMod.Runtime
         public static FistVR.TNH_HoldPoint HoldPointDonor;
         [ObjectReference]
         public static SosigTestingPanel1 GroundPanel;
+        [ObjectReference]
+        public static FVRReverbSystem ReverbSystem;
 
         [ObjectReference("ItemSpawner")]
         public static GameObject ItemSpawnerDonor;
