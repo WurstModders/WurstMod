@@ -109,9 +109,9 @@
     <Compile Include="Shared\Extensions.cs" />
     <Compile Include="Shared\LevelInfo.cs" />
     <Compile Include="UnityEditor\Exporter.cs" />
-    <Compile Include="UnityEditor\SceneExporters\SandboxSceneSceneExporter.cs" />
+    <Compile Include="UnityEditor\SceneExporters\SandboxExporter.cs" />
     <Compile Include="UnityEditor\SceneExporters\SceneExporter.cs" />
-    <Compile Include="UnityEditor\SceneExporters\TakeAndHoldSceneExporter.cs" />
+    <Compile Include="UnityEditor\SceneExporters\TakeAndHoldExporter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

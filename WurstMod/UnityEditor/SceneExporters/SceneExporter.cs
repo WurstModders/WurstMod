@@ -22,7 +22,7 @@ namespace WurstMod.UnityEditor.SceneExporters
         
         /// <summary>
         /// This is called to validate the scene and ensure it can be exported.
-        /// <strong>If you override this, make sure to call <code>base.Validate(scene)</code>!</strong>
+        /// <strong>If you override this, make sure to call <code>base.Validate(scene, root, err)</code>! (Preferably before your code)</strong>
         /// Also, do NOT return early from this method unless absolutely necessary. Validate as many thing as you can.
         /// </summary>
         /// <param name="scene">The scene to export</param>

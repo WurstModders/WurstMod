@@ -5,7 +5,7 @@ using WurstMod.MappingComponents.Sandbox;
 namespace WurstMod.UnityEditor.SceneExporters
 {
     [SceneExporter("h3vr.sandbox")]
-    public class SandboxSceneSceneExporter : SceneExporter
+    public class SandboxExporter : SceneExporter
     {
         public override void Validate(Scene scene, CustomScene root, ExportErrors err)
         {

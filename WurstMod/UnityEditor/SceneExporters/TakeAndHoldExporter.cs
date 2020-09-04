@@ -6,7 +6,7 @@ using WurstMod.MappingComponents.TakeAndHold;
 namespace WurstMod.UnityEditor.SceneExporters
 {
     [SceneExporter("h3vr.take_and_hold")]
-    public class TakeAndHoldSceneExporter : SceneExporter
+    public class TakeAndHoldExporter : SceneExporter
     {
         public override void Validate(Scene scene, CustomScene root, ExportErrors err)
         {
