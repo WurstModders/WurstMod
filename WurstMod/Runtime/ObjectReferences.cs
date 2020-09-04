@@ -56,7 +56,7 @@ namespace WurstMod.Runtime
             var gameObjects = scene.GetAllGameObjectsInScene();
 
             // First we find every field that uses this attribute
-            foreach (var field in Assembly.GetExecutingAssembly().GetTypes().SelectMany(x => x.GetFields()))
+            foreach (var field in AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes()).SelectMany(x => x.GetFields()))
             {
                 // Find our attributes on that field and continue if there aren't any
                 var attributes = field.GetCustomAttributes(typeof(ObjectReferenceAttribute), true).Cast<ObjectReferenceAttribute>().ToArray();
