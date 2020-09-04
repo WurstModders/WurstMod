@@ -171,7 +171,7 @@ namespace WurstMod.Runtime
     {
         static Dictionary<ReactiveSteelTarget, Target> targetComponents = new Dictionary<ReactiveSteelTarget, Target>();
 
-        static bool Prefix(ReactiveSteelTarget __instance, Damage dam)
+        static bool Prefix(ReactiveSteelTarget __instance)
         {
             // Cache Target components.
             Target ourTarget = null;

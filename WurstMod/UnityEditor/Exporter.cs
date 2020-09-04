@@ -1,262 +1,113 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using WurstMod.MappingComponents;
 using WurstMod.MappingComponents.Generic;
-using WurstMod.MappingComponents.Sandbox;
-using WurstMod.MappingComponents.TakeAndHold;
 using WurstMod.Shared;
-using LevelInfo = WurstMod.Shared.LevelInfo;
+using WurstMod.UnityEditor.SceneExporters;
 
 namespace WurstMod.UnityEditor
 {
-    public enum LevelType { TNH, Generic };
-    public class Exporter
+    public static class Exporter
     {
-        // TODO Prevent naming objects based on whitelisted names.
-
-        private static CustomScene _customSceneComponent;
-
-        [MenuItem("H3VR/Export TNH")]
-        public static void ExportTNH()
+        /// <summary>
+        /// In exporting we have the following steps:
+        /// Run ComponentProxy OnExport()
+        /// Find & call the SceneExporter for the given game mode
+        /// If no errors were returned, create the bundle
+        /// </summary>
+        [MenuItem("WurstMod/Export Scene")]
+        public static void ExportMenuAction()
         {
-            Export(LevelType.TNH);
+            // Get the current open scene and create an object to hold validation errors
+            var scene = SceneManager.GetActiveScene();
+            var err = new ExportErrors();
+            Export(scene, err);
         }
 
-        [MenuItem("H3VR/Export Generic")]
-        public static void ExportGeneric()
+        private static void Export(Scene scene, ExportErrors err)
         {
-            Export(LevelType.Generic);
-        }
+            // Get the root objects in the scene
+            var roots = scene.GetRootGameObjects();
 
-        private static void Export(LevelType type)
-        {
-            Scene scene = EditorSceneManager.GetActiveScene();
-            
-            // Let the proxied components know we're about to export
-            foreach (var proxy in scene.GetRootGameObjects().SelectMany(x => x.GetComponentsInChildren<ComponentProxy>())) proxy.OnExport();
-            
-            List<string> warnings = new List<string>();
-            string error = "";
-            switch(type)
+            // Make sure there's only one and it's name is correct
+            if (roots.Length != 1 || roots[0].name != Constants.RootObjectLevelName)
             {
-                case LevelType.TNH: 
-                    error = ValidateTNH(scene, warnings);
-                    break;
-                case LevelType.Generic:
-                    error = ValidateGeneric(scene, warnings);
-                    break;
-            }
-            if (error != "")
-            {
-                Debug.LogError(error);
-                EditorUtility.DisplayDialog("Error during Export", error, "OK");
+                err.AddError($"You must only have one root object in your scene and it must be named '{Constants.RootObjectLevelName}'");
                 return;
             }
-            if (warnings.Count != 0)
+
+            // Make sure it has the CustomScene component. If not, error out
+            var sceneRoot = roots[0].GetComponent<CustomScene>();
+            if (!sceneRoot)
             {
-                bool choice = EditorUtility.DisplayDialog("Warning(s)", string.Join("\n", warnings.ToArray()) + "\n\nDo you want to continue anyway?", "Yes", "No");
-                if (!choice) return;
+                err.AddError($"Your root object must have the {nameof(CustomScene)} component on it!");
+                return;
             }
 
-            
-
-            CreateBundle(scene, type);
-        }
-
-        private static void CreateBundle(Scene scene, LevelType type)
-        {
-            if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            // Find the exporter class. If none is found, error out
+            var exporter = SceneExporter.GetExporterForGamemode(sceneRoot.Gamemode);
+            if (exporter == null)
             {
-                // Setup build options.
-                BuildAssetBundleOptions buildOptions = BuildAssetBundleOptions.UncompressedAssetBundle;
-                AssetBundleBuild build = default(AssetBundleBuild);
-                build.assetBundleName = "leveldata";
-                build.assetNames = new string[] { scene.path };
-                string prefix = type.ToString() + "-";
-                string directory = "AssetBundles/" + prefix + scene.name + "/";
-
-                // Create directory if it doesn't exist.
-                Directory.CreateDirectory(directory);
-
-                // Nuke files if already exist because asset bundles are fickle.
-                if (File.Exists(directory + "leveldata")) File.Delete(directory + "leveldata");
-                if (File.Exists(directory + "leveldata.MANIFEST")) File.Delete(directory + "leveldata.MANIFEST");
-                if (File.Exists(directory + prefix + scene.name)) File.Delete(directory + prefix + scene.name);
-                if (File.Exists(directory + prefix + scene.name + ".MANIFEST")) File.Delete(directory + prefix + scene.name + ".MANIFEST");
-
-                // Export
-                BuildPipeline.BuildAssetBundles(directory, new AssetBundleBuild[] { build }, buildOptions, BuildTarget.StandaloneWindows64);
-
-                // Create name/author/desc file.
-                // TODO: Update this to use a JSON file and include the game mode
-                var sb = new StringBuilder();
-                sb.AppendLine(_customSceneComponent.SceneName);
-                sb.AppendLine(_customSceneComponent.Author);
-                sb.AppendLine(_customSceneComponent.Description);
-                File.WriteAllText(directory + "info.txt", sb.ToString());
-
-                // Delete unnecessary files.
-                if (File.Exists(directory + "leveldata.MANIFEST")) File.Delete(directory + "leveldata.MANIFEST");
-                if (File.Exists(directory + prefix + scene.name)) File.Delete(directory + prefix + scene.name);
-                if (File.Exists(directory + prefix + scene.name + ".MANIFEST")) File.Delete(directory + prefix + scene.name + ".MANIFEST");
+                err.AddError($"Could not find an exporter class for the gamemode '{sceneRoot.Gamemode}'. Are you missing an assembly?");
+                return;
             }
-        }
 
-        private static string ValidateTNH(Scene scene, List<string> warnings)
-        {
-            string error = "";
-            error = CheckRoot(scene, warnings);
-            if (error != "") return error;
-            error = CheckScoreboard(scene, warnings);
-            if (error != "") return error;
-            error = CheckHoldPoints(scene, warnings);
-            if (error != "") return error;
-            error = CheckSupplyPoints(scene, warnings);
-            if (error != "") return error;
-            error = CheckNavmeshAndOcclusion(scene, warnings);
-            if (error != "") return error;
-            error = CheckForcedSpawn(scene, warnings);
-            if (error != "") return error;
+            // We have an exporter class, so let it handle the rest of validating the scene
+            exporter.Validate(scene, sceneRoot, err);
 
-            return "";
-        }
-
-        private static string ValidateGeneric(Scene scene, List<string> warnings)
-        {
-            string error = "";
-            error = CheckRoot(scene, warnings);
-            if (error != "") return error;
-            error = CheckNavmeshAndOcclusion(scene, warnings);
-            if (error != "") return error;
-            error = CheckSpawn(scene, warnings);
-            if (error != "") return error;
-
-            return "";
-        }
-
-        #region Validation Checks
-        private static string CheckRoot(Scene scene, List<string> warnings)
-        {
-            // Must have exactly one properly formed "[TNHLEVEL]" or "[LEVEL]" object at the root.
-            GameObject[] roots = EditorSceneManager.GetActiveScene().GetRootGameObjects();
-            if (roots.Length != 1 || (roots[0].name != "[TNHLEVEL]" && roots[0].name != "[LEVEL]"))
+            // Check for errors after validating
+            if (err.HasErrors)
             {
-                return "You must have a single object named [LEVEL] at the root of the scene. All other objects must be children of this object.";
-            }
-            _customSceneComponent = roots[0].GetComponent<CustomScene>();
-            if (_customSceneComponent == null)
-            {
-                return "You must add a TNH_Level component to [LEVEL] and set your level's name, author, and description.";
+                EditorUtility.DisplayDialog("Validation failed.", "There were errors while validating the scene. Check console for more details.", "Oops");
+                return;
             }
             
-            if (_customSceneComponent.SceneName == "" || _customSceneComponent.Author == "" || _customSceneComponent.Description == "")
+            // Check for warnings, and give the option to continue
+            if (err.HasWarnings)
             {
-                string warn = "WARNING: You didn't set one of the fields on [LEVEL]! Please add your level's name, author, and description.";
-                Debug.LogWarning(warn);
-                warnings.Add(warn);
+                var result = EditorUtility.DisplayDialog("Validation succeeded with warnings", "There were warnings while validating the scene. This will not prevent you from continuing, but it is recommended you cancel and correct them", "Continue", "Cancel");
+                if (!result) return;
             }
 
-            // levelName and levelAuthor cannot contain newlines.
-            if (_customSceneComponent.SceneName.Contains('\n') || _customSceneComponent.Author.Contains('\n'))
-            {
-                return "Level Name and Level Author cannot contain newlines.";
-            }
-
-            // Warn empty skybox.
-            if (_customSceneComponent.Skybox == null && RenderSettings.skybox != null)
-            {
-                string warn = "WARNING: You didn't set your skybox on [LEVEL]!";
-                Debug.LogWarning(warn);
-                warnings.Add(warn);
-            }
-
-            return "";
+            // Now the scene is validated we can export.
+            exporter.Export();
+            
+            Debug.Log("Scene exported!");
         }
+    }
 
-        private static string CheckScoreboard(Scene scene, List<string> warnings)
+    public class ExportErrors
+    {
+        // List fields to store the messages
+        public readonly List<string> Debug = new List<string>();
+        public readonly List<string> Warnings = new List<string>();
+        public readonly List<string> Errors = new List<string>();
+
+        // Some boolean properties for easy checking
+        public bool HasDebug => Debug.Count != 0;
+        public bool HasErrors => Warnings.Count != 0;
+        public bool HasWarnings => Errors.Count != 0;
+
+        // Methods to add to the lists
+        public void AddDebug(string message, Object context = null)
         {
-            // Must have exactly one scoreboard area.
-            ScoreboardArea[] sb = _customSceneComponent.GetComponentsInChildren<ScoreboardArea>();
-            if (sb.Length != 1)
-            {
-                return "You must have exactly one Scoreboard Area.";
-            }
-            return "";
+            Debug.Add(message);
+            UnityEngine.Debug.Log(message, context);
         }
 
-        private static string CheckHoldPoints(Scene scene, List<string> warnings)
+        public void AddWarning(string message, Object context = null)
         {
-            // UNVERIFIED Must have at least 2 Hold Points.
-            TNH_HoldPoint[] holds = _customSceneComponent.GetComponentsInChildren<TNH_HoldPoint>();
-            if (holds.Length < 2)
-            {
-                return "You must have at least two Hold Points.";
-            }
-            // Hold points must have at least 9 defenders spawnpoints.
-            // NavBlockers must be disabled.
-            foreach (TNH_HoldPoint hold in holds)
-            {
-                if (hold.SpawnPoints_Sosigs_Defense.AsEnumerable().Count() < 9)
-                    return "All holds must have at least 9 entries in SpawnPoints_Sosigs_Defense.";
-                if (hold.NavBlockers.activeSelf)
-                    return "All NavBlockers must be disabled before exporting.";
-            }
-            return "";
+            Warnings.Add(message);
+            UnityEngine.Debug.LogWarning(message, context);
         }
 
-        private static string CheckSupplyPoints(Scene scene, List<string> warnings)
+        public void AddError(string message, Object context = null)
         {
-            // UNVERIFIED Must have at least 3 Supply Points.
-            TNH_SupplyPoint[] supplies = _customSceneComponent.GetComponentsInChildren<TNH_SupplyPoint>();
-            if (supplies.Length < 3)
-            {
-                return "You must have at least three Supply Points.";
-            }
-            return "";
+            Errors.Add(message);
+            UnityEngine.Debug.LogError(message, context);
         }
-
-        private static string CheckNavmeshAndOcclusion(Scene scene, List<string> warnings)
-        {
-            // Check for Navmesh and Occlusion data.
-            if (!File.Exists(Path.GetDirectoryName(scene.path) + "/" + scene.name + "/NavMesh.asset"))
-            {
-                string warn = "WARNING: Scene does not contain Navmesh data!";
-                Debug.LogWarning(warn);
-                warnings.Add(warn);
-            }
-            if (!File.Exists(Path.GetDirectoryName(scene.path) + "/" + scene.name + "/OcclusionCullingData.asset"))
-            {
-                string warn = "WARNING: Scene does not contain Occlusion culling data!";
-                Debug.LogWarning(warn);
-                warnings.Add(warn);
-            }
-            return "";
-        }
-
-        private static string CheckForcedSpawn(Scene scene, List<string> warnings)
-        {
-            // Cannot have more than one ForcedSpawn component
-            if (_customSceneComponent.GetComponentsInChildren<ForcedSpawn>().Length > 1)
-            {
-                return "You can only have one Supply Point with the ForcedSpawn component.";
-            }
-            return "";
-        }
-
-        private static string CheckSpawn(Scene scene, List<string> warnings)
-        {
-            if (_customSceneComponent.GetComponentsInChildren<Spawn>().Length != 1)
-            {
-                return "You must have exactly one Spawnpoint prefab in a generic level.";
-            }
-            return "";
-        }
-        #endregion
     }
 }

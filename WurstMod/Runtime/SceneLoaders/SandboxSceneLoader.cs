@@ -5,6 +5,6 @@ namespace WurstMod.SceneLoaders
     [CustomSceneLoader("Sandbox")]
     public class SandboxSceneLoader : CustomSceneLoader
     {
-        // Yep. Nothing here.
+        public override string BaseScene => "ProvingGround";
     }
 }

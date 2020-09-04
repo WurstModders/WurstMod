@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using WurstMod.Runtime;
 using WurstMod.Shared;
+using WurstMod.UnityEditor;
 
 namespace WurstMod.MappingComponents.TakeAndHold
 {
@@ -98,6 +99,18 @@ namespace WurstMod.MappingComponents.TakeAndHold
             real.GrenadeVelRange = proxy.GrenadeVelRange;
 
             return real;
+        }
+
+        public override void OnExport(ExportErrors err)
+        {
+            // Make sure the nav blockers are disabled
+            NavBlockers.SetActive(false);
+            
+            // Make sure we have at least 9 defense points
+            if (SpawnPoints_Sosigs_Defense.AsEnumerable().Count() < 9)
+            {
+                err.AddError("Holds must have at least 9 Sosig Defense Spawn Points.", this);
+            }
         }
     }
 }

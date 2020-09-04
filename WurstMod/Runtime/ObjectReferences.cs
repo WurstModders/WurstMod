@@ -15,24 +15,13 @@ namespace WurstMod.Runtime
     public static class ObjectReferences
     {
         #region Auto-set fields
-        [ObjectReference]
-        public static FistVR.FVRPointableButton ButtonDonor;
-        [ObjectReference]
-        public static FistVR.TNH_DestructibleBarrierPoint BarrierDonor;
-        [ObjectReference]
-        public static FistVR.TNH_Manager ManagerDonor;
-        [ObjectReference]
-        public static FistVR.TNH_HoldPoint HoldPointDonor;
-        [ObjectReference]
-        public static SosigTestingPanel1 GroundPanel;
-        [ObjectReference]
-        public static FVRReverbSystem ReverbSystem;
 
         [ObjectReference] public static FVRPointableButton ButtonDonor;
         [ObjectReference] public static TNH_DestructibleBarrierPoint BarrierDonor;
         [ObjectReference] public static TNH_Manager ManagerDonor;
         [ObjectReference] public static TNH_HoldPoint HoldPointDonor;
         [ObjectReference] public static SosigTestingPanel1 GroundPanel;
+        [ObjectReference] public static FVRReverbSystem ReverbSystem;
 
         [ObjectReference("ItemSpawner")] public static GameObject ItemSpawnerDonor;
         [ObjectReference("Destructobin")] public static GameObject DestructobinDonor;
@@ -48,6 +37,9 @@ namespace WurstMod.Runtime
 
         #region Manually-set fields
 
+        /// <summary>
+        /// This is set just after the custom scene is loading. It will always be set before custom code is ran.
+        /// </summary>
         public static CustomScene CustomScene;
 
         #endregion
@@ -103,10 +95,7 @@ namespace WurstMod.Runtime
     [AttributeUsage(AttributeTargets.Field)]
     public class ObjectReferenceAttribute : Attribute
     {
-        public ObjectReferenceAttribute(string nameFilter = "")
-        {
-            NameFilter = nameFilter;
-        }
+        public ObjectReferenceAttribute(string nameFilter = "") => NameFilter = nameFilter;
 
         public string NameFilter { get; }
     }

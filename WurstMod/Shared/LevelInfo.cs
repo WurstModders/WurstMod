@@ -29,6 +29,7 @@ namespace WurstMod.Shared
             
             var lines = File.ReadAllText(path).Replace("\r", "").Split('\n');
 
+            // TODO: Json. Use Json.
             if (lines.Length >= 4)
                 return new LevelInfo
                 {
@@ -43,10 +44,15 @@ namespace WurstMod.Shared
 
         }
 
-        public void ToFile(string path)
+        public void ToFile()
         {
+            // Verify the directory exists
+            if (!Directory.Exists(Location)) Directory.CreateDirectory(Location);
+            
+            // Write the contents
+            // TODO: Json. Use Json.
             var contents = $"{SceneName}\n{Author}\n{Gamemode}\n{Description}";
-            File.WriteAllText(path, contents);
+            File.WriteAllText(LevelInfoPath, contents);
         }
     }
 }

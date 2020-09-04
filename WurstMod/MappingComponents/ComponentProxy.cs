@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using WurstMod.UnityEditor;
 
 namespace WurstMod.MappingComponents
 {
@@ -19,7 +20,6 @@ namespace WurstMod.MappingComponents
         /// <summary>
         ///     This is called before the map is exported. Put one-time calculations and component validations here.
         /// </summary>
-        /// TODO: Have an object represent the validation result
-        public virtual void OnExport() { }
+        public virtual void OnExport(ExportErrors err) { }
     }
 }

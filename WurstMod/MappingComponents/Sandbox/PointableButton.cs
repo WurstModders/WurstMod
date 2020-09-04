@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using WurstMod.Runtime;
+using WurstMod.UnityEditor;
 
 namespace WurstMod.MappingComponents.Sandbox
 {
@@ -43,7 +44,7 @@ namespace WurstMod.MappingComponents.Sandbox
            Destroy(this);
         }
 
-        public override void OnExport()
+        public override void OnExport(ExportErrors err)
         {
             // Set the collider's size
             var collider = GetComponent<BoxCollider>();

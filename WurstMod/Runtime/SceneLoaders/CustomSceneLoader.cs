@@ -10,8 +10,13 @@ namespace WurstMod.Runtime
     /// </summary>
     public abstract class CustomSceneLoader
     {
-        public CustomScene LevelRoot { get; set; }
+        /// <summary>
+        /// This is implemented by the deriving class and tells the loader which scene to use as the base for the game mode
+        /// </summary>
+        public abstract string BaseScene { get; }
         
+        public CustomScene LevelRoot { get; set; }
+
         /// <summary>
         /// This method is called by the loader class before it has done anything. The original scene will be intact
         /// and unmodified
@@ -34,9 +39,8 @@ namespace WurstMod.Runtime
         /// </summary>
         public virtual void Resolve()
         {
-            
         }
-        
+
         public static CustomSceneLoader GetSceneLoaderForGamemode(string gamemode)
         {
             // Get a list of all types in the app domain that derive from CustomSceneLoader
@@ -46,13 +50,14 @@ namespace WurstMod.Runtime
 
             // Magic LINQ statement to select the first type that has the
             // CustomSceneLoaderAttribute with a gamemode that matches the gamemode parameter
-            return (
+            return
+            (
                 from type in types
                 let attributes = type.GetCustomAttributes(typeof(CustomSceneLoaderAttribute), false)
                 where attributes.Length != 0
                 where ((CustomSceneLoaderAttribute) attributes[0]).Gamemode == gamemode
                 select (CustomSceneLoader) Activator.CreateInstance(type)
-                ).FirstOrDefault();
+            ).FirstOrDefault();
         }
     }
 

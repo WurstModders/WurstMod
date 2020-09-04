@@ -12,7 +12,7 @@ namespace WurstMod.TNH
     [Obsolete] [AddComponentMenu("")] public class ScoreboardArea : WurstMod.MappingComponents.TakeAndHold.ScoreboardArea { }
     [Obsolete] [AddComponentMenu("")] public class TNH_DestructibleBarrierPoint : WurstMod.MappingComponents.TakeAndHold.TNH_DestructibleBarrierPoint { }
     [Obsolete] [AddComponentMenu("")] public class TNH_HoldPoint : WurstMod.MappingComponents.TakeAndHold.TNH_HoldPoint { }
-    [Obsolete] [AddComponentMenu("")] public class TNH_Level : WurstMod.MappingComponents.Generic.LevelInfo 
+    [Obsolete] [AddComponentMenu("")] public class TNH_Level : WurstMod.MappingComponents.Generic.CustomScene 
     {
         public Material skybox;
 

@@ -12,7 +12,8 @@ namespace WurstMod.Runtime.SceneLoaders
     public class TakeAndHoldSceneLoader : CustomSceneLoader
     {
         private TNH_Manager _tnhManager;
-
+        
+        public override string BaseScene => "";
 
         /// <summary>
         /// Base function for setting up the TNH Manager object to handle a custom level.

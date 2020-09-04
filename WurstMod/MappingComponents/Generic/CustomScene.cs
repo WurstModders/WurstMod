@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using Valve.VR.InteractionSystem;
 using WurstMod.Runtime;
 using WurstMod.Shared;
+using WurstMod.UnityEditor;
 
 namespace WurstMod.MappingComponents.Generic
 {
@@ -16,7 +17,7 @@ namespace WurstMod.MappingComponents.Generic
 
         [HideInInspector] public Material Skybox;
 
-        public override void OnExport()
+        public override void OnExport(ExportErrors err)
         {
             Skybox = RenderSettings.skybox;
         }
