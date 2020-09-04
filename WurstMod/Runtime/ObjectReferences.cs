@@ -15,6 +15,18 @@ namespace WurstMod.Runtime
     public static class ObjectReferences
     {
         #region Auto-set fields
+        [ObjectReference]
+        public static FistVR.FVRPointableButton ButtonDonor;
+        [ObjectReference]
+        public static FistVR.TNH_DestructibleBarrierPoint BarrierDonor;
+        [ObjectReference]
+        public static FistVR.TNH_Manager ManagerDonor;
+        [ObjectReference]
+        public static FistVR.TNH_HoldPoint HoldPointDonor;
+        [ObjectReference]
+        public static SosigTestingPanel1 GroundPanel;
+        [ObjectReference]
+        public static FVRReverbSystem ReverbSystem;
 
         [ObjectReference] public static FVRPointableButton ButtonDonor;
         [ObjectReference] public static TNH_DestructibleBarrierPoint BarrierDonor;

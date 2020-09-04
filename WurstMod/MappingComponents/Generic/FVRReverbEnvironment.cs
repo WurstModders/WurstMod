@@ -1,4 +1,6 @@
-﻿namespace WurstMod.MappingComponents.Generic
+﻿using WurstMod.Runtime;
+
+namespace WurstMod.MappingComponents.Generic
 {
     /// <summary>
     /// Placed on an object with a non-trigger box collider, on the NoCol layer.
@@ -33,6 +35,8 @@
 
             real.Environment = (FistVR.FVRSoundEnvironment) Environment;
             real.Priority = Priority;
+
+            ObjectReferences.ReverbSystem.Environments.Add(real);
 
             Destroy(this);
         }
