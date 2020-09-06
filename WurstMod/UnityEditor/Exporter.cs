@@ -18,16 +18,7 @@ namespace WurstMod.UnityEditor
         /// Find & call the SceneExporter for the given game mode
         /// If no errors were returned, create the bundle
         /// </summary>
-        [MenuItem("WurstMod/Export Scene")]
-        public static void ExportMenuAction()
-        {
-            // Get the current open scene and create an object to hold validation errors
-            var scene = SceneManager.GetActiveScene();
-            var err = new ExportErrors();
-            Export(scene, err);
-        }
-
-        private static void Export(Scene scene, ExportErrors err)
+        public static void Export(Scene scene, ExportErrors err)
         {
             // Get the root objects in the scene
             var roots = scene.GetRootGameObjects();

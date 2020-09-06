@@ -67,6 +67,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libs\UnityEngine.UI.dll</HintPath>
     </Reference>
+    <Reference Include="Valve.Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\Libs\Valve.Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MappingComponents\ComponentProxy.cs" />
@@ -109,6 +112,7 @@
     <Compile Include="Shared\Extensions.cs" />
     <Compile Include="Shared\LevelInfo.cs" />
     <Compile Include="UnityEditor\Exporter.cs" />
+    <Compile Include="UnityEditor\ExporterWindow.cs" />
     <Compile Include="UnityEditor\SceneExporters\SandboxExporter.cs" />
     <Compile Include="UnityEditor\SceneExporters\SceneExporter.cs" />
     <Compile Include="UnityEditor\SceneExporters\TakeAndHoldExporter.cs" />

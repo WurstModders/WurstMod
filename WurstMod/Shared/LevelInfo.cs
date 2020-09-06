@@ -2,16 +2,19 @@
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using Valve.Newtonsoft.Json;
 
 namespace WurstMod.Shared
 {
+    [JsonObject(MemberSerialization.OptIn)]
     public struct LevelInfo
     {
-        public string SceneName;
-        public string Author;
-        public string Gamemode;
-        public string Description;
+        [JsonProperty] public string SceneName;
+        [JsonProperty] public string Author;
+        [JsonProperty] public string Gamemode;
+        [JsonProperty] public string Description;
 
+        // We don't want this serialized
         public string Location;
 
         public string AssetBundlePath => Path.Combine(Location, Constants.FilenameLevelData);
@@ -27,32 +30,17 @@ namespace WurstMod.Shared
             if ((File.GetAttributes(path) & FileAttributes.Directory) != FileAttributes.Directory)
                 path = Path.Combine(Path.GetDirectoryName(path) ?? string.Empty, Constants.FilenameLevelInfo);
             
-            var lines = File.ReadAllText(path).Replace("\r", "").Split('\n');
-
-            // TODO: Json. Use Json.
-            if (lines.Length >= 4)
-                return new LevelInfo
-                {
-                    SceneName = lines[0],
-                    Author = lines[1],
-                    Gamemode = lines[2],
-                    Description = string.Join("\n", lines.Skip(3).ToArray()),
-                    Location = Path.GetDirectoryName(path)
-                };
-            Debug.LogError("Invalid level info file at " + path + "!");
-            return null;
-
+            // Then return the deserialized object
+            return JsonConvert.DeserializeObject<LevelInfo>(File.ReadAllText(path));
         }
 
         public void ToFile()
         {
-            // Verify the directory exists
+            // Make sure the directory exists
             if (!Directory.Exists(Location)) Directory.CreateDirectory(Location);
             
-            // Write the contents
-            // TODO: Json. Use Json.
-            var contents = $"{SceneName}\n{Author}\n{Gamemode}\n{Description}";
-            File.WriteAllText(LevelInfoPath, contents);
+            // Then write the serialized data
+            File.WriteAllText(LevelInfoPath, JsonConvert.SerializeObject(this));
         }
     }
 }
