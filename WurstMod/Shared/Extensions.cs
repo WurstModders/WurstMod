@@ -182,6 +182,16 @@ namespace WurstMod.Shared
                 Gizmos.DrawSphere(center, radius);
             }
         }
+
+        public static void GenericGizmoSphereOutline(Color color, Vector3 center, float radius, params Transform[] markers)
+        {
+            Gizmos.color = color;
+            foreach (Transform ii in markers)
+            {
+                Gizmos.matrix = ii.localToWorldMatrix;
+                Gizmos.DrawWireSphere(center, radius);
+            }
+        }
         #endregion
     }
 }
