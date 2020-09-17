@@ -9,13 +9,13 @@ namespace WurstMod.MappingComponents.Generic
 {
     public class CustomScene : ComponentProxy
     {
-        // Used by exporter to generate an info file I guess?
-        public string SceneName;
+        [Header("Exported info")] public string SceneName;
         public string Author;
         public string Gamemode;
         [TextArea(15, 20)] public string Description;
-
         [HideInInspector] public Material Skybox;
+
+        [Header("Scene Settings")] public float MaxProjectileRange;
 
         public override void OnExport(ExportErrors err)
         {
@@ -77,6 +77,11 @@ namespace WurstMod.MappingComponents.Generic
             foreach (var text in GetComponentsInChildren<Text>(true))
                 if (text.font || text.font.name == "Arial")
                     text.font = font;
+            
+            
+            // Set the max range on the scene settings
+            // TODO: There are probably a lot of settings we should carry over here.
+            ObjectReferences.FVRSceneSettings.MaxProjectileRange = MaxProjectileRange;
         }
     }
 }
