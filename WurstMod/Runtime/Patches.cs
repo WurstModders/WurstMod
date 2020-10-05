@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using FistVR;
@@ -17,9 +18,33 @@ namespace WurstMod.Runtime
         public static void Patch()
         {
             harmony = new Harmony("com.koba.plugins.wurstmod");
+
+            // MUST patch GetTypes first. 
+            // This might result in a double-patch for GetTypes but it won't hurt anything.
+            harmony.ProcessorForAnnotatedClass(typeof(Patch_Assembly)).Patch();
             harmony.PatchAll(Assembly.GetExecutingAssembly());
         }
     }
+
+    #region Assembly GetTypes Hacking
+    // Assembly.GetTypes() fails if ANY of the types cannot be loaded.
+    // In practice, this means we cannot inherit from UnityEditor.
+    // To fix this, we will literally patch mscorlib.dll.
+    [HarmonyPatch(typeof(Assembly), "GetTypes", new Type[0])]
+    public class Patch_Assembly
+    {
+        static Exception Finalizer(Exception __exception, ref Type[] __result)
+        {
+            if (__exception != null)
+            {
+                Console.WriteLine("GETTYPES FIX");
+                __result = ((ReflectionTypeLoadException)__exception).Types.Where(t => t != null).ToArray();
+            }
+            return null;
+        }
+    }
+
+    #endregion
 
     #region Scoreboard Disabling
 
@@ -232,7 +257,7 @@ namespace WurstMod.Runtime
                 {
                     // We have loaded a new custom level, recreate the cache.
                     detonators.Clear();
-                    detonators.AddRange(Object.FindObjectsOfType<BangerDetonator>());
+                    detonators.AddRange(GameObject.FindObjectsOfType<BangerDetonator>());
                 }
 
                 // Add banger to all detonators in cache.
