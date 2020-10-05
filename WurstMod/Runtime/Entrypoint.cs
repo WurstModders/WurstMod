@@ -15,6 +15,7 @@ namespace WurstMod.Runtime
         void Awake()
         {
             self = this;
+            LegacySupport.Init();
             RegisterListeners();
             InitDetours();
             InitAppDomain();

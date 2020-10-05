@@ -26,6 +26,10 @@ namespace WurstMod.Shared
 
         public static LevelInfo? FromFile(string path)
         {
+            // If we were not given a path, assume the base game will handle it and return null;
+            if (path == "")
+                return null;
+
             // If we were not given the path to a directory, go up a level and re-create the path with the level info file
             if ((File.GetAttributes(path) & FileAttributes.Directory) != FileAttributes.Directory)
                 path = Path.Combine(Path.GetDirectoryName(path) ?? string.Empty, Constants.FilenameLevelInfo);

@@ -81,7 +81,7 @@
     <Compile Include="MappingComponents\Generic\Target.cs" />
     <Compile Include="MappingComponents\Generic\CustomScene.cs" />
     <Compile Include="MappingComponents\Generic\Trigger.cs" />
-    <Compile Include="MappingComponents\LegacySupport.cs" />
+    <Compile Include="Runtime\LegacySupport.cs" />
     <Compile Include="MappingComponents\Sandbox\GenericPrefab.cs" />
     <Compile Include="MappingComponents\Sandbox\GroundPanel.cs" />
     <Compile Include="MappingComponents\Sandbox\PointableButton.cs" />

@@ -1,5 +1,40 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using UnityEngine;
+using WurstMod.Shared;
+
+namespace WurstMod.Runtime
+{
+    public class LegacySupport
+    {
+        public static void Init()
+        {
+            JSONifyLevelInfos();
+        }
+
+        /// <summary>
+        /// Update all level info.txt files to the new info.json type.
+        /// </summary>
+        public static void JSONifyLevelInfos()
+        {
+            string[] infoPaths = Directory.GetFiles(Constants.CustomLevelsDirectory, "info.txt", SearchOption.AllDirectories);
+            foreach (string ii in infoPaths)
+            {
+                LevelInfo converted = new LevelInfo();
+                converted.Location = Path.GetDirectoryName(ii);
+
+                string[] info = File.ReadAllLines(ii);
+                converted.SceneName = info[0];
+                converted.Author = info[1];
+                converted.Gamemode = converted.Location.Contains("TakeAndHold") ? "h3vr.take_and_hold" : "h3vr.sandbox";
+                converted.Description = string.Join("\n", info.Skip(2).ToArray());
+
+                converted.ToFile();
+            }
+        }
+    }
+}
 
 // We can maintain backwards compatibility like this. It's a little cheesy of course, but relatively unobtrusive.
 namespace WurstMod.TNH

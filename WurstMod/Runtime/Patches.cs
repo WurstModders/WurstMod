@@ -37,7 +37,6 @@ namespace WurstMod.Runtime
         {
             if (__exception != null)
             {
-                Console.WriteLine("GETTYPES FIX");
                 __result = ((ReflectionTypeLoadException)__exception).Types.Where(t => t != null).ToArray();
             }
             return null;
