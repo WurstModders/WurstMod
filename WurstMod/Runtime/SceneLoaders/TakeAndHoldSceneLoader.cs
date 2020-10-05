@@ -8,7 +8,7 @@ using TNH_SupplyPoint = FistVR.TNH_SupplyPoint;
 
 namespace WurstMod.Runtime.SceneLoaders
 {
-    [CustomSceneLoader("TakeAndHold")]
+    [CustomSceneLoader("h3vr.take_and_hold")]
     public class TakeAndHoldSceneLoader : CustomSceneLoader
     {
         private TNH_Manager _tnhManager;

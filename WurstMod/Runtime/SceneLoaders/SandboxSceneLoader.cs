@@ -2,7 +2,7 @@
 
 namespace WurstMod.SceneLoaders
 {
-    [CustomSceneLoader("Sandbox")]
+    [CustomSceneLoader("h3vr.sandbox")]
     public class SandboxSceneLoader : CustomSceneLoader
     {
         public override string BaseScene => "ProvingGround";

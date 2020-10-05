@@ -31,7 +31,9 @@ namespace WurstMod.Shared
                 path = Path.Combine(Path.GetDirectoryName(path) ?? string.Empty, Constants.FilenameLevelInfo);
             
             // Then return the deserialized object
-            return JsonConvert.DeserializeObject<LevelInfo>(File.ReadAllText(path));
+            var levelInfo = JsonConvert.DeserializeObject<LevelInfo>(File.ReadAllText(path));
+            levelInfo.Location = Path.GetDirectoryName(path);
+            return levelInfo;
         }
 
         public void ToFile()

@@ -12,11 +12,7 @@ namespace WurstMod.Runtime.ScenePatchers
 {
     class Generic_LevelPopulator
     {
-        private static readonly string levelDir = "CustomLevels/Generic";
-        private static readonly string dataFile = "/leveldata";
-        private static readonly string imageFile = "/thumb.png";
-        private static readonly string infoFile = "/info.txt";
-
+        
         // References
         private static GameObject labelBase;
         private static GameObject sceneScreenBase;
@@ -34,7 +30,6 @@ namespace WurstMod.Runtime.ScenePatchers
                 Debug.Log("Initializing level populator...");
                 Reset();
                 GatherReferences();
-                InitDirectories();
                 CalculateScreenPositions();
                 InitObjects();
                 SetupLevelDefs();
@@ -55,17 +50,6 @@ namespace WurstMod.Runtime.ScenePatchers
             sceneScreenBase = GameObject.Find("SceneScreen_GDC");
             labelBase = GameObject.Find("Label_Description_1_Title (5)");
             changelogPanel = GameObject.Find("MainScreen1");
-        }
-
-        /// <summary>
-        /// Ensures proper folders exist.
-        /// </summary>
-        private static void InitDirectories()
-        {
-            if (!Directory.Exists(levelDir))
-            {
-                Directory.CreateDirectory(levelDir);
-            }
         }
 
         private static void CalculateScreenPositions()
@@ -117,61 +101,31 @@ namespace WurstMod.Runtime.ScenePatchers
 
         private static void SetupLevelDefs()
         {
-            string[] dirs = Directory.GetDirectories(levelDir);
-            if (dirs.Length > screens.Count)
+            foreach (var level in CustomLevelFinder.EnumerateLevelInfos())
             {
-                Debug.LogError("ERROR: You have more levels than there is space for them. Complain to Koba until he fixes it.");
-            }
-            for (int ii = 0; ii < dirs.Length && ii < screens.Count; ii++)
-            {
-                // Gather all information
-                string[] files = Directory.GetFiles(dirs[ii]);
-                if (!File.Exists(dirs[ii] + dataFile))
-                {
-                    Debug.LogError($"Directory {dirs[ii]} does not contain proper leveldata. The assetbundle must be named leveldata.");
-                    continue;
-                }
+                
                 Sprite image = null;
                 Texture2D imageT = null;
-                if (File.Exists(dirs[ii] + imageFile))
+                if (File.Exists(level.ThumbnailPath))
                 {
-                    image = SpriteLoader.LoadNewSprite(dirs[ii] + imageFile);
-                    imageT = SpriteLoader.LoadTexture(dirs[ii] + imageFile);
+                    image = SpriteLoader.LoadNewSprite(level.ThumbnailPath);
+                    imageT = SpriteLoader.LoadTexture(level.ThumbnailPath);
                 }
-
-                string[] info = new string[0];
-                string name;
-                string author;
-                string desc;
-                if (File.Exists(dirs[ii] + infoFile)) info = File.ReadAllLines(dirs[ii] + infoFile);
-
-                if (info.Length > 0) name = info[0];
-                else name = "UNNAMED LEVEL";
-
-                if (info.Length > 1) author = info[1];
-                else author = "UNKNOWN AUTHOR";
-
-                if (info.Length > 2) desc = string.Join("\n", info.Skip(2).ToArray());
-                else desc = "NO DESCRIPTION";
-
-                Debug.Log($"Found level: {name}");
-
-
+                
                 // Create and apply scene def.
                 MainMenuSceneDef moddedDef = ScriptableObject.CreateInstance<MainMenuSceneDef>();
-                moddedDef.Name = name + "\n" + dirs[ii] + dataFile;
-                moddedDef.Type = author;
+                moddedDef.Name = level.SceneName + "\n" + level.AssetBundlePath;
+                moddedDef.Type = level.Author;
                 moddedDef.SceneName = "ProvingGround";
-                moddedDef.Desciption = desc;
+                moddedDef.Desciption = level.Description;
                 moddedDef.Image = image;
 
-                MainMenuScenePointable screen = screens[ii];
+                MainMenuScenePointable screen = screens.First(x => !x.gameObject.activeSelf);
                 screen.Def = moddedDef;
                 screen.GetComponent<MeshRenderer>().material.SetTexture("_MainTex", imageT);
 
                 // Enable the screen now that it has been set up.
                 screen.gameObject.SetActive(true);
-
             }
         }
 
@@ -191,9 +145,8 @@ namespace WurstMod.Runtime.ScenePatchers
             //TODO Read from web source.
             title.text = "Welcome to WurstMod!";
             body.text = "This panel will be used to provide information and updates about WurstMod. An UPDATE button will appear below if there is an update released.";
-            
+
             //TODO Update button.
         }
-
     }
 }
