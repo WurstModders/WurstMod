@@ -15,7 +15,7 @@ namespace WurstMod.MappingComponents.Generic
         [TextArea(15, 20)] public string Description;
         [HideInInspector] public Material Skybox;
 
-        [Header("Scene Settings")] public float MaxProjectileRange;
+        [Header("Scene Settings")] public float MaxProjectileRange = 500f;
 
         public override void OnExport(ExportErrors err)
         {
