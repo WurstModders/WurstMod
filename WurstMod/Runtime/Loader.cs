@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using HarmonyLib;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using WurstMod.MappingComponents;
@@ -19,6 +20,7 @@ namespace WurstMod.Runtime
     public static class Loader
     {
         public static bool IsLoadInProgress;
+        private static readonly Harmony CustomAssemblyPatches = new Harmony("wurstmod.custom_assemblies");
 
         /// <summary>
         /// This is called by the BepInEx entrypoint. It is fired when ANY scene loads, including vanilla ones.
@@ -59,13 +61,22 @@ namespace WurstMod.Runtime
         /// </summary>
         private static void LoadCustomAssemblies(LevelInfo level)
         {
+            // Unpatch any Harmony patches we've previously loaded for custom maps
+            CustomAssemblyPatches.UnpatchAll();
+            
+            // Now we can discover and load the assemblies for this map
             foreach (var assembly in Directory.GetFiles(level.Location, "*.dll"))
             {
-                if (LoadedAssemblies.Contains(assembly)) continue;
-                var loadedAsm = Assembly.LoadFile(assembly);
-                AppDomain.CurrentDomain.Load(loadedAsm.GetName());
-                Debug.Log("LOADED TYPES: " + string.Join(", ", loadedAsm.GetTypes().Select(x => x.Name).ToArray()));
-                LoadedAssemblies.Add(assembly);
+                if (!LoadedAssemblies.ContainsKey(assembly))
+                {
+                    var loadedAsm = Assembly.LoadFile(assembly);
+                    AppDomain.CurrentDomain.Load(loadedAsm.GetName());
+                    Debug.Log("LOADED TYPES: " + string.Join(", ", loadedAsm.GetTypes().Select(x => x.Name).ToArray()));
+                    LoadedAssemblies.Add(assembly, loadedAsm);
+                }
+                
+                // Patch any Harmony patches
+                CustomAssemblyPatches.PatchAll(LoadedAssemblies[assembly]);
             }
         }
 
@@ -152,7 +163,7 @@ namespace WurstMod.Runtime
 
         // Keep track of which assemblies and asset bundles we've already loaded
         private static readonly Dictionary<string, AssetBundle> LoadedBundles = new Dictionary<string, AssetBundle>();
-        private static readonly List<string> LoadedAssemblies = new List<string>();
+        private static readonly Dictionary<string, Assembly> LoadedAssemblies = new Dictionary<string, Assembly>();
 
         // Public field to set which level we'll load
         public static LevelInfo? LevelToLoad = null;
