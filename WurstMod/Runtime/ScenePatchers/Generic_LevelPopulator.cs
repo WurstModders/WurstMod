@@ -101,7 +101,7 @@ namespace WurstMod.Runtime.ScenePatchers
 
         private static void SetupLevelDefs()
         {
-            foreach (var level in CustomLevelFinder.EnumerateLevelInfos())
+            foreach (var level in CustomLevelFinder.EnumerateLevelInfos().Where(x => x.Gamemode != "h3vr.take_and_hold"))
             {
                 
                 Sprite image = null;

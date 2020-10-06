@@ -111,6 +111,7 @@
     <Compile Include="Shared\Constants.cs" />
     <Compile Include="Shared\Extensions.cs" />
     <Compile Include="Shared\LevelInfo.cs" />
+    <Compile Include="Shared\ResourceDefs.cs" />
     <Compile Include="UnityEditor\Exporter.cs" />
     <Compile Include="UnityEditor\ExporterWindow.cs" />
     <Compile Include="UnityEditor\SceneExporters\SandboxExporter.cs" />
