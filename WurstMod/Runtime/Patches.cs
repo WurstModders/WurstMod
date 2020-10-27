@@ -195,8 +195,13 @@ namespace WurstMod.Runtime
     {
         static Dictionary<ReactiveSteelTarget, Target> targetComponents = new Dictionary<ReactiveSteelTarget, Target>();
 
-        static bool Prefix(ReactiveSteelTarget __instance)
+        static void Postfix(ReactiveSteelTarget __instance, FistVR.Damage dam)
         {
+            // Original method ignores non projectile damage
+            if (dam.Class != Damage.DamageClass.Projectile) return;
+            
+            __instance.SendMessage("TargetHit");
+            
             // Cache Target components.
             Target ourTarget = null;
             if (targetComponents.ContainsKey(__instance))
@@ -226,8 +231,6 @@ namespace WurstMod.Runtime
             {
                 if (ourTarget.shotEvent != null) ourTarget.shotEvent.Invoke();
             }
-
-            return true;
         }
     }
 
