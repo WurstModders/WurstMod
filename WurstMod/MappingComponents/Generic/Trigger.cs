@@ -55,6 +55,7 @@ namespace WurstMod.MappingComponents.Generic
 
         private void OnDrawGizmos()
         {
+
             switch (triggerShape)
             {
                 case TriggerShape.Cube:
@@ -144,7 +145,7 @@ namespace WurstMod.MappingComponents.Generic
 
         private bool IsValidForTrigger(Collider col)
         {
-            if (triggeredBy == TriggeredBy.Player && col.gameObject.name == "PlayerAIEntity") return true;
+            if (triggeredBy == TriggeredBy.Player && col.gameObject.name == "Hitbox_Head") return true;
             if (triggeredBy == TriggeredBy.Sosig && col.gameObject.name == "AIEntity") return true;
             if (triggeredBy == TriggeredBy.Collider)
             {

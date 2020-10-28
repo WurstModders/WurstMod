@@ -177,6 +177,9 @@ namespace WurstMod.Runtime
             "_Boards",
             "_Env",
             "AILadderTest1",
+            
+            // TODO: Should probably remove all the Anvil Prefabs, but it causes errors...
+            //"__SpawnOnLoad",
 
             // Take and Hold objects
             "HoldPoint_",
