@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using WurstMod.Shared;
 
 namespace WurstMod.Runtime
 {
@@ -16,7 +17,7 @@ namespace WurstMod.Runtime
         public static void RunPatches(Scene scene)
         {
             var types = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(a => a.GetTypes())
+                .SelectMany(a => a.GetTypesSafe())
                 .Where(t => t.IsSubclassOf(typeof(ScenePatcher)));
 
             Debug.Log("Found " + types.Count() + " patchers");

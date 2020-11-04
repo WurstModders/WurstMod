@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using WurstMod.MappingComponents.Generic;
+using WurstMod.Shared;
 
 namespace WurstMod.Runtime
 {
@@ -45,7 +46,7 @@ namespace WurstMod.Runtime
         {
             // Get a list of all types in the app domain that derive from CustomSceneLoader
             var types = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(a => a.GetTypes())
+                .SelectMany(a => a.GetTypesSafe())
                 .Where(t => t.IsSubclassOf(typeof(CustomSceneLoader)));
 
             // Magic LINQ statement to select the first type that has the

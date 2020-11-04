@@ -1,17 +1,32 @@
-﻿namespace WurstMod.MappingComponents.Generic
+﻿using FistVR;
+using UnityEngine;
+using WurstMod.Runtime;
+using WurstMod.Shared;
+
+namespace WurstMod.MappingComponents.Generic
 {
     public class AnvilPrefab : ComponentProxy
     {
-        public string Guid;
-        public string Bundle;
-        public string AssetName;
-
+        // Inspector
+        // Using the WeaponStuff enum covers most of the stuff people probably want to instantiate,
+        // but not all of it. TODO reconsider this implementation.
+        public ResourceDefs.WeaponStuff prefab;
+        public bool spawnOnSceneLoad = false;
+        
         public override void InitializeComponent()
         {
-            var callback = AnvilManager.LoadAsync(new Anvil.AssetID {Guid = Guid, Bundle = Bundle, AssetName = AssetName});
-            callback.CompleteNow();
-            var prefab = Instantiate(callback.Result, transform.position, transform.rotation);
-            prefab.SetActive(true);
+            if (spawnOnSceneLoad) Spawn();
+        }
+
+        /// <summary>
+        /// Spawn the object this marker describes.
+        /// You can call this from a trigger!
+        /// </summary>
+        public void Spawn()
+        {
+            FVRObject obj = Resources.Load<FVRObject>(ResourceDefs.WeaponStuffResources[prefab]);
+            GameObject go = Instantiate<GameObject>(obj.GetGameObject(), transform.position, transform.rotation, ObjectReferences.CustomScene.transform);
+            go.SetActive(true);
         }
 
     }

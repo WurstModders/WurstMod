@@ -96,6 +96,24 @@ namespace WurstMod.Shared
             field.SetValue(target, value);
         }
 
+        /// <summary>
+        /// While the GetTypes patch covers most cases, some sort of LINQ magic must be causing GetTypes() calls
+        /// to ignore the patch... Since we're in control of these, we can just use a safe GetTypes call directly.
+        /// </summary>
+        public static Type[] GetTypesSafe(this Assembly asm)
+        {
+            Type[] retval;
+            try
+            {
+                retval = asm.GetTypes();
+            }
+            catch (ReflectionTypeLoadException e)
+            {
+                return e.Types.Where(t => t != null).ToArray();
+            }
+            return retval;
+        }
+
         #endregion
 
         #region Scene

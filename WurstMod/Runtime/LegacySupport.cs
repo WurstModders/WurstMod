@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
-using WurstMod.Shared;
 
 namespace WurstMod.Runtime
 {
     public class LegacySupport
     {
+        // I'm VERY explicit with namespaces in this file because strange things can happen if a stray using 
+        // gets thrown in while working with classes of the same name like this.
+        // Not required, but it feels more sane (albeit verbose.)
 
         // The following arrays map the old enum ordering to the new hash-based future-proof ordering.
         public static readonly int[] pMatLegacyMapping = new int[]
@@ -132,10 +134,10 @@ namespace WurstMod.Runtime
         /// </summary>
         public static void JSONifyLevelInfos()
         {
-            string[] infoPaths = Directory.GetFiles(Constants.CustomLevelsDirectory, "info.txt", SearchOption.AllDirectories);
+            string[] infoPaths = Directory.GetFiles(WurstMod.Shared.Constants.CustomLevelsDirectory, "info.txt", SearchOption.AllDirectories);
             foreach (string ii in infoPaths)
             {
-                LevelInfo converted = new LevelInfo();
+                WurstMod.Shared.LevelInfo converted = new WurstMod.Shared.LevelInfo();
                 converted.Location = Path.GetDirectoryName(ii);
 
                 string[] info = File.ReadAllLines(ii);
@@ -200,7 +202,18 @@ namespace WurstMod.Generic
 namespace WurstMod.Any
 {
     [Obsolete] [AddComponentMenu("")] public class AICoverPoint : WurstMod.MappingComponents.Generic.AICoverPoint { }
-    [Obsolete] [AddComponentMenu("")] public class AnvilPrefab : WurstMod.MappingComponents.Generic.AnvilPrefab { }
+    [Obsolete] [AddComponentMenu("")] public class AnvilPrefab : WurstMod.MappingComponents.Generic.AnvilPrefab 
+    {
+        public string Guid;
+        public string Bundle;
+        public string AssetName;
+
+        void Awake()
+        {
+            spawnOnSceneLoad = true;
+            prefab = (WurstMod.Shared.ResourceDefs.WeaponStuff)Enum.Parse(typeof(WurstMod.Shared.ResourceDefs.WeaponStuff), AssetName);
+        }
+    }
     [Obsolete] [AddComponentMenu("")] public class FVRHandGrabPoint : WurstMod.MappingComponents.Generic.FVRHandGrabPoint { }
     [Obsolete] [AddComponentMenu("")] public class FVRReverbEnvironment : WurstMod.MappingComponents.Generic.FVRReverbEnvironment { }
     [Obsolete] [AddComponentMenu("")] public class PMat : WurstMod.MappingComponents.Generic.PMat
