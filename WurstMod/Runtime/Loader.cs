@@ -10,6 +10,7 @@ using UnityEngine.SceneManagement;
 using WurstMod.MappingComponents;
 using WurstMod.MappingComponents.Generic;
 using WurstMod.Shared;
+using Logger = BepInEx.Logging.Logger;
 using Object = UnityEngine.Object;
 
 namespace WurstMod.Runtime
@@ -119,7 +120,17 @@ namespace WurstMod.Runtime
             sceneLoader.LevelRoot = loadedRoot;
 
             // Step 5: Resolve component proxies and the scene loader to do what it needs to do
-            foreach (var proxy in loadedRoot.GetComponentsInChildren<ComponentProxy>().OrderByDescending(x => x.ResolveOrder)) proxy.InitializeComponent();
+            foreach (var proxy in loadedRoot.GetComponentsInChildren<ComponentProxy>().OrderByDescending(x => x.ResolveOrder))
+            {
+                try
+                {
+                    proxy.InitializeComponent();
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError("Error initializing component " + proxy + "\n" + e.StackTrace);
+                }
+            }
             sceneLoader.Resolve();
 
             // Step 6: Re-enable disabled objects
@@ -177,6 +188,9 @@ namespace WurstMod.Runtime
             "_Boards",
             "_Env",
             "AILadderTest1",
+            
+            // TODO: Should probably remove all the Anvil Prefabs, but it causes errors...
+            //"__SpawnOnLoad",
 
             // Take and Hold objects
             "HoldPoint_",

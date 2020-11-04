@@ -71,14 +71,6 @@ namespace WurstMod.MappingComponents.Generic
                 ii.terrainData.treeInstances = new TreeInstance[0];
             }
 
-            // Copy font data to all text components.
-
-            var font = ObjectReferences.ButtonDonor.GetComponentInChildren<Text>().font;
-            foreach (var text in GetComponentsInChildren<Text>(true))
-                if (text.font || text.font.name == "Arial")
-                    text.font = font;
-            
-            
             // Set the max range on the scene settings
             // TODO: There are probably a lot of settings we should carry over here.
             ObjectReferences.FVRSceneSettings.MaxProjectileRange = MaxProjectileRange;

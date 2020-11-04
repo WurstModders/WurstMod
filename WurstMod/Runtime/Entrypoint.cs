@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 using BepInEx;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using WurstMod.MappingComponents.TakeAndHold;
 using WurstMod.Runtime.ScenePatchers;
@@ -12,6 +14,7 @@ namespace WurstMod.Runtime
     public class Entrypoint : BaseUnityPlugin
     {
         public static BaseUnityPlugin self;
+
         void Awake()
         {
             self = this;
@@ -32,12 +35,10 @@ namespace WurstMod.Runtime
         }
 
         private static readonly Dictionary<string, Assembly> Assemblies = new Dictionary<string, Assembly>();
+
         void InitAppDomain()
         {
-            AppDomain.CurrentDomain.AssemblyLoad += (sender, e) =>
-            {
-                Assemblies[e.LoadedAssembly.FullName] = e.LoadedAssembly;
-            };
+            AppDomain.CurrentDomain.AssemblyLoad += (sender, e) => { Assemblies[e.LoadedAssembly.FullName] = e.LoadedAssembly; };
             AppDomain.CurrentDomain.AssemblyResolve += (sender, e) =>
             {
                 Assemblies.TryGetValue(e.Name, out var assembly);
