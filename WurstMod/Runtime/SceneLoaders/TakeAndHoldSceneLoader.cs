@@ -3,12 +3,13 @@ using System.Linq;
 using FistVR;
 using UnityEngine;
 using WurstMod.MappingComponents.TakeAndHold;
+using WurstMod.Shared;
 using TNH_HoldPoint = FistVR.TNH_HoldPoint;
 using TNH_SupplyPoint = FistVR.TNH_SupplyPoint;
 
 namespace WurstMod.Runtime.SceneLoaders
 {
-    [CustomSceneLoader("h3vr.take_and_hold")]
+    [CustomSceneLoader(Constants.GamemodeTakeAndHold)]
     public class TakeAndHoldSceneLoader : CustomSceneLoader
     {
         private TNH_Manager _tnhManager;

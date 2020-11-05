@@ -2,10 +2,11 @@
 using UnityEngine.SceneManagement;
 using WurstMod.MappingComponents.Generic;
 using WurstMod.MappingComponents.TakeAndHold;
+using WurstMod.Shared;
 
 namespace WurstMod.UnityEditor.SceneExporters
 {
-    [SceneExporter("h3vr.take_and_hold")]
+    [SceneExporter(Constants.GamemodeTakeAndHold)]
     public class TakeAndHoldExporter : SceneExporter
     {
         public override void Validate(Scene scene, CustomScene root, ExportErrors err)

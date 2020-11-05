@@ -143,7 +143,7 @@ namespace WurstMod.Runtime
                 string[] info = File.ReadAllLines(ii);
                 converted.SceneName = info[0];
                 converted.Author = info[1];
-                converted.Gamemode = converted.Location.Contains("TakeAndHold") ? "h3vr.take_and_hold" : "h3vr.sandbox";
+                converted.Gamemode = converted.Location.Contains("TakeAndHold") ? WurstMod.Shared.Constants.GamemodeTakeAndHold : WurstMod.Shared.Constants.GamemodeSandbox;
                 converted.Description = string.Join("\n", info.Skip(2).ToArray());
 
                 converted.ToFile();

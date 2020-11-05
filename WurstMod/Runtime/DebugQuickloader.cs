@@ -1,9 +1,4 @@
 ﻿using FistVR;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using WurstMod.Shared;
@@ -24,7 +19,7 @@ namespace WurstMod.Runtime
                 string path = Entrypoint.configQuickload.Value;
                 if (string.IsNullOrEmpty(path)) return;
 
-                // Try to grab the info.txt.
+                // Try to grab the info.json.
                 Loader.LevelToLoad = LevelInfo.FromFile(path.TrimEnd('\\') + "\\" + Constants.FilenameLevelInfo);
                 if (!Loader.LevelToLoad.HasValue)
                 {
