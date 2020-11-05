@@ -63,7 +63,7 @@ namespace WurstMod.Runtime
         private static void LoadCustomAssemblies(LevelInfo level)
         {
             // Unpatch any Harmony patches we've previously loaded for custom maps
-            CustomAssemblyPatches.UnpatchAll();
+            CustomAssemblyPatches.UnpatchAll("wurstmod.custom_assemblies");
             
             // Now we can discover and load the assemblies for this map
             foreach (var assembly in Directory.GetFiles(level.Location, "*.dll"))

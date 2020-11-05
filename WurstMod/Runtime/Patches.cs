@@ -279,4 +279,57 @@ namespace WurstMod.Runtime
     }
 
     #endregion
+
+    #region Take and Hold Spawn Softlock Fixer
+
+    /// <summary>
+    /// All of the Spawn patches do the same thing: Stop trying to spawn enemies if
+    /// we run out of spawnpoints! This is most easily accomplished with a finalizer.
+    /// Note this may truncate spawns severely for SpawnHoldEnemyGroup, but that's
+    /// much better than softlocking entirely, and it only happens in "improperly" set up holds.
+    /// </summary>
+    [HarmonyPatch(typeof(FistVR.TNH_SupplyPoint), "SpawnTakeEnemyGroup")]
+    public class Patch_TNH_SupplyPoint_SpawnTakeEnemyGroup
+    {
+        static Exception Finalizer(Exception __exception)
+        {
+            if (__exception is ArgumentOutOfRangeException)
+            {
+                Debug.Log("DEBUG: Hit Spawn finalizer");
+                return null; // Ignore exception.
+            }
+            return __exception;
+        }
+    }
+    
+    [HarmonyPatch(typeof(FistVR.TNH_HoldPoint), "SpawnTakeEnemyGroup")]
+    public class Patch_TNH_HoldPoint_SpawnTakeEnemyGroup
+    {
+        static Exception Finalizer(Exception __exception)
+        {
+            if (__exception is ArgumentOutOfRangeException)
+            {
+                Debug.Log("DEBUG: Hit Spawn finalizer");
+                return null; // Ignore exception.
+            }
+            return __exception;
+        }
+    }
+
+    [HarmonyPatch(typeof(FistVR.TNH_HoldPoint), "SpawnHoldEnemyGroup")]
+    public class Patch_TNH_HoldPoint_SpawnHoldEnemyGroup
+    {
+        static Exception Finalizer(Exception __exception, FistVR.TNH_HoldPoint __instance)
+        {
+            if (__exception is ArgumentOutOfRangeException)
+            {
+                Debug.Log("DEBUG: Hit Spawn finalizer");
+                __instance.ReflectSet("m_isFirstWave", false);
+                return null; // Ignore exception.
+            }
+            return __exception;
+        }
+    }
+
+    #endregion
 }

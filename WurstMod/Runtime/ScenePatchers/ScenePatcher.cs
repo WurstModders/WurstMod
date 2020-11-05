@@ -17,10 +17,10 @@ namespace WurstMod.Runtime
         public static void RunPatches(Scene scene)
         {
             var types = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(a => a.GetTypesSafe())
+                .SelectMany(a => a.GetTypes())
                 .Where(t => t.IsSubclassOf(typeof(ScenePatcher)));
 
-            Debug.Log("Found " + types.Count() + " patchers");
+            Debug.Log("Found " + types.Count() + " patchers: " + string.Join(", ", types.Select(x => x.Name).ToArray()));
 
             foreach (var patcher in
                 from type in types

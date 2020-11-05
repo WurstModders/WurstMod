@@ -13,7 +13,7 @@ namespace WurstMod.Runtime.SceneLoaders
     {
         private TNH_Manager _tnhManager;
         
-        public override string BaseScene => "";
+        public override string BaseScene => "TakeAndHoldClassic";
 
         /// <summary>
         /// Base function for setting up the TNH Manager object to handle a custom level.
@@ -93,7 +93,8 @@ namespace WurstMod.Runtime.SceneLoaders
             maxMatrix.Entries_SupplyPoints = new List<TNH_SafePositionMatrix.PositionEntry>();
 
             int effectiveHoldCount = _tnhManager.HoldPoints.Count;
-            int effectiveSupplyCount = _tnhManager.SupplyPoints.Where(x => x.GetComponent<ForcedSpawn>() == null).Count();
+            int effectiveSupplyCount = _tnhManager.SupplyPoints.Where(x => x.GetComponent<ForcedSpawn>() == null || x.GetComponent<ForcedSpawn>().spawnOnly == false).Count();
+            //int effectiveSupplyCount = _tnhManager.SupplyPoints.Count;
 
             for (int ii = 0; ii < effectiveHoldCount; ii++)
             {

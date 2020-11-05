@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using BepInEx;
+using BepInEx.Configuration;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using WurstMod.MappingComponents.TakeAndHold;
@@ -22,6 +23,7 @@ namespace WurstMod.Runtime
             RegisterListeners();
             InitDetours();
             InitAppDomain();
+            InitConfig();
         }
 
         void RegisterListeners()
@@ -46,13 +48,19 @@ namespace WurstMod.Runtime
             };
         }
 
+        public static ConfigEntry<string> configQuickload;
+        void InitConfig()
+        {
+            configQuickload = Config.Bind("Debug", "QuickloadPath", "", "Set this to a folder containing the scene you would like to load as soon as H3VR boots. This is good for quickly testing scenes you are developing.");
+        }
+
         private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            //StartCoroutine(Loader.HandleTAH(scene));
-            //StartCoroutine(Loader.HandleGeneric(scene));
             TNH_LevelSelector.SetupLevelSelector(scene);
             Generic_LevelPopulator.SetupLevelPopulator(scene);
+            
             StartCoroutine(Loader.OnSceneLoad(scene));
+            DebugQuickloader.Quickload(scene); // Must occur after regular loader.
         }
     }
 }
