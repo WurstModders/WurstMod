@@ -6,9 +6,10 @@ using WurstMod.Shared;
 
 namespace WurstMod.UnityEditor.SceneExporters
 {
-    [SceneExporter(Constants.GamemodeTakeAndHold)]
     public class TakeAndHoldExporter : SceneExporter
     {
+        public override string GamemodeId => Constants.GamemodeTakeAndHold;
+
         public override void Validate(Scene scene, CustomScene root, ExportErrors err)
         {
             // Base validate

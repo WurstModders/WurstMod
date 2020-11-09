@@ -14,12 +14,17 @@ using Object = UnityEngine.Object;
 
 namespace WurstMod.UnityEditor.SceneExporters
 {
-    public class SceneExporter
+    public abstract class SceneExporter
     {
         private Scene _scene;
         private CustomScene _root;
         private ExportErrors _err;
-        
+
+        /// <summary>
+        /// This is implemented by the deriving class and is a unique identifier for a game mode.
+        /// </summary>
+        public abstract string GamemodeId { get; }
+
         /// <summary>
         /// This is called to validate the scene and ensure it can be exported.
         /// <strong>If you override this, make sure to call <code>base.Validate(scene, root, err)</code>! (Preferably before your code)</strong>
@@ -64,6 +69,7 @@ namespace WurstMod.UnityEditor.SceneExporters
             // Delete the folder if it exists already
             Debug.Log("Removing previous export...");
             if (Directory.Exists(location)) Directory.Delete(location, true);
+            Directory.CreateDirectory(location);
 
             // Create a LevelInfo object and save it
             Debug.Log("Writing level info...");
@@ -107,10 +113,20 @@ namespace WurstMod.UnityEditor.SceneExporters
             if (min <= count && count <= max) return;
 
             var msg = min == max ? $"{min}" : $"{min} - {max}";
-            if (warning) _err.AddWarning(message ?? $"Your scene contains {count} {nameof(T)}. Recommended number is {msg}");
-            else _err.AddError(message ?? $"Your scene contains {count} {nameof(T)}. Required number is {msg}");
+            if (warning) _err.AddWarning(message ?? $"Your scene contains {count} {typeof(T).Name}. Recommended number is {msg}");
+            else _err.AddError(message ?? $"Your scene contains {count} {typeof(T).Name}. Required number is {msg}");
         }
         
+        /// <summary>
+        /// Returns all scene exporters across all loaded assemblies
+        /// </summary>
+        /// <returns>All scene exporters across all loaded assemblies</returns>
+        public static Type[] GetAllExporters()
+        {
+            return AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypesSafe())
+                   .Where(x => x.IsSubclassOf(typeof(SceneExporter))).ToArray();
+        }
+
         /// <summary>
         /// Returns an exporter object for the provided game mode
         /// </summary>
@@ -119,38 +135,14 @@ namespace WurstMod.UnityEditor.SceneExporters
         public static SceneExporter GetExporterForGamemode(string gamemode)
         {
             // Get a list of all types in the app domain that derive from SceneExporter
-            var types = new List<Type>();
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                try
-                {
-                    // Try to find types in all assemblies
-                    types.AddRange(assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(SceneExporter))));
-                }
-                catch (ReflectionTypeLoadException e)
-                {
-                    // If we hit this exception it means there were types that Unity does not like.
-                    // However, we are still given a partial list of loaded types, so continue with that
-                    types.AddRange(e.Types.Where(t => t != null && t.IsSubclassOf(typeof(SceneExporter))));
-                }
-            }
+            Type[] types = GetAllExporters();
 
             // Magic LINQ statement to select the first type that has the
-            // SceneExporterAttribute with a gamemode that matches the gamemode parameter
-            return
-            (
-                from type in types
-                let attributes = type.GetCustomAttributes(typeof(SceneExporterAttribute), false)
-                where attributes.Length != 0
-                where ((SceneExporterAttribute) attributes[0]).Gamemode == gamemode
-                select (SceneExporter) Activator.CreateInstance(type)
-            ).FirstOrDefault();
+            // gamemode that matches the gamemode parameter
+            return types.Where(x => x.IsSubclassOf(typeof(SceneExporter)))
+                        .Select(x => Activator.CreateInstance(x) as SceneExporter)
+                        .Where(x => x.GamemodeId == gamemode)
+                        .FirstOrDefault();
         }
-    }
-
-    public class SceneExporterAttribute : Attribute
-    {
-        public string Gamemode { get; }
-        public SceneExporterAttribute(string gamemode) => Gamemode = gamemode;
     }
 }

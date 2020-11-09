@@ -9,11 +9,11 @@ using TNH_SupplyPoint = FistVR.TNH_SupplyPoint;
 
 namespace WurstMod.Runtime.SceneLoaders
 {
-    [CustomSceneLoader(Constants.GamemodeTakeAndHold)]
     public class TakeAndHoldSceneLoader : CustomSceneLoader
     {
         private TNH_Manager _tnhManager;
-        
+
+        public override string GamemodeId => Constants.GamemodeTakeAndHold;
         public override string BaseScene => "TakeAndHoldClassic";
 
         /// <summary>

@@ -9,13 +9,14 @@ namespace WurstMod.MappingComponents.Generic
 {
     public class CustomScene : ComponentProxy
     {
-        [Header("Exported info")] public string SceneName;
-        public string Author;
-        public string Gamemode;
-        [TextArea(15, 20)] public string Description;
+        [HideInInspector] public string SceneName;
+        [HideInInspector] public string Author;
+        [HideInInspector] public string Gamemode;
+        [HideInInspector] public string Description;
         [HideInInspector] public Material Skybox;
 
-        [Header("Scene Settings")] public float MaxProjectileRange = 500f;
+        [Header("Scene Settings")] 
+        public float MaxProjectileRange = 500f;
 
         public override void OnExport(ExportErrors err)
         {

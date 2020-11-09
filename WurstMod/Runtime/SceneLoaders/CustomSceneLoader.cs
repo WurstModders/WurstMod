@@ -12,6 +12,11 @@ namespace WurstMod.Runtime
     public abstract class CustomSceneLoader
     {
         /// <summary>
+        /// This is implemented by the deriving class and is a unique identifier for a game mode.
+        /// </summary>
+        public abstract string GamemodeId { get; }
+
+        /// <summary>
         /// This is implemented by the deriving class and tells the loader which scene to use as the base for the game mode
         /// </summary>
         public abstract string BaseScene { get; }
@@ -50,25 +55,11 @@ namespace WurstMod.Runtime
                 .Where(t => t.IsSubclassOf(typeof(CustomSceneLoader)));
 
             // Magic LINQ statement to select the first type that has the
-            // CustomSceneLoaderAttribute with a gamemode that matches the gamemode parameter
-            return
-            (
-                from type in types
-                let attributes = type.GetCustomAttributes(typeof(CustomSceneLoaderAttribute), false)
-                where attributes.Length != 0
-                where ((CustomSceneLoaderAttribute) attributes[0]).Gamemode == gamemode
-                select (CustomSceneLoader) Activator.CreateInstance(type)
-            ).FirstOrDefault();
+            // gamemode that matches the gamemode parameter
+            return types.Where(x => x.IsSubclassOf(typeof(CustomSceneLoader)))
+            .Select(x => Activator.CreateInstance(x) as CustomSceneLoader)
+            .Where(x => x.GamemodeId == gamemode)
+            .FirstOrDefault();
         }
-    }
-
-    /// <summary>
-    /// An attribute for use on derived CustomSceneLoader classes. Describes which game mode they will run on. 
-    /// </summary>
-    public class CustomSceneLoaderAttribute : Attribute
-    {
-        public string Gamemode { get; }
-
-        public CustomSceneLoaderAttribute(string gamemode) => Gamemode = gamemode;
     }
 }

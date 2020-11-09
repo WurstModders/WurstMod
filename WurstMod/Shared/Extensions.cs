@@ -95,6 +95,18 @@ namespace WurstMod.Shared
 
             field.SetValue(target, value);
         }
+
+        public static Type[] GetTypesSafe(this Assembly asm)
+        {
+            try
+            {
+                return asm.GetTypes();
+            }
+            catch (ReflectionTypeLoadException e)
+            {
+                return e.Types.Where(t => t != null).ToArray();
+            }
+        }
         #endregion
 
         #region Scene
