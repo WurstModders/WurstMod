@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using FistVR;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -11,7 +9,6 @@ using UnityEngine.SceneManagement;
 using WurstMod.MappingComponents;
 using WurstMod.MappingComponents.Generic;
 using WurstMod.Shared;
-using Object = UnityEngine.Object;
 
 namespace WurstMod.UnityEditor.SceneExporters
 {

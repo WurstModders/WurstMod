@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using WurstMod.MappingComponents.Generic;
