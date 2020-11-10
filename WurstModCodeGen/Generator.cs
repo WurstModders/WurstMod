@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -16,8 +17,10 @@ namespace WurstModCodeGen
         static readonly string UnpackedPath = @"../../../uTinyExport";
         static readonly string ClassName = "ResourceDefs";
         static readonly string DestinationPath = $@"../../../WurstMod/Shared/{ClassName}.cs";
+        static readonly string AnvilEnumName = "AnvilAsset";
 
         static string[] allFiles;
+        static List<int> allHashes = new List<int>();
 
         static void Main(string[] args)
         {
@@ -38,6 +41,17 @@ folder at the root of the repository.");
                 result = result.Replace("\r", "");
                 result = result.Replace("\n", "\r\n");
                 File.WriteAllText(DestinationPath, result);
+
+                if (allHashes.Count() != allHashes.Distinct().Count())
+                {
+                    var dupes = allHashes.GroupBy(x => x);
+                    foreach (var grp in dupes)
+                    {
+                        if (grp.Count() > 1) Console.WriteLine(grp.Key);
+                    }
+                    Console.WriteLine("Hash overlap happened. Backwards compatibility may be nuked.");
+                    Console.ReadLine();
+                }
             }
         }
 
@@ -48,12 +62,17 @@ folder at the root of the repository.");
 
         static string Generate()
         {
-            string sosigBodyRegion = GenerateRegion("osigBody", "[SZ]osigBody_", "SosigBody", "objectids");
-            string sosigAccessoryRegion = GenerateRegion("accessory", "[sS]osig[aA]ccessory_", "SosigAccessory", "objectids");
-            string sosigMeleeRegion = GenerateRegion("SosigMelee", "SosigMelee_", "SosigMelee", "objectids");
-            string sosigGunRegion = GenerateRegion("Sosiggun", "Sosiggun_", "SosigGun", "objectids");
-            string weaponStuffRegion = GenerateRegion("weaponry_", @".*\\", "WeaponStuff", "objectids");
-            string pMatRegion = GenerateRegion("PMat", "PMat_", "PMat", "pmaterialdefinitions");
+            // Anvil
+            string[] sosigBodyRegion      = GeneratePartialRegion("SOSIGBODY__", "osigBody", "[SZ]osigBody_", AnvilEnumName, "objectids");
+            string[] sosigAccessoryRegion = GeneratePartialRegion("SOSIGACCESSORY__", "accessory", "[sS]osig[aA]ccessory_", AnvilEnumName, "objectids");
+            string[] sosigMeleeRegion     = GeneratePartialRegion("SOSIGMELEE__", "SosigMelee", "SosigMelee_", AnvilEnumName, "objectids");
+            string[] sosigGunRegion       = GeneratePartialRegion("SOSIGGUN__", "Sosiggun", "Sosiggun_", AnvilEnumName, "objectids");
+            string[] weaponStuffRegion    = GeneratePartialRegion("WEAPONRY__", "weaponry_", @".*\\", AnvilEnumName, "objectids");
+            string[] rotwienerRegion      = GeneratePartialRegion("ROTWIENER__", "", @".*\\", AnvilEnumName, "_returnrotwieners");
+            string[] powerupRegion        = GeneratePartialRegion("POWERUP__", "PowerUpMeat", @".*\\", AnvilEnumName, "objectids");
+
+            // Other
+            string pMatRegion   = GenerateRegion("PMat", "PMat_", "PMat", "pmaterialdefinitions");
             string matDefRegion = GenerateRegion("", @".*\\", "MatDef", "matdefs");
 
             string output =
@@ -63,11 +82,29 @@ namespace WurstMod.Shared
 {{
     public static class {ClassName}
     {{
-        {sosigBodyRegion}
-        {sosigAccessoryRegion}
-        {sosigMeleeRegion}
-        {sosigGunRegion}
-        {weaponStuffRegion}
+        #region {AnvilEnumName}
+        public enum {AnvilEnumName}
+        {{
+            {sosigBodyRegion[0]},
+            {sosigAccessoryRegion[0]},
+            {sosigMeleeRegion[0]},
+            {sosigGunRegion[0]},
+            {weaponStuffRegion[0]},
+            {rotwienerRegion[0]},
+            {powerupRegion[0]}
+        }}
+
+        public static readonly Dictionary<{AnvilEnumName}, string> {AnvilEnumName}Resources = new Dictionary<{AnvilEnumName}, string>()
+        {{
+            {sosigBodyRegion[1]},
+            {sosigAccessoryRegion[1]},
+            {sosigMeleeRegion[1]},
+            {sosigGunRegion[1]},
+            {weaponStuffRegion[1]},
+            {rotwienerRegion[1]},
+            {powerupRegion[1]}
+        }};
+        #endregion
         {pMatRegion}
         {matDefRegion}
     }}
@@ -77,7 +114,7 @@ namespace WurstMod.Shared
             return output;
         }
 
-        static string[] GenericEnumDictifier(string fileFilter, string filePattern, string enumName, string folder)
+        static string[] GenericEnumDictifier(string fileFilter, string filePattern, string enumName, string folder, string prefix = "")
         {
             // Helper: Remove unwanted characters and ensure format is valid for C# enum declarations.
             string FormatEnum(string str)
@@ -87,6 +124,7 @@ namespace WurstMod.Shared
                 {
                     str = str.Replace(ii, "_");
                 }
+                str = prefix + str;
                 if (char.IsDigit(str[0])) str = "_" + str;
                 return str;
             }
@@ -95,9 +133,13 @@ namespace WurstMod.Shared
             // {STRING} = {HASHCODE}
             // This provides a convenient way to make enums that are very unlikely
             // to be shifted around or broken as new elements are added.
-            string[] OrderEnum(string[] values)
+            string[] OrderEnum(string[] values, bool countInAllHashes = false)
             {
                 int[] orders = values.Select(x => x.GetStableHashCode()).ToArray();
+                if (countInAllHashes)
+                {
+                    allHashes.AddRange(orders);
+                }
                 if (orders.Count() != orders.Distinct().Count())
                 {
                     Console.WriteLine("Hash overlap happened. Backwards compatibility may be nuked.");
@@ -118,7 +160,7 @@ namespace WurstMod.Shared
             relevantMatches = relevantMatches.Where(x => x.Groups[1].Success && x.Groups[2].Success).ToArray();
 
             string[] enumValues = relevantMatches.Select(x => FormatEnum(x.Groups[2].ToString())).ToArray();
-            string[] enumValuesWithOrders = OrderEnum(enumValues);
+            string[] enumValuesWithOrders = OrderEnum(enumValues, prefix != "");
             string[] pathValues = relevantMatches.Select(x => x.Groups[1].ToString()).ToArray();
 
             string enumFinal = string.Join(",\n            ", enumValuesWithOrders.OrderBy(x => x));
@@ -148,6 +190,11 @@ $@"
         #endregion";
 
             return output;
+        }
+
+        static string[] GeneratePartialRegion(string prefix, string fileFilter, string filePattern, string enumName, string folder)
+        {
+            return GenericEnumDictifier(fileFilter, filePattern, enumName, folder, prefix);
         }
     }
 }
