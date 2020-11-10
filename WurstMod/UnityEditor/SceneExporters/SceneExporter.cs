@@ -37,7 +37,7 @@ namespace WurstMod.UnityEditor.SceneExporters
             _scene = scene;
             _root = root;
             _err = err;
-            
+
             // Check for NavMesh and Occlusion data
             // These aren't *required* so they will only be warnings
             if (!File.Exists(Path.GetDirectoryName(scene.path) + "/" + scene.name + "/NavMesh.asset")) err.AddWarning("Scene is missing NavMesh data!");
@@ -94,7 +94,8 @@ namespace WurstMod.UnityEditor.SceneExporters
                 Path.Combine(levelInfo.Location, $"{_scene.name}.manifest")
             };
             foreach (var file in toDelete)
-                if (File.Exists(file)) File.Delete(file);
+                if (File.Exists(file))
+                    File.Delete(file);
         }
 
         /// <summary>
@@ -105,17 +106,17 @@ namespace WurstMod.UnityEditor.SceneExporters
         /// <param name="warning">If invalid, produces a warning instead of an error</param>
         /// <param name="message">Custom message to log</param>
         /// <typeparam name="T">The type of the component</typeparam>
-        protected void RequiredComponents<T>(int min, int max, bool warning = false, string message = null)
+        protected void RequiredComponents<T>(int min, int max = int.MaxValue, bool warning = false, string message = null)
         {
             var count = _root.GetComponentsInChildren<T>().Length;
             if (min <= count && count <= max) return;
 
-            var msg = min == max ? $"{min}" : $"{min} - {max}";
+            var msg = min == max ? $"{min}" : max == int.MaxValue ? $"at least {min}" : $"{min} - {max}";
             if (warning) _err.AddWarning(message ?? $"Your scene contains {count} {typeof(T).Name}. Recommended number is {msg}");
             else _err.AddError(message ?? $"Your scene contains {count} {typeof(T).Name}. Required number is {msg}");
         }
 
-        
+
         // Array of currently registered scene exporters
         public static SceneExporter[] RegisteredSceneExporters;
 

@@ -14,12 +14,12 @@ namespace WurstMod.UnityEditor.SceneExporters
         {
             // Base validate
             base.Validate(scene, root, err);
-            
+
             // Check for all required components
             RequiredComponents<Scoreboard>(1, 1);
             RequiredComponents<Respawn>(1, 1);
-            RequiredComponents<TNH_HoldPoint>(2, int.MaxValue);
-            RequiredComponents<TNH_SupplyPoint>(3, int.MaxValue);
+            RequiredComponents<TNH_HoldPoint>(2);
+            RequiredComponents<TNH_SupplyPoint>(3);
             RequiredComponents<ForcedSpawn>(0, 1);
         }
     }
