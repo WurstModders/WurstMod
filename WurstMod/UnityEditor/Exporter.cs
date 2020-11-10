@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using WurstMod.MappingComponents;
 using WurstMod.MappingComponents.Generic;
 using WurstMod.Shared;
 using WurstMod.UnityEditor.SceneExporters;
@@ -39,6 +37,7 @@ namespace WurstMod.UnityEditor
             }
 
             // Find the exporter class. If none is found, error out
+            SceneExporter.RefreshLoadedSceneExporters();
             var exporter = SceneExporter.GetExporterForGamemode(sceneRoot.Gamemode);
             if (exporter == null)
             {

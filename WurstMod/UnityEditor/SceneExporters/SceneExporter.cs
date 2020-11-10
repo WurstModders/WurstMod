@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -12,7 +11,6 @@ using Valve.VR.InteractionSystem;
 using WurstMod.MappingComponents;
 using WurstMod.MappingComponents.Generic;
 using WurstMod.Shared;
-using Object = UnityEngine.Object;
 
 namespace WurstMod.UnityEditor.SceneExporters
 {
@@ -41,7 +39,7 @@ namespace WurstMod.UnityEditor.SceneExporters
             _scene = scene;
             _root = root;
             _err = err;
-            
+
             // Check for NavMesh and Occlusion data
             // These aren't *required* so they will only be warnings
             if (!File.Exists(Path.GetDirectoryName(scene.path) + "/" + scene.name + "/NavMesh.asset")) err.AddWarning("Scene is missing NavMesh data!");
@@ -103,7 +101,8 @@ namespace WurstMod.UnityEditor.SceneExporters
                 Path.Combine(levelInfo.Location, $"{_scene.name}.manifest")
             };
             foreach (var file in toDelete)
-                if (File.Exists(file)) File.Delete(file);
+                if (File.Exists(file))
+                    File.Delete(file);
         }
 
         /// <summary>
@@ -114,24 +113,34 @@ namespace WurstMod.UnityEditor.SceneExporters
         /// <param name="warning">If invalid, produces a warning instead of an error</param>
         /// <param name="message">Custom message to log</param>
         /// <typeparam name="T">The type of the component</typeparam>
-        protected void RequiredComponents<T>(int min, int max, bool warning = false, string message = null)
+        protected void RequiredComponents<T>(int min, int max = int.MaxValue, bool warning = false, string message = null)
         {
             var count = _root.GetComponentsInChildren<T>().Length;
             if (min <= count && count <= max) return;
 
-            var msg = min == max ? $"{min}" : $"{min} - {max}";
+            var msg = min == max ? $"{min}" : max == int.MaxValue ? $"at least {min}" : $"{min} - {max}";
             if (warning) _err.AddWarning(message ?? $"Your scene contains {count} {typeof(T).Name}. Recommended number is {msg}");
             else _err.AddError(message ?? $"Your scene contains {count} {typeof(T).Name}. Required number is {msg}");
         }
-        
+
+
+        // Array of currently registered scene exporters
+        public static SceneExporter[] RegisteredSceneExporters;
+
         /// <summary>
-        /// Returns all scene exporters across all loaded assemblies
+        /// Simple method to re-discover and instantiate scene exporters.
+        /// </summary>
+        public static void RefreshLoadedSceneExporters() => RegisteredSceneExporters = EnumerateExporterTypes().Select(x => Activator.CreateInstance(x) as SceneExporter).ToArray();
+
+        /// <summary>
+        /// Enumerates all scene exporters across all loaded assemblies. You should probably use the
+        /// RegisteredSceneLoaders variable instead of this as it's expensive.
         /// </summary>
         /// <returns>All scene exporters across all loaded assemblies</returns>
-        public static Type[] GetAllExporters()
+        public static IEnumerable<Type> EnumerateExporterTypes()
         {
             return AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypesSafe())
-                   .Where(x => x.IsSubclassOf(typeof(SceneExporter))).ToArray();
+                .Where(x => x.IsSubclassOf(typeof(SceneExporter)));
         }
 
         /// <summary>
@@ -139,17 +148,6 @@ namespace WurstMod.UnityEditor.SceneExporters
         /// </summary>
         /// <param name="gamemode">The gamemode</param>
         /// <returns>The exporter object</returns>
-        public static SceneExporter GetExporterForGamemode(string gamemode)
-        {
-            // Get a list of all types in the app domain that derive from SceneExporter
-            Type[] types = GetAllExporters();
-
-            // Magic LINQ statement to select the first type that has the
-            // gamemode that matches the gamemode parameter
-            return types.Where(x => x.IsSubclassOf(typeof(SceneExporter)))
-                        .Select(x => Activator.CreateInstance(x) as SceneExporter)
-                        .Where(x => x.GamemodeId == gamemode)
-                        .FirstOrDefault();
-        }
+        public static SceneExporter GetExporterForGamemode(string gamemode) => RegisteredSceneExporters.FirstOrDefault(x => x.GamemodeId == gamemode);
     }
 }

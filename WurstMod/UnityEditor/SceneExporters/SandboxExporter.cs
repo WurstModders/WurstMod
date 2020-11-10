@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using UnityEngine.SceneManagement;
+﻿using UnityEngine.SceneManagement;
 using WurstMod.MappingComponents.Generic;
 using WurstMod.MappingComponents.Sandbox;
 using WurstMod.Shared;
