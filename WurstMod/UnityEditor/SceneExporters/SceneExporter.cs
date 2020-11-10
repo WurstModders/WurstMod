@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using FistVR;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -116,15 +117,25 @@ namespace WurstMod.UnityEditor.SceneExporters
             if (warning) _err.AddWarning(message ?? $"Your scene contains {count} {typeof(T).Name}. Recommended number is {msg}");
             else _err.AddError(message ?? $"Your scene contains {count} {typeof(T).Name}. Required number is {msg}");
         }
+
         
+        // Array of currently registered scene exporters
+        public static SceneExporter[] RegisteredSceneExporters;
+
         /// <summary>
-        /// Returns all scene exporters across all loaded assemblies
+        /// Simple method to re-discover and instantiate scene exporters.
+        /// </summary>
+        public static void RefreshLoadedSceneExporters() => RegisteredSceneExporters = EnumerateExporterTypes().Select(x => Activator.CreateInstance(x) as SceneExporter).ToArray();
+
+        /// <summary>
+        /// Enumerates all scene exporters across all loaded assemblies. You should probably use the
+        /// RegisteredSceneLoaders variable instead of this as it's expensive.
         /// </summary>
         /// <returns>All scene exporters across all loaded assemblies</returns>
-        public static Type[] GetAllExporters()
+        public static IEnumerable<Type> EnumerateExporterTypes()
         {
             return AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypesSafe())
-                   .Where(x => x.IsSubclassOf(typeof(SceneExporter))).ToArray();
+                .Where(x => x.IsSubclassOf(typeof(SceneExporter)));
         }
 
         /// <summary>
@@ -132,17 +143,6 @@ namespace WurstMod.UnityEditor.SceneExporters
         /// </summary>
         /// <param name="gamemode">The gamemode</param>
         /// <returns>The exporter object</returns>
-        public static SceneExporter GetExporterForGamemode(string gamemode)
-        {
-            // Get a list of all types in the app domain that derive from SceneExporter
-            Type[] types = GetAllExporters();
-
-            // Magic LINQ statement to select the first type that has the
-            // gamemode that matches the gamemode parameter
-            return types.Where(x => x.IsSubclassOf(typeof(SceneExporter)))
-                        .Select(x => Activator.CreateInstance(x) as SceneExporter)
-                        .Where(x => x.GamemodeId == gamemode)
-                        .FirstOrDefault();
-        }
+        public static SceneExporter GetExporterForGamemode(string gamemode) => RegisteredSceneExporters.FirstOrDefault(x => x.GamemodeId == gamemode);
     }
 }

@@ -17,6 +17,7 @@ namespace WurstMod.UnityEditor
         public static void Open()
         {
             _scene = GetRoot();
+            SceneExporter.RefreshLoadedSceneExporters();
             GetWindow<ExporterWindow>();
         }
 
@@ -28,11 +29,8 @@ namespace WurstMod.UnityEditor
 
         private void OnGUI()
         {
-            if (!_scene)
-            {
-                // Check again, scene changes and exports can cause check to fail when it shouldn't.
-                _scene = GetRoot();
-            }
+            // If scene is null, check again. Scene changes and exports can cause check to fail when it shouldn't.
+            if (!_scene) _scene = GetRoot();
 
             if (!_scene)
             {
@@ -44,7 +42,6 @@ namespace WurstMod.UnityEditor
             GUILayout.Label("Scene metadata", EditorStyles.boldLabel);
             _scene.SceneName = EditorGUILayout.TextField("Scene Name", _scene.SceneName);
             _scene.Author = EditorGUILayout.TextField("Author", _scene.Author);
-            //_scene.Gamemode = EditorGUILayout.TextField("Gamemode", _scene.Gamemode);
             _scene.Gamemode = DrawGamemode(_scene.Gamemode);
             _scene.Description = EditorGUILayout.TextField("Description", _scene.Description, GUILayout.MaxHeight(75));
 
@@ -58,17 +55,15 @@ namespace WurstMod.UnityEditor
 
         private string DrawGamemode(string current)
         {
-            string[] choices = SceneExporter.GetAllExporters()
-                .Select(x => Activator.CreateInstance(x) as SceneExporter)
-                .Select(x => x.GamemodeId)
-                .ToArray();
+            // If we haven't yet registered any types, do it now.
+            // This will need to be done when Unity reloads assemblies, so unfortunately more often than I'd like
+            if (SceneExporter.RegisteredSceneExporters == null) SceneExporter.RefreshLoadedSceneExporters();
+            var choices = (SceneExporter.RegisteredSceneExporters ?? new SceneExporter[0]).Select(x => x.GamemodeId).ToArray();
 
-            int currentIndex = Array.IndexOf(choices, current);
-            int newIndex;
-
+            var currentIndex = Array.IndexOf(choices, current);
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Gamemode");
-            newIndex = EditorGUILayout.Popup(currentIndex, choices);
+            var newIndex = EditorGUILayout.Popup(currentIndex, choices);
             EditorGUILayout.EndHorizontal();
 
             return choices[newIndex];
