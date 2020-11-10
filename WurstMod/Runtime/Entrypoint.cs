@@ -1,24 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
-using BepInEx;
 using BepInEx.Configuration;
-using UnityEngine;
+using H3ModFramework;
 using UnityEngine.SceneManagement;
-using WurstMod.MappingComponents.TakeAndHold;
 using WurstMod.Runtime.ScenePatchers;
 
 namespace WurstMod.Runtime
 {
-    [BepInPlugin("com.koba.plugins.wurstmod", "WurstMod", "2.0.0.0")]
-    public class Entrypoint : BaseUnityPlugin
+    public class Entrypoint : H3VRMod
     {
-        public static BaseUnityPlugin self;
-
         void Awake()
         {
-            self = this;
             LegacySupport.Init();
             RegisterListeners();
             InitDetours();
@@ -51,7 +44,7 @@ namespace WurstMod.Runtime
         public static ConfigEntry<string> configQuickload;
         void InitConfig()
         {
-            configQuickload = Config.Bind("Debug", "QuickloadPath", "", "Set this to a folder containing the scene you would like to load as soon as H3VR boots. This is good for quickly testing scenes you are developing.");
+            configQuickload = BaseMod.Config.Bind("Debug", "QuickloadPath", "", "Set this to a folder containing the scene you would like to load as soon as H3VR boots. This is good for quickly testing scenes you are developing.");
         }
 
         private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode mode)
