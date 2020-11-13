@@ -7,13 +7,23 @@ namespace WurstMod.Runtime
 {
     public static class CustomLevelFinder
     {
+        public static readonly List<LevelInfo> DirectoryLevels = new List<LevelInfo>();
+        public static readonly List<LevelInfo> ArchiveLevels = new List<LevelInfo>();
+        
         /// <summary>
         /// Iterates over the custom levels found in the custom levels directory
         /// </summary>
         public static IEnumerable<LevelInfo> EnumerateLevelInfos()
         {
+            foreach (var level in DirectoryLevels) yield return level;
+            foreach (var level in ArchiveLevels) yield return level;
+        }
+
+        public static void DiscoverLevelsInFolder()
+        {
+            DirectoryLevels.Clear();
             var levels = Directory.GetFiles(Constants.CustomLevelsDirectory, Constants.FilenameLevelInfo, SearchOption.AllDirectories);
-            return levels.Select(LevelInfo.FromFile).Where(x => x.HasValue).Select(x => x.Value);
+            DirectoryLevels.AddRange(levels.Select(LevelInfo.FromFile).Where(x => x.HasValue).Select(x => x.Value));
         }
 
         /// <summary>

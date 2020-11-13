@@ -180,7 +180,17 @@ namespace WurstMod.Runtime
     {
         static bool Prefix(MainMenuScenePointable __instance, FVRViveHand hand)
         {
-            if (hand.Input.TriggerDown) Loader.LevelToLoad = __instance.name == "MODDEDSCREEN" ? LevelInfo.FromFile(__instance.Def.Name.Split('\n')[1]) : null;
+            if (hand.Input.TriggerDown)
+            {
+                if (__instance.name == "MODDEDSCREEN")
+                {
+                    var levelId = __instance.Def.Name.Split('\n')[1];
+                    var level = CustomLevelFinder.EnumerateLevelInfos().FirstOrDefault(x => x.Identifier == levelId);
+                    Loader.LevelToLoad = level;
+                }
+                else Loader.LevelToLoad = null;
+            }
+
 
             return true;
         }

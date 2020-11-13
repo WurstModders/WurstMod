@@ -41,10 +41,12 @@ namespace WurstMod.Runtime
             };
         }
 
-        public static ConfigEntry<string> configQuickload;
+        public static ConfigEntry<string> ConfigQuickload;
+        public static ConfigEntry<bool> LoadDebugLevels;
         void InitConfig()
         {
-            configQuickload = BaseMod.Config.Bind("Debug", "QuickloadPath", "", "Set this to a folder containing the scene you would like to load as soon as H3VR boots. This is good for quickly testing scenes you are developing.");
+            ConfigQuickload = BaseMod.Config.Bind("Debug", "QuickloadPath", "", "Set this to a folder containing the scene you would like to load as soon as H3VR boots. This is good for quickly testing scenes you are developing.");
+            LoadDebugLevels = BaseMod.Config.Bind("Debug", "LoadDebugLevels", true, "True if you want the included default levels to be loaded");
         }
 
         private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode mode)

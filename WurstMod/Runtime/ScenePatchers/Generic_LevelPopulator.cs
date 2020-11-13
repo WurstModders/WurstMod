@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using FistVR;
 using UnityEngine;
@@ -12,7 +11,6 @@ namespace WurstMod.Runtime.ScenePatchers
 {
     class Generic_LevelPopulator
     {
-        
         // References
         private static GameObject labelBase;
         private static GameObject sceneScreenBase;
@@ -103,18 +101,13 @@ namespace WurstMod.Runtime.ScenePatchers
         {
             foreach (var level in CustomLevelFinder.EnumerateLevelInfos().Where(x => x.Gamemode != Constants.GamemodeTakeAndHold))
             {
-                
+                var imageT = level.Thumbnail;
                 Sprite image = null;
-                Texture2D imageT = null;
-                if (File.Exists(level.ThumbnailPath))
-                {
-                    image = SpriteLoader.LoadNewSprite(level.ThumbnailPath);
-                    imageT = SpriteLoader.LoadTexture(level.ThumbnailPath);
-                }
-                
+                if (imageT) image = SpriteLoader.ConvertTextureToSprite(imageT);
+
                 // Create and apply scene def.
                 MainMenuSceneDef moddedDef = ScriptableObject.CreateInstance<MainMenuSceneDef>();
-                moddedDef.Name = level.SceneName + "\n" + level.AssetBundlePath;
+                moddedDef.Name = level.SceneName + "\n" + level.Identifier;
                 moddedDef.Type = level.Author;
                 moddedDef.SceneName = "ProvingGround";
                 moddedDef.Desciption = level.Description;

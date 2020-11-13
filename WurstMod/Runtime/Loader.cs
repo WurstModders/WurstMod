@@ -65,6 +65,9 @@ namespace WurstMod.Runtime
             // Unpatch any Harmony patches we've previously loaded for custom maps
             CustomAssemblyPatches.UnpatchAll("wurstmod.custom_assemblies");
             
+            // If this is loaded from an archive, just stop here. Archives would have already loaded the DLLs
+            if (level.IsFrameworkMod) return;
+            
             // Now we can discover and load the assemblies for this map
             foreach (var assembly in Directory.GetFiles(level.Location, "*.dll"))
             {
@@ -149,7 +152,7 @@ namespace WurstMod.Runtime
             AssetBundle bundle;
             if (!LoadedBundles.ContainsKey(level.AssetBundlePath))
             {
-                bundle = AssetBundle.LoadFromFile(level.AssetBundlePath);
+                bundle = level.AssetBundle;
                 LoadedBundles.Add(level.AssetBundlePath, bundle);
             }
             else bundle = LoadedBundles[level.AssetBundlePath];
