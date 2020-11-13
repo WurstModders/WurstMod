@@ -211,7 +211,13 @@ namespace WurstMod.Any
         void Awake()
         {
             spawnOnSceneLoad = true;
-            prefab = (WurstMod.Shared.ResourceDefs.WeaponStuff)Enum.Parse(typeof(WurstMod.Shared.ResourceDefs.WeaponStuff), AssetName);
+
+            string[] enumNames = Enum.GetNames(typeof(WurstMod.Shared.ResourceDefs.AnvilAsset));
+            string correctEnumName = enumNames.Where(x => x.EndsWith(AssetName)).FirstOrDefault();
+            if (!string.IsNullOrEmpty(correctEnumName))
+            {
+                prefab = (WurstMod.Shared.ResourceDefs.AnvilAsset)Enum.Parse(typeof(WurstMod.Shared.ResourceDefs.AnvilAsset), correctEnumName);
+            }
         }
     }
     [Obsolete] [AddComponentMenu("")] public class FVRHandGrabPoint : WurstMod.MappingComponents.Generic.FVRHandGrabPoint { }

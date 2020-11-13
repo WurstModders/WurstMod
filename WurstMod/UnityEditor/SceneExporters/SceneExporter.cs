@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FistVR;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,6 +7,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Valve.VR.InteractionSystem;
 using WurstMod.MappingComponents;
 using WurstMod.MappingComponents.Generic;
 using WurstMod.Shared;
@@ -66,8 +68,13 @@ namespace WurstMod.UnityEditor.SceneExporters
 
             // Delete the folder if it exists already
             Debug.Log("Removing previous export...");
-            if (Directory.Exists(location)) Directory.Delete(location, true);
-            Directory.CreateDirectory(location);
+            if (Directory.Exists(location))
+            {
+                foreach (string path in Directory.GetFiles(location, "*.*", SearchOption.AllDirectories))
+                {
+                    File.Delete(path);
+                }
+            }
 
             // Create a LevelInfo object and save it
             Debug.Log("Writing level info...");
