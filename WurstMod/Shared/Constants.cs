@@ -1,6 +1,6 @@
 ﻿namespace WurstMod.Shared
 {
-    public static class Constants
+    internal static class Constants
     {
         public const string CustomLevelsDirectory = "CustomLevels";
         public const string FilenameLevelData = "leveldata";
