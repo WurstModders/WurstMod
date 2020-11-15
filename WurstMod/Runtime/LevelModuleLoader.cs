@@ -1,13 +1,14 @@
-﻿using H3ModFramework;
+﻿using Atlas;
+using Deli;
 using UnityEngine;
 using WurstMod.Shared;
 
 namespace WurstMod.Runtime
 {
-    [ModuleLoader(Name = "Level")]
+    [QuickNamedBind("Level")]
     public class LevelModuleLoader : IModuleLoader
     {
-        public void LoadModule(ModInfo mod, ModInfo.ModuleInfo module)
+        public void LoadModule(IServiceKernel kernel, ModInfo mod, ModInfo.ModuleInfo module)
         {
             // If the config has disabled loading the default included levels, return
             if (!Entrypoint.LoadDebugLevels.Value && mod.Guid == "wurstmod")

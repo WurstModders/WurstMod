@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Reflection;
 using BepInEx.Configuration;
-using H3ModFramework;
+using Deli;
 using UnityEngine.SceneManagement;
 using WurstMod.Runtime.ScenePatchers;
 
 namespace WurstMod.Runtime
 {
-    public class Entrypoint : H3VRMod
+    public class Entrypoint : DeliMod
     {
         void Awake()
         {

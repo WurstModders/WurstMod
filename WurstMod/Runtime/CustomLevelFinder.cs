@@ -22,6 +22,7 @@ namespace WurstMod.Runtime
         public static void DiscoverLevelsInFolder()
         {
             DirectoryLevels.Clear();
+            if (!Directory.Exists(Constants.CustomLevelsDirectory)) return;
             var levels = Directory.GetFiles(Constants.CustomLevelsDirectory, Constants.FilenameLevelInfo, SearchOption.AllDirectories);
             DirectoryLevels.AddRange(levels.Select(LevelInfo.FromFile).Where(x => x.HasValue).Select(x => x.Value));
         }

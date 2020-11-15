@@ -134,6 +134,7 @@ namespace WurstMod.Runtime
         /// </summary>
         public static void JSONifyLevelInfos()
         {
+            if (!Directory.Exists(Shared.Constants.CustomLevelsDirectory)) return;
             string[] infoPaths = Directory.GetFiles(WurstMod.Shared.Constants.CustomLevelsDirectory, "info.txt", SearchOption.AllDirectories);
             foreach (string ii in infoPaths)
             {

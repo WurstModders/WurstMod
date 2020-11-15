@@ -44,11 +44,14 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>..\Libs\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Atlas, Version=20.11.14.1959, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\Libs\Atlas.dll</HintPath>
+    </Reference>
     <Reference Include="BepInEx">
       <HintPath>..\Libs\BepInEx.dll</HintPath>
     </Reference>
-    <Reference Include="H3ModFramework, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\Libs\H3ModFramework.dll</HintPath>
+    <Reference Include="Deli, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\Libs\Deli.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
