@@ -17,7 +17,7 @@ namespace WurstMod.UnityEditor
         {
             _scene = GetRoot();
             SceneExporter.RefreshLoadedSceneExporters();
-            GetWindow<ExporterWindow>();
+            GetWindow<ExporterWindow>("WurstMod Export");
         }
 
         private static CustomScene GetRoot()
