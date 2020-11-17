@@ -50,7 +50,7 @@
     <Reference Include="BepInEx">
       <HintPath>..\Libs\BepInEx.dll</HintPath>
     </Reference>
-    <Reference Include="Deli, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="Deli, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\Libs\Deli.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
@@ -126,6 +126,11 @@
     <Compile Include="UnityEditor\SceneExporters\SandboxExporter.cs" />
     <Compile Include="UnityEditor\SceneExporters\SceneExporter.cs" />
     <Compile Include="UnityEditor\SceneExporters\TakeAndHoldExporter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="manifest.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

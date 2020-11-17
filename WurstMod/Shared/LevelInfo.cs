@@ -18,7 +18,7 @@ namespace WurstMod.Shared
         public string Location;
         
         public bool IsFrameworkMod;
-        public ModInfo ModInfo;
+        public Mod Mod;
 
         // This is a replacement for using the location of the level asset bundle as a unique identifier.
         public string Identifier => $"{SceneName}{Author}{Gamemode}{Description}".GetHashCode().ToString();
@@ -27,7 +27,7 @@ namespace WurstMod.Shared
         public string ThumbnailPath => Path.Combine(Location, Constants.FilenameLevelThumbnail);
         public string LevelInfoPath => Path.Combine(Location, Constants.FilenameLevelInfo);
 
-        public Texture2D Thumbnail => IsFrameworkMod ? ModInfo.GetResource<Texture2D>(ThumbnailPath) : SpriteLoader.LoadTexture(ThumbnailPath);
+        public Texture2D Thumbnail => IsFrameworkMod ? Mod.Resources.Get<Texture2D>(ThumbnailPath).Unwrap() : SpriteLoader.LoadTexture(ThumbnailPath);
 
         private AssetBundle _cached;
         public AssetBundle AssetBundle
@@ -35,7 +35,7 @@ namespace WurstMod.Shared
             get
             {
                 if (!_cached)
-                    _cached = IsFrameworkMod ? ModInfo.GetResource<AssetBundle>(AssetBundlePath) : AssetBundle.LoadFromFile(AssetBundlePath);
+                    _cached = IsFrameworkMod ? Mod.Resources.Get<AssetBundle>(AssetBundlePath).Unwrap() : AssetBundle.LoadFromFile(AssetBundlePath);
                 return _cached;
             }
         }
@@ -69,18 +69,18 @@ namespace WurstMod.Shared
         /// <param name="mod">The mod the module originates from</param>
         /// <param name="module">The module</param>
         /// <returns>A LevelInfo from it</returns>
-        public static LevelInfo? FromFrameworkMod(ModInfo mod, ModInfo.ModuleInfo module)
+        public static LevelInfo? FromFrameworkMod(Mod mod, string path)
         {
             // Load the level info from the mod archive
-            var levelInfo = JsonConvert.DeserializeObject<LevelInfo>(mod.GetResource<string>(module.Path + Constants.FilenameLevelInfo));
+            var levelInfo = JsonConvert.DeserializeObject<LevelInfo>(mod.Resources.Get<string>(path + Constants.FilenameLevelInfo).Unwrap());
 
             // If it doesn't exist, exit early
             if (levelInfo.Gamemode == "") return null;
 
             // Set some vars and return it
-            levelInfo.Location = module.Path;
+            levelInfo.Location = path;
             levelInfo.IsFrameworkMod = true;
-            levelInfo.ModInfo = mod;
+            levelInfo.Mod = mod;
             return levelInfo;
         }
 

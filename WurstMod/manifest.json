@@ -1,0 +1,15 @@
+﻿{
+  "guid": "wurstmod",
+  "version": "2.0.0.0",
+  "dependencies": {
+    "deli.core": "0.0.0.0"
+  },
+  "name": "WurstMod",
+  "authors": [
+    "Koba",
+    "Nathan Gill"
+  ],
+  "assets": {
+    "WurstMod.dll": "assembly"
+  }
+}

@@ -56,10 +56,10 @@ namespace WurstMod.Runtime
 
             // Magic LINQ statement to select the first type that has the
             // gamemode that matches the gamemode parameter
-            return types.Where(x => x.IsSubclassOf(typeof(CustomSceneLoader)))
-            .Select(x => Activator.CreateInstance(x) as CustomSceneLoader)
-            .Where(x => x.GamemodeId == gamemode)
-            .FirstOrDefault();
+            return types
+                .Where(x => x.IsSubclassOf(typeof(CustomSceneLoader)))
+                .Select(x => Activator.CreateInstance(x) as CustomSceneLoader)
+                .FirstOrDefault(x => x != null && x.GamemodeId == gamemode);
         }
     }
 }

@@ -6,26 +6,26 @@ using WurstMod.Shared;
 namespace WurstMod.Runtime
 {
     [QuickNamedBind("Level")]
-    public class LevelModuleLoader : IModuleLoader
+    public class LevelModuleLoader : IAssetLoader
     {
-        public void LoadModule(IServiceKernel kernel, ModInfo mod, ModInfo.ModuleInfo module)
+        public void LoadAsset(IServiceKernel kernel, Mod mod, string path)
         {
             // If the config has disabled loading the default included levels, return
-            if (!Entrypoint.LoadDebugLevels.Value && mod.Guid == "wurstmod")
+            if (!Entrypoint.LoadDebugLevels.Value && mod.Info.Guid == "wurstmod")
                 return;
             
             // Make sure it's a directory
-            if (!module.Path.EndsWith("/"))
-                module.Path += "/";
+            if (!path.EndsWith("/"))
+                path += "/";
             
             // Try to make a level info from it
-            var level = LevelInfo.FromFrameworkMod(mod, module);
+            var level = LevelInfo.FromFrameworkMod(mod, path);
             
-            if (!level.HasValue) Debug.LogError($"Level in {mod}, {module} is not valid!");
+            if (!level.HasValue) Debug.LogError($"Level in {mod}, {path} is not valid!");
             else
             {
                 CustomLevelFinder.ArchiveLevels.Add(level.Value);
-                Debug.Log($"Discovered level {level.Value.SceneName} in {mod}, {module}");
+                Debug.Log($"Discovered level {level.Value.SceneName} in {mod}, {path}");
             }
         }
     }
