@@ -17,6 +17,7 @@ namespace WurstMod.Runtime
             InitDetours();
             InitAppDomain();
             InitConfig();
+            CustomLevelFinder.DiscoverLevelsInFolder();
         }
 
         void RegisterListeners()

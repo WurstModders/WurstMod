@@ -27,7 +27,15 @@ namespace WurstMod.Shared
         public string ThumbnailPath => Path.Combine(Location, Constants.FilenameLevelThumbnail);
         public string LevelInfoPath => Path.Combine(Location, Constants.FilenameLevelInfo);
 
-        public Texture2D Thumbnail => IsFrameworkMod ? Mod.Resources.Get<Texture2D>(ThumbnailPath).Unwrap() : SpriteLoader.LoadTexture(ThumbnailPath);
+        public Texture2D Thumbnail
+        {
+            get
+            {
+                if (!IsFrameworkMod) return SpriteLoader.LoadTexture(ThumbnailPath);
+                var thumb = Mod.Resources.Get<Texture2D>(ThumbnailPath);
+                return thumb.IsNone ? null : thumb.Unwrap();
+            }
+        }
 
         private AssetBundle _cached;
         public AssetBundle AssetBundle
