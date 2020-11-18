@@ -85,6 +85,7 @@
     <Compile Include="MappingComponents\Generic\FVRReverbEnvironment.cs" />
     <Compile Include="MappingComponents\Generic\PlayerTrigger.cs" />
     <Compile Include="MappingComponents\Generic\PMat.cs" />
+    <Compile Include="MappingComponents\Generic\SosigSpawner.cs" />
     <Compile Include="MappingComponents\Generic\Target.cs" />
     <Compile Include="MappingComponents\Generic\CustomScene.cs" />
     <Compile Include="MappingComponents\Generic\Trigger.cs" />
@@ -116,8 +117,10 @@
     <Compile Include="Runtime\ScenePatchers\MainMenuScenePatcher.cs" />
     <Compile Include="Runtime\ScenePatchers\ScenePatcher.cs" />
     <Compile Include="Runtime\ScenePatchers\TNH_LevelSelector.cs" />
+    <Compile Include="Runtime\SosigSpawnerHelper.cs" />
     <Compile Include="Runtime\SpriteLoader.cs" />
     <Compile Include="Shared\Constants.cs" />
+    <Compile Include="Shared\Enums.cs" />
     <Compile Include="Shared\Extensions.cs" />
     <Compile Include="Shared\LevelInfo.cs" />
     <Compile Include="Shared\ResourceDefs.cs" />

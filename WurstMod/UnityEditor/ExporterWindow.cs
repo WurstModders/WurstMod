@@ -17,7 +17,7 @@ namespace WurstMod.UnityEditor
         {
             _scene = GetRoot();
             SceneExporter.RefreshLoadedSceneExporters();
-            GetWindow<ExporterWindow>();
+            GetWindow<ExporterWindow>("WurstMod Export");
         }
 
         private static CustomScene GetRoot()
@@ -60,6 +60,10 @@ namespace WurstMod.UnityEditor
             var choices = (SceneExporter.RegisteredSceneExporters ?? new SceneExporter[0]).Select(x => x.GamemodeId).ToArray();
 
             var currentIndex = Array.IndexOf(choices, current);
+            
+            // If the game mode isn't valid, set it to zero and let the user re-pick
+            if (currentIndex == -1) currentIndex = 0;
+            
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Gamemode");
             var newIndex = EditorGUILayout.Popup(currentIndex, choices);
