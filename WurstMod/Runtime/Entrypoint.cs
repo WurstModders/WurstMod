@@ -5,6 +5,7 @@ using BepInEx.Configuration;
 using Deli;
 using UnityEngine.SceneManagement;
 using WurstMod.Runtime.ScenePatchers;
+using WurstMod.Shared;
 
 namespace WurstMod.Runtime
 {
@@ -12,12 +13,17 @@ namespace WurstMod.Runtime
     {
         void Awake()
         {
-            LegacySupport.Init();
             RegisterListeners();
             InitDetours();
             InitAppDomain();
             InitConfig();
-            CustomLevelFinder.DiscoverLevelsInFolder();
+
+            // Only support legacy formats if opted in
+            if (UseLegacyLoadingMethod.Value)
+            {
+                LegacySupport.Init();
+                CustomLevelFinder.DiscoverLevelsInFolder();
+            }
         }
 
         void RegisterListeners()
@@ -44,10 +50,12 @@ namespace WurstMod.Runtime
 
         public static ConfigEntry<string> ConfigQuickload;
         public static ConfigEntry<bool> LoadDebugLevels;
+        public static ConfigEntry<bool> UseLegacyLoadingMethod;
         void InitConfig()
         {
             ConfigQuickload = BaseMod.Config.Bind("Debug", "QuickloadPath", "", "Set this to a folder containing the scene you would like to load as soon as H3VR boots. This is good for quickly testing scenes you are developing.");
             LoadDebugLevels = BaseMod.Config.Bind("Debug", "LoadDebugLevels", true, "True if you want the included default levels to be loaded");
+            LoadDebugLevels = BaseMod.Config.Bind("Debug", "UseLegacyLoadingMethod", false, $"True if you want to support loading legacy v1 or standalone levels from the {Constants.CustomLevelsDirectory} folder");
         }
 
         private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode mode)
