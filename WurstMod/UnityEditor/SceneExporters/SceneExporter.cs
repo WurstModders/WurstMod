@@ -50,6 +50,16 @@ namespace WurstMod.UnityEditor.SceneExporters
         }
 
         /// <summary>
+        /// This is called by the exporter window to let the game mode include custom data
+        /// IMPORTANT: You should probably check that the array is of correct length.
+        /// </summary>
+        public virtual CustomScene.StringKeyValue[] OnExporterGUI(CustomScene.StringKeyValue[] customData)
+        {
+            if (customData == null || customData.Length != 0) customData = new CustomScene.StringKeyValue[0];
+            return customData;
+        }
+        
+        /// <summary>
         /// This method is called after validate and will actually export the scene to files.
         /// </summary>
         public virtual void Export()

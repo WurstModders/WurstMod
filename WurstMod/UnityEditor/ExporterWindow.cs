@@ -41,9 +41,11 @@ namespace WurstMod.UnityEditor
             GUILayout.Label("Scene metadata", EditorStyles.boldLabel);
             _scene.SceneName = EditorGUILayout.TextField("Scene Name", _scene.SceneName);
             _scene.Author = EditorGUILayout.TextField("Author", _scene.Author);
-            _scene.Gamemode = DrawGamemode(_scene.Gamemode);
             _scene.Description = EditorGUILayout.TextField("Description", _scene.Description, GUILayout.MaxHeight(75));
 
+            // Game mode stuff
+            _scene.Gamemode = DrawGamemode(_scene.Gamemode);
+            
             if (GUILayout.Button("Export Scene"))
             {
                 var scene = SceneManager.GetActiveScene();
@@ -57,7 +59,8 @@ namespace WurstMod.UnityEditor
             // If we haven't yet registered any types, do it now.
             // This will need to be done when Unity reloads assemblies, so unfortunately more often than I'd like
             if (SceneExporter.RegisteredSceneExporters == null) SceneExporter.RefreshLoadedSceneExporters();
-            var choices = (SceneExporter.RegisteredSceneExporters ?? new SceneExporter[0]).Select(x => x.GamemodeId).ToArray();
+            var exporters = (SceneExporter.RegisteredSceneExporters ?? new SceneExporter[0]).ToArray();
+            var choices = exporters.Select(x => x.GamemodeId).ToArray();
 
             var currentIndex = Array.IndexOf(choices, current);
             
@@ -68,6 +71,8 @@ namespace WurstMod.UnityEditor
             EditorGUILayout.LabelField("Gamemode");
             var newIndex = EditorGUILayout.Popup(currentIndex, choices);
             EditorGUILayout.EndHorizontal();
+            if (currentIndex != newIndex) _scene.ExtraData = new CustomScene.StringKeyValue[0];
+            _scene.ExtraData = exporters[newIndex].OnExporterGUI(_scene.ExtraData);
 
             return choices[newIndex];
         }

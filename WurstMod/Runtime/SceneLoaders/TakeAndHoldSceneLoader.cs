@@ -30,7 +30,7 @@ namespace WurstMod.Runtime.SceneLoaders
             _tnhManager.SupplyPoints = LevelRoot.GetComponentsInChildren<TNH_SupplyPoint>(true).ToList();
 
             // Possible Sequences need to be generated at random.
-            _tnhManager.PossibleSequnces = GenerateRandomPointSequences(10);
+            if (LevelRoot.ExtraData[0].Value == "") _tnhManager.PossibleSequnces = GenerateRandomPointSequences(1);
 
             // Safe Pos Matrix needs to be set. Diagonal for now.
             TNH_SafePositionMatrix maxMatrix = GenerateTestMatrix();
@@ -58,14 +58,21 @@ namespace WurstMod.Runtime.SceneLoaders
                     sequence.StartSupplyPointIndex = Random.Range(0, _tnhManager.SupplyPoints.Count);
                 }
 
-                sequence.HoldPoints = new List<int>
+                // If the mapper hasn't set a custom hold order
+                if (LevelRoot.ExtraData[0].Value == "")
+                    sequence.HoldPoints = new List<int>
+                    {
+                        Random.Range(0, _tnhManager.HoldPoints.Count),
+                        Random.Range(0, _tnhManager.HoldPoints.Count),
+                        Random.Range(0, _tnhManager.HoldPoints.Count),
+                        Random.Range(0, _tnhManager.HoldPoints.Count),
+                        Random.Range(0, _tnhManager.HoldPoints.Count)
+                    };
+                else
                 {
-                    Random.Range(0, _tnhManager.HoldPoints.Count),
-                    Random.Range(0, _tnhManager.HoldPoints.Count),
-                    Random.Range(0, _tnhManager.HoldPoints.Count),
-                    Random.Range(0, _tnhManager.HoldPoints.Count),
-                    Random.Range(0, _tnhManager.HoldPoints.Count)
-                };
+                    var namedOrder = LevelRoot.ExtraData[0].Value.Split(',');
+                    sequence.HoldPoints = namedOrder.Select(x => _tnhManager.HoldPoints.FindIndex(y => y.name == x)).ToList();
+                }
 
                 // Fix sequence, because they may generate the same point after the current point, IE {1,4,4)
                 // This would break things.

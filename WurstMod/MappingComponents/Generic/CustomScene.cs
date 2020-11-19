@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using System;
+using UnityEngine;
 using Valve.VR.InteractionSystem;
 using WurstMod.Runtime;
 using WurstMod.Shared;
@@ -14,6 +14,8 @@ namespace WurstMod.MappingComponents.Generic
         [HideInInspector] public string Gamemode;
         [HideInInspector] public string Description;
         [HideInInspector] public Material Skybox;
+
+        [HideInInspector] public StringKeyValue[] ExtraData;
 
         [Header("Scene Settings")] 
         public float MaxProjectileRange = 500f;
@@ -75,6 +77,13 @@ namespace WurstMod.MappingComponents.Generic
             // Set the max range on the scene settings
             // TODO: There are probably a lot of settings we should carry over here.
             ObjectReferences.FVRSceneSettings.MaxProjectileRange = MaxProjectileRange;
+        }
+
+        [Serializable]
+        public struct StringKeyValue
+        {
+            public string Key;
+            public string Value;
         }
     }
 }
