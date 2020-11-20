@@ -55,7 +55,7 @@ namespace WurstMod.Runtime
         {
             ConfigQuickload = BaseMod.Config.Bind("Debug", "QuickloadPath", "", "Set this to a folder containing the scene you would like to load as soon as H3VR boots. This is good for quickly testing scenes you are developing.");
             LoadDebugLevels = BaseMod.Config.Bind("Debug", "LoadDebugLevels", true, "True if you want the included default levels to be loaded");
-            LoadDebugLevels = BaseMod.Config.Bind("Debug", "UseLegacyLoadingMethod", false, $"True if you want to support loading legacy v1 or standalone levels from the {Constants.CustomLevelsDirectory} folder");
+            UseLegacyLoadingMethod = BaseMod.Config.Bind("Debug", "UseLegacyLoadingMethod", false, $"True if you want to support loading legacy v1 or standalone levels from the {Constants.CustomLevelsDirectory} folder");
         }
 
         private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode mode)
