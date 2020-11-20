@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEditor;
 using UnityEngine.SceneManagement;
 using WurstMod.MappingComponents.Generic;
 using WurstMod.MappingComponents.TakeAndHold;
@@ -21,6 +22,15 @@ namespace WurstMod.UnityEditor.SceneExporters
             RequiredComponents<TNH_HoldPoint>(2);
             RequiredComponents<TNH_SupplyPoint>(3);
             RequiredComponents<ForcedSpawn>(0, 1);
+        }
+
+        public override CustomScene.StringKeyValue[] OnExporterGUI(CustomScene.StringKeyValue[] customData)
+        {
+            if (customData == null || customData.Length != 1) customData = new[] {new CustomScene.StringKeyValue {Key = "HoldOrder"}};
+
+            customData[0].Value = EditorGUILayout.TextField("Hold Order", customData[0].Value);
+
+            return customData;
         }
     }
 }
