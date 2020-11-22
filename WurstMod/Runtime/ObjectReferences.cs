@@ -25,11 +25,12 @@ namespace WurstMod.Runtime
         [ObjectReference] public static FVRSceneSettings FVRSceneSettings;
         [ObjectReference] public static MainMenuScreen MainMenuControls;
 
-        [ObjectReference("ItemSpawner")] public static GameObject ItemSpawnerDonor;
-        [ObjectReference("Destructobin")] public static GameObject DestructobinDonor;
-        [ObjectReference("SosigSpawner")] public static GameObject SosigSpawnerDonor;
-        [ObjectReference("WhizzBangADinger2")] public static GameObject WhizzBangADingerDonor;
-        [ObjectReference("BangerDetonator")] public static GameObject BangerDetonatorDonor;
+        // These get marked as Don't Destroy On Load because we kind of need them to exist after a reload :/
+        [ObjectReference("ItemSpawner", true)] public static GameObject ItemSpawnerDonor;
+        [ObjectReference("Destructobin", true)] public static GameObject DestructobinDonor;
+        [ObjectReference("SosigSpawner", true)] public static GameObject SosigSpawnerDonor;
+        [ObjectReference("WhizzBangADinger2", true)] public static GameObject WhizzBangADingerDonor;
+        [ObjectReference("BangerDetonator", true)] public static GameObject BangerDetonatorDonor;
 
         [ObjectReference("[CameraRig]Fixed")] public static GameObject CameraRig;
         [ObjectReference("_FinalScore")] public static GameObject FinalScore;
@@ -80,7 +81,14 @@ namespace WurstMod.Runtime
                     // If it isn't, we also want to query for where it has a component of the right type
                     else
                         found = gameObjects.Where(x => x.name.Contains(reference.NameFilter)).FirstOrDefault(x => x.GetComponent(field.FieldType))?.GetComponent(field.FieldType);
-                    if (found != null) field.SetValue(null, found);
+                    
+                    if (found == null) continue;
+                    field.SetValue(null, found);
+                    
+                    if (!reference.DontDestroyOnLoad) continue;
+                    if (found is GameObject go) go.transform.parent = null;
+                    else ((Component) found).transform.parent = null;
+                    Object.DontDestroyOnLoad(found);
                 }
             }
         }
@@ -97,8 +105,13 @@ namespace WurstMod.Runtime
     [AttributeUsage(AttributeTargets.Field)]
     public class ObjectReferenceAttribute : Attribute
     {
-        public ObjectReferenceAttribute(string nameFilter = "") => NameFilter = nameFilter;
+        public ObjectReferenceAttribute(string nameFilter = "", bool dontDestroyOnLoad = false)
+        {
+            NameFilter = nameFilter;
+            DontDestroyOnLoad = dontDestroyOnLoad;
+        }
 
         public string NameFilter { get; }
+        public bool DontDestroyOnLoad { get; }
     }
 }

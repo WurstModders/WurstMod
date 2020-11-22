@@ -21,6 +21,11 @@ namespace WurstMod.Runtime
         /// </summary>
         public abstract string BaseScene { get; }
         
+        /// <summary>
+        /// This list contains the names of all objects that should be removed from the scene when loading a new level
+        /// </summary>
+        public abstract string[] DestroyOnLoad { get; }
+        
         public CustomScene LevelRoot { get; set; }
 
         /// <summary>
