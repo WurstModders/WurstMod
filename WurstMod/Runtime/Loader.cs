@@ -110,7 +110,7 @@ namespace WurstMod.Runtime
 
             // Step 3: Destroy all unused objects
             foreach (var gameObject in objects.SelectMany(o => o.GetComponentsInChildren<Transform>()))
-            foreach (var filter in DestroyOnLoad)
+            foreach (var filter in sceneLoader.DestroyOnLoad)
                 if (gameObject.name.Contains(filter))
                     Object.Destroy(gameObject.gameObject);
 
@@ -178,29 +178,5 @@ namespace WurstMod.Runtime
 
         // Public field to set which level we'll load
         public static LevelInfo? LevelToLoad = null;
-
-        // List of GameObjects we want to destroy on load.
-        // This is used in a .Contains() call, so if numbered objects are in a scene you can simplify the name
-        private static readonly string[] DestroyOnLoad =
-        {
-            // Sandbox objects
-            "_Animator_Spawning_",
-            "_Boards",
-            "_Env",
-            "AILadderTest1",
-            
-            // TODO: Should probably remove all the Anvil Prefabs, but it causes errors...
-            //"__SpawnOnLoad",
-
-            // Take and Hold objects
-            "HoldPoint_",
-            "Ladders",
-            "Lighting",
-            "OpenArea",
-            "RampHelperCubes",
-            "ReflectionProbes",
-            "SupplyPoint_",
-            "Tiles"
-        };
     }
 }

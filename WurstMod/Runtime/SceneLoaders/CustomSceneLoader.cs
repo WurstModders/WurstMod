@@ -21,6 +21,11 @@ namespace WurstMod.Runtime
         /// </summary>
         public abstract string BaseScene { get; }
         
+        /// <summary>
+        /// This list contains the names of all objects that should be removed from the scene when loading a new level
+        /// </summary>
+        public abstract string[] DestroyOnLoad { get; }
+        
         public CustomScene LevelRoot { get; set; }
 
         /// <summary>
@@ -56,10 +61,10 @@ namespace WurstMod.Runtime
 
             // Magic LINQ statement to select the first type that has the
             // gamemode that matches the gamemode parameter
-            return types.Where(x => x.IsSubclassOf(typeof(CustomSceneLoader)))
-            .Select(x => Activator.CreateInstance(x) as CustomSceneLoader)
-            .Where(x => x.GamemodeId == gamemode)
-            .FirstOrDefault();
+            return types
+                .Where(x => x.IsSubclassOf(typeof(CustomSceneLoader)))
+                .Select(x => Activator.CreateInstance(x) as CustomSceneLoader)
+                .FirstOrDefault(x => x.GamemodeId == gamemode);
         }
     }
 }

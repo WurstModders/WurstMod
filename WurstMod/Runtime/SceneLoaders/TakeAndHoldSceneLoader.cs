@@ -16,6 +16,19 @@ namespace WurstMod.Runtime.SceneLoaders
         public override string GamemodeId => Constants.GamemodeTakeAndHold;
         public override string BaseScene => "TakeAndHoldClassic";
 
+        public override string[] DestroyOnLoad => new[]
+        {
+            // Take and Hold objects
+            "HoldPoint_",
+            "Ladders",
+            "Lighting",
+            "OpenArea",
+            "RampHelperCubes",
+            "ReflectionProbes",
+            "SupplyPoint_",
+            "Tiles"
+        };
+
         /// <summary>
         /// Base function for setting up the TNH Manager object to handle a custom level.
         /// </summary>
