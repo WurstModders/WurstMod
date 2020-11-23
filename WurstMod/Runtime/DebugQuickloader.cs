@@ -16,7 +16,7 @@ namespace WurstMod.Runtime
                 ObjectReferences.FindReferences(scene);
 
                 // Read from config.
-                string path = Entrypoint.configQuickload.Value;
+                string path = Entrypoint.ConfigQuickload.Value;
                 if (string.IsNullOrEmpty(path)) return;
 
                 // Try to grab the info.json.

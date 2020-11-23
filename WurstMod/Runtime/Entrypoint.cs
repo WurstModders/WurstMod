@@ -1,29 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
-using BepInEx;
 using BepInEx.Configuration;
-using UnityEngine;
+using Deli;
 using UnityEngine.SceneManagement;
-using WurstMod.MappingComponents.TakeAndHold;
 using WurstMod.Runtime.ScenePatchers;
+using WurstMod.Shared;
 
 namespace WurstMod.Runtime
 {
-    [BepInPlugin("com.koba.plugins.wurstmod", "WurstMod", "2.0.0.0")]
-    public class Entrypoint : BaseUnityPlugin
+    public class Entrypoint : DeliMod
     {
-        public static BaseUnityPlugin self;
-
         void Awake()
         {
-            self = this;
-            LegacySupport.Init();
             RegisterListeners();
             InitDetours();
             InitAppDomain();
             InitConfig();
+
+            // Only support legacy formats if opted in
+            if (UseLegacyLoadingMethod.Value)
+            {
+                LegacySupport.Init();
+                CustomLevelFinder.DiscoverLevelsInFolder();
+            }
         }
 
         void RegisterListeners()
@@ -48,10 +48,14 @@ namespace WurstMod.Runtime
             };
         }
 
-        public static ConfigEntry<string> configQuickload;
+        public static ConfigEntry<string> ConfigQuickload;
+        public static ConfigEntry<bool> LoadDebugLevels;
+        public static ConfigEntry<bool> UseLegacyLoadingMethod;
         void InitConfig()
         {
-            configQuickload = Config.Bind("Debug", "QuickloadPath", "", "Set this to a folder containing the scene you would like to load as soon as H3VR boots. This is good for quickly testing scenes you are developing.");
+            ConfigQuickload = BaseMod.Config.Bind("Debug", "QuickloadPath", "", "Set this to a folder containing the scene you would like to load as soon as H3VR boots. This is good for quickly testing scenes you are developing.");
+            LoadDebugLevels = BaseMod.Config.Bind("Debug", "LoadDebugLevels", true, "True if you want the included default levels to be loaded");
+            UseLegacyLoadingMethod = BaseMod.Config.Bind("Debug", "UseLegacyLoadingMethod", false, $"True if you want to support loading legacy v1 or standalone levels from the {Constants.CustomLevelsDirectory} folder");
         }
 
         private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode mode)

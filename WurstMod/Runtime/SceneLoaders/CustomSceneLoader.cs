@@ -64,7 +64,7 @@ namespace WurstMod.Runtime
             return types
                 .Where(x => x.IsSubclassOf(typeof(CustomSceneLoader)))
                 .Select(x => Activator.CreateInstance(x) as CustomSceneLoader)
-                .FirstOrDefault(x => x.GamemodeId == gamemode);
+                .FirstOrDefault(x => x != null && x.GamemodeId == gamemode);
         }
     }
 }
