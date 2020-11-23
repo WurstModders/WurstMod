@@ -99,11 +99,19 @@ namespace WurstMod.Runtime.ScenePatchers
 
         private static void SetupLevelDefs()
         {
-            foreach (var level in CustomLevelFinder.EnumerateLevelInfos().Where(x => x.Gamemode != Constants.GamemodeTakeAndHold))
+            var levels = CustomLevelFinder.EnumerateLevelInfos().Where(x => x.Gamemode != Constants.GamemodeTakeAndHold).ToArray();
+            for (int ii = 0; ii < levels.Length; ii++)
             {
+                var level = levels[ii];
+
                 var imageT = level.Thumbnail;
-                Sprite image = null;
-                if (imageT) image = SpriteLoader.ConvertTextureToSprite(imageT);
+                Texture2D image = null;
+                if (imageT) image = imageT;
+
+                if (level.existingSprite == null && level.Thumbnail != null)
+                {
+                    level.existingSprite = SpriteLoader.ConvertTextureToSprite(image);
+                }
 
                 // Create and apply scene def.
                 MainMenuSceneDef moddedDef = ScriptableObject.CreateInstance<MainMenuSceneDef>();
@@ -111,7 +119,7 @@ namespace WurstMod.Runtime.ScenePatchers
                 moddedDef.Type = level.Author;
                 moddedDef.SceneName = "ProvingGround";
                 moddedDef.Desciption = level.Description;
-                moddedDef.Image = image;
+                moddedDef.Image = level.existingSprite;
 
                 MainMenuScenePointable screen = screens.First(x => !x.gameObject.activeSelf);
                 screen.Def = moddedDef;

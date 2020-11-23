@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using Deli;
 using UnityEngine;
 using Valve.Newtonsoft.Json;
 using WurstMod.Runtime;
@@ -18,7 +17,7 @@ namespace WurstMod.Shared
         public string Location;
         
         public bool IsFrameworkMod;
-        public Mod Mod;
+        public object Mod; // Deli.Mod, made object to fix exporter within Unity.
 
         // This is a replacement for using the location of the level asset bundle as a unique identifier.
         public string Identifier => $"{SceneName}{Author}{Gamemode}{Description}".GetHashCode().ToString();
@@ -27,12 +26,14 @@ namespace WurstMod.Shared
         public string ThumbnailPath => Path.Combine(Location, Constants.FilenameLevelThumbnail);
         public string LevelInfoPath => Path.Combine(Location, Constants.FilenameLevelInfo);
 
+        public Sprite existingSprite; // Used by TNH loader.
+
         public Texture2D Thumbnail
         {
             get
             {
                 if (!IsFrameworkMod) return SpriteLoader.LoadTexture(ThumbnailPath);
-                var thumb = Mod.Resources.Get<Texture2D>(ThumbnailPath);
+                var thumb = ((Deli.Mod)Mod).Resources.Get<Texture2D>(ThumbnailPath);
                 return thumb.IsNone ? null : thumb.Unwrap();
             }
         }
@@ -43,7 +44,7 @@ namespace WurstMod.Shared
             get
             {
                 if (!_cached)
-                    _cached = IsFrameworkMod ? Mod.Resources.Get<AssetBundle>(AssetBundlePath).Unwrap() : AssetBundle.LoadFromFile(AssetBundlePath);
+                    _cached = IsFrameworkMod ? ((Deli.Mod)Mod).Resources.Get<AssetBundle>(AssetBundlePath).Unwrap() : AssetBundle.LoadFromFile(AssetBundlePath);
                 return _cached;
             }
         }
@@ -74,13 +75,13 @@ namespace WurstMod.Shared
         /// <summary>
         /// Creates a LevelInfo struct with the information given from a mod archive module
         /// </summary>
-        /// <param name="mod">The mod the module originates from</param>
+        /// <param name="mod">The Deli.Mod the module originates from</param>
         /// <param name="module">The module</param>
         /// <returns>A LevelInfo from it</returns>
-        public static LevelInfo? FromFrameworkMod(Mod mod, string path)
+        public static LevelInfo? FromFrameworkMod(object mod, string path)
         {
             // Load the level info from the mod archive
-            var levelInfo = JsonConvert.DeserializeObject<LevelInfo>(mod.Resources.Get<string>(path + Constants.FilenameLevelInfo).Unwrap());
+            var levelInfo = JsonConvert.DeserializeObject<LevelInfo>(((Deli.Mod)mod).Resources.Get<string>(path + Constants.FilenameLevelInfo).Unwrap());
 
             // If it doesn't exist, exit early
             if (levelInfo.Gamemode == "") return null;
@@ -90,6 +91,27 @@ namespace WurstMod.Shared
             levelInfo.IsFrameworkMod = true;
             levelInfo.Mod = mod;
             return levelInfo;
+        }
+
+        /// <summary>
+        /// Creates a Levelinfo struct with the params given. This is used by the TNH loader.
+        /// </summary>
+        /// <param name="name">Name of the level</param>
+        /// <param name="author">Author of the level</param>
+        /// <param name="gamemode">Gamemode of the level</param>
+        /// <param name="desc">Description of the level</param>
+        /// <param name="sprite">Sprite of the level</param>
+        /// <returns></returns>
+        public static LevelInfo FromParams(string name, string author, string gamemode, string desc, Sprite sprite)
+        {
+            LevelInfo info = new LevelInfo();
+            info.SceneName = name;
+            info.Author = author;
+            info.Gamemode = gamemode;
+            info.Description = desc;
+            info.existingSprite = sprite;
+
+            return info;
         }
 
         /// <summary>

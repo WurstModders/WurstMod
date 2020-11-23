@@ -20,6 +20,7 @@ namespace WurstMod.Runtime
                 if (string.IsNullOrEmpty(path)) return;
 
                 // Try to grab the info.json.
+                Debug.Log("Quickloader is running...");
                 Loader.LevelToLoad = LevelInfo.FromFile(path.TrimEnd('\\') + "\\" + Constants.FilenameLevelInfo);
                 if (!Loader.LevelToLoad.HasValue)
                 {

@@ -27,8 +27,9 @@ namespace WurstMod.Runtime.ScenePatchers
         public static Text levelDescriptionText;
         public static GameObject buttonToCopy;
 
-        // LevelDatas
-        private static List<LevelData> levels = new List<LevelData>();
+        // LevelInfos
+        private static LevelInfo vanillaLevel;
+        private static List<LevelInfo> levels = new List<LevelInfo>();
         private static int currentLevelIndex = 0;
 
         /// <summary>
@@ -89,41 +90,16 @@ namespace WurstMod.Runtime.ScenePatchers
         /// </summary>
         private static void SetupLevelDatas()
         {
-            levels.Add(new LevelData(levelImage.sprite, "Classic", "H3VR", levelDescriptionText.text, ""));
-            //TODO TEST THIS Update information of original level for consistency with new format.
-            levels[0].SetLevel();
+            //levels.Add(new LevelData(levelImage.sprite, "Classic", "H3VR", levelDescriptionText.text, ""));
+            levels.Clear();
+            vanillaLevel = LevelInfo.FromParams("Classic", "H3VR", Constants.GamemodeTakeAndHold, levelDescriptionText.text, levelImage.sprite);
+            levels.Add(vanillaLevel);
+            levels.AddRange(CustomLevelFinder.ArchiveLevels.Where(x => x.Gamemode == Constants.GamemodeTakeAndHold));
+            if (Entrypoint.UseLegacyLoadingMethod.Value)
+                levels.AddRange(CustomLevelFinder.DirectoryLevels.Where(x => x.Gamemode == Constants.GamemodeTakeAndHold));
 
-            foreach(string ii in Directory.GetDirectories(levelDir))
-            {
-                string[] files = Directory.GetFiles(ii);
-                if (!File.Exists(ii + dataFile))
-                {
-                    Debug.LogError($"Directory {ii} does not contain proper leveldata. The assetbundle must be named leveldata.");
-                    continue;
-                }
-                Sprite image = null;
-                if (File.Exists(ii + imageFile)) image = SpriteLoader.LoadNewSprite(ii + imageFile);
-
-                string[] info = new string[0];
-                string name;
-                string author;
-                string desc;
-                if (File.Exists(ii + infoFile)) info = File.ReadAllLines(ii + infoFile);
-
-                if (info.Length > 0) name = info[0];
-                else name = "UNNAMED LEVEL";
-
-                if (info.Length > 1) author = info[1];
-                else author = "UNKNOWN AUTHOR";
-
-                if (info.Length > 2) desc = string.Join("\n", info.Skip(2).ToArray());
-                else desc = "NO DESCRIPTION";
-
-
-                Debug.Log($"Found level: {name}");
-                LevelData data = new LevelData(image, name, author, desc, ii + dataFile);
-                levels.Add(data);
-            }
+            // Set to vanilla level.
+            SetLevel(levels[0]);
         }
 
         /// <summary>
@@ -182,7 +158,7 @@ namespace WurstMod.Runtime.ScenePatchers
             if (currentLevelIndex == 0) currentLevelIndex = levels.Count - 1;
             else currentLevelIndex--;
 
-            levels[currentLevelIndex].SetLevel();
+            SetLevel(levels[currentLevelIndex]);
         }
 
         /// <summary>
@@ -193,36 +169,21 @@ namespace WurstMod.Runtime.ScenePatchers
             if (currentLevelIndex == levels.Count - 1) currentLevelIndex = 0;
             else currentLevelIndex++;
 
-            levels[currentLevelIndex].SetLevel();
-        }
-    }
-
-    /// <summary>
-    /// Class for neatly storing level information and updating the UI.
-    /// </summary>
-    class LevelData
-    {
-        public Sprite levelImage;
-        public string levelName;
-        public string levelAuthor;
-        public string levelDescription;
-        public string levelDataPath;
-
-        public LevelData(Sprite image, string name, string author, string desc, string dataPath)
-        {
-            levelImage = image;
-            levelName = name;
-            levelAuthor = author;
-            levelDescription = desc;
-            levelDataPath = dataPath;
+            SetLevel(levels[currentLevelIndex]);
         }
 
-        public void SetLevel()
+        private static void SetLevel(LevelInfo level)
         {
-            TNH_LevelSelector.levelImage.sprite = levelImage;
-            TNH_LevelSelector.levelNameText.text = levelName + "\nby " + levelAuthor;
-            TNH_LevelSelector.levelDescriptionText.text = levelDescription;
-            Loader.LevelToLoad = LevelInfo.FromFile(levelDataPath);
+            if (level.existingSprite == null && level.Thumbnail != null)
+            {
+                level.existingSprite = SpriteLoader.ConvertTextureToSprite(level.Thumbnail);
+            }
+            TNH_LevelSelector.levelImage.sprite = level.existingSprite;
+            TNH_LevelSelector.levelNameText.text = level.SceneName + "\nby " + level.Author;
+            TNH_LevelSelector.levelDescriptionText.text = level.Description;
+            bool isVanilla = level.Equals(vanillaLevel);
+            if (isVanilla) Loader.LevelToLoad = null;
+            else Loader.LevelToLoad = level;
         }
     }
 }

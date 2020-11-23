@@ -43,7 +43,7 @@ namespace WurstMod.Runtime.SceneLoaders
             _tnhManager.SupplyPoints = LevelRoot.GetComponentsInChildren<TNH_SupplyPoint>(true).ToList();
 
             // Possible Sequences need to be generated at random.
-            if (LevelRoot.ExtraData[0].Value == "") _tnhManager.PossibleSequnces = GenerateRandomPointSequences(1);
+            if (LevelRoot.ExtraData == null || LevelRoot.ExtraData[0].Value == "") _tnhManager.PossibleSequnces = GenerateRandomPointSequences(1);
 
             // Safe Pos Matrix needs to be set. Diagonal for now.
             TNH_SafePositionMatrix maxMatrix = GenerateTestMatrix();
@@ -72,7 +72,7 @@ namespace WurstMod.Runtime.SceneLoaders
                 }
 
                 // If the mapper hasn't set a custom hold order
-                if (LevelRoot.ExtraData[0].Value == "")
+                if (LevelRoot.ExtraData == null || LevelRoot.ExtraData[0].Value == "")
                     sequence.HoldPoints = new List<int>
                     {
                         Random.Range(0, _tnhManager.HoldPoints.Count),

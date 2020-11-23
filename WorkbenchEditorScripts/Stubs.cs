@@ -19,4 +19,10 @@ namespace FistVR
     public class TNH_SafePositionMatrix { }
     public class TNH_SupplyPoint { }
     public class Sosig { }
+    public class SosigEnemyTemplate { }
+    public class SosigWeapon { }
+    public class FVRObject { }
+    public class SosigConfigTemplate { }
+    public class SosigOutfitConfig { }
+    public class SosigLink { }
 }
