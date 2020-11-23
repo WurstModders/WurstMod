@@ -18,6 +18,13 @@ namespace WurstMod.MappingComponents.Generic
             if (spawnOnSceneLoad) Spawn();
         }
 
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = new Color(0.0f, 0.0f, 0.6f, 0.5f);
+            Gizmos.matrix = transform.localToWorldMatrix;
+            Gizmos.DrawSphere(Vector3.zero, 0.1f);
+        }
+
         /// <summary>
         /// Spawn the object this marker describes.
         /// You can call this from a trigger!

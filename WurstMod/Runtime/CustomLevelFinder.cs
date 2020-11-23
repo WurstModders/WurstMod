@@ -12,8 +12,12 @@ namespace WurstMod.Runtime
         /// </summary>
         public static IEnumerable<LevelInfo> EnumerateLevelInfos()
         {
-            var levels = Directory.GetFiles(Constants.CustomLevelsDirectory, Constants.FilenameLevelInfo, SearchOption.AllDirectories);
-            return levels.Select(LevelInfo.FromFile).Where(x => x.HasValue).Select(x => x.Value);
+            if (Directory.Exists(Constants.CustomLevelsDirectory))
+            {
+                var levels = Directory.GetFiles(Constants.CustomLevelsDirectory, Constants.FilenameLevelInfo, SearchOption.AllDirectories);
+                return levels.Select(LevelInfo.FromFile).Where(x => x.HasValue).Select(x => x.Value);
+            }
+            return new LevelInfo[0];
         }
 
         /// <summary>
