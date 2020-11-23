@@ -138,20 +138,16 @@ namespace WurstMod.Runtime
             string[] infoPaths = Directory.GetFiles(WurstMod.Shared.Constants.CustomLevelsDirectory, "info.txt", SearchOption.AllDirectories);
             foreach (string ii in infoPaths)
             {
-                string[] infoPaths = Directory.GetFiles(WurstMod.Shared.Constants.CustomLevelsDirectory, "info.txt", SearchOption.AllDirectories);
-                foreach (string ii in infoPaths)
-                {
-                    WurstMod.Shared.LevelInfo converted = new WurstMod.Shared.LevelInfo();
-                    converted.Location = Path.GetDirectoryName(ii);
+                WurstMod.Shared.LevelInfo converted = new WurstMod.Shared.LevelInfo();
+                converted.Location = Path.GetDirectoryName(ii);
 
-                    string[] info = File.ReadAllLines(ii);
-                    converted.SceneName = info[0];
-                    converted.Author = info[1];
-                    converted.Gamemode = converted.Location.Contains("TakeAndHold") ? WurstMod.Shared.Constants.GamemodeTakeAndHold : WurstMod.Shared.Constants.GamemodeSandbox;
-                    converted.Description = string.Join("\n", info.Skip(2).ToArray());
+                string[] info = File.ReadAllLines(ii);
+                converted.SceneName = info[0];
+                converted.Author = info[1];
+                converted.Gamemode = converted.Location.Contains("TakeAndHold") ? WurstMod.Shared.Constants.GamemodeTakeAndHold : WurstMod.Shared.Constants.GamemodeSandbox;
+                converted.Description = string.Join("\n", info.Skip(2).ToArray());
 
-                    converted.ToFile();
-                }
+                converted.ToFile();
             }
         }
     }
