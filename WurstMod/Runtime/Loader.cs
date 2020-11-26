@@ -10,7 +10,6 @@ using UnityEngine.SceneManagement;
 using WurstMod.MappingComponents;
 using WurstMod.MappingComponents.Generic;
 using WurstMod.Shared;
-using Logger = BepInEx.Logging.Logger;
 using Object = UnityEngine.Object;
 
 namespace WurstMod.Runtime

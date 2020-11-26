@@ -14,18 +14,18 @@ namespace WurstMod.Runtime
         {
             var sosigPrefab = template.SosigPrefabs[Random.Range(0, template.SosigPrefabs.Count)];
             var configTemplate = template.ConfigTemplates[Random.Range(0, template.ConfigTemplates.Count)];
-            var w1 = template.OutfitConfig[Random.Range(0, template.OutfitConfig.Count)];
-            var key = SpawnSosigAndConfigureSosig(sosigPrefab.GetGameObject(), position,
-                Quaternion.LookRotation(forward, Vector3.up), configTemplate, w1);
-            key.InitHands();
-            key.Inventory.Init();
+            var outfitConfig = template.OutfitConfig[Random.Range(0, template.OutfitConfig.Count)];
+            var sosig = SpawnSosigAndConfigureSosig(sosigPrefab.GetGameObject(), position,
+                Quaternion.LookRotation(forward, Vector3.up), configTemplate, outfitConfig);
+            sosig.InitHands();
+            sosig.Inventory.Init();
             if (template.WeaponOptions.Count > 0)
             {
-                var w2 = SpawnWeapon(template.WeaponOptions);
-                w2.SetAutoDestroy(true);
-                key.ForceEquip(w2);
-                if (w2.Type == SosigWeapon.SosigWeaponType.Gun && spawnOptions.SpawnWithFullAmmo)
-                    key.Inventory.FillAmmoWithType(w2.AmmoType);
+                var weapon = SpawnWeapon(template.WeaponOptions);
+                weapon.SetAutoDestroy(true);
+                sosig.ForceEquip(weapon);
+                if (weapon.Type == SosigWeapon.SosigWeaponType.Gun && spawnOptions.SpawnWithFullAmmo)
+                    sosig.Inventory.FillAmmoWithType(weapon.AmmoType);
             }
 
             var spawnWithSecondaryWeapon = spawnOptions.EquipmentMode == 0 || spawnOptions.EquipmentMode == 2 ||
@@ -33,11 +33,11 @@ namespace WurstMod.Runtime
                                            Random.Range(0.0f, 1f) >= template.SecondaryChance;
             if (template.WeaponOptions_Secondary.Count > 0 && spawnWithSecondaryWeapon)
             {
-                var w2 = SpawnWeapon(template.WeaponOptions_Secondary);
-                w2.SetAutoDestroy(true);
-                key.ForceEquip(w2);
-                if (w2.Type == SosigWeapon.SosigWeaponType.Gun && spawnOptions.SpawnWithFullAmmo)
-                    key.Inventory.FillAmmoWithType(w2.AmmoType);
+                var weapon = SpawnWeapon(template.WeaponOptions_Secondary);
+                weapon.SetAutoDestroy(true);
+                sosig.ForceEquip(weapon);
+                if (weapon.Type == SosigWeapon.SosigWeaponType.Gun && spawnOptions.SpawnWithFullAmmo)
+                    sosig.Inventory.FillAmmoWithType(weapon.AmmoType);
             }
 
             var spawnWithTertiaryWeapon = spawnOptions.EquipmentMode == 0 ||
@@ -47,44 +47,40 @@ namespace WurstMod.Runtime
             {
                 var w2 = SpawnWeapon(template.WeaponOptions_Tertiary);
                 w2.SetAutoDestroy(true);
-                key.ForceEquip(w2);
+                sosig.ForceEquip(w2);
                 if (w2.Type == SosigWeapon.SosigWeaponType.Gun && spawnOptions.SpawnWithFullAmmo)
-                    key.Inventory.FillAmmoWithType(w2.AmmoType);
+                    sosig.Inventory.FillAmmoWithType(w2.AmmoType);
             }
 
             var sosigIFF = spawnOptions.IFF;
             if (sosigIFF >= 5)
                 sosigIFF = Random.Range(6, 10000);
-            key.E.IFFCode = sosigIFF;
-            key.CurrentOrder = Sosig.SosigOrder.Disabled;
+            sosig.E.IFFCode = sosigIFF;
+            sosig.CurrentOrder = Sosig.SosigOrder.Disabled;
             switch (spawnOptions.SpawnState)
             {
                 case 0:
-                    key.FallbackOrder = Sosig.SosigOrder.Disabled;
+                    sosig.FallbackOrder = Sosig.SosigOrder.Disabled;
                     break;
                 case 1:
-                    key.FallbackOrder = Sosig.SosigOrder.GuardPoint;
+                    sosig.FallbackOrder = Sosig.SosigOrder.GuardPoint;
                     break;
                 case 2:
-                    key.FallbackOrder = Sosig.SosigOrder.Wander;
+                    sosig.FallbackOrder = Sosig.SosigOrder.Wander;
                     break;
                 case 3:
-                    key.FallbackOrder = Sosig.SosigOrder.Assault;
+                    sosig.FallbackOrder = Sosig.SosigOrder.Assault;
                     break;
             }
 
-            var targetPos = spawnOptions.SosigTransformTarget
-                ? spawnOptions.SosigTransformTarget.position
-                : spawnOptions.SosigTargetPosition;
-            var targetRot = spawnOptions.SosigTransformTarget
-                ? spawnOptions.SosigTransformTarget.eulerAngles
-                : spawnOptions.SosigTargetRotation;
-            key.UpdateGuardPoint(targetPos);
-            key.SetDominantGuardDirection(targetRot);
-            key.UpdateAssaultPoint(targetPos);
+            var targetPos = spawnOptions.SosigTargetPosition;
+            var targetRot = spawnOptions.SosigTargetRotation;
+            sosig.UpdateGuardPoint(targetPos);
+            sosig.SetDominantGuardDirection(targetRot);
+            sosig.UpdateAssaultPoint(targetPos);
             if (!spawnOptions.SpawnActivated)
                 return;
-            key.SetCurrentOrder(key.FallbackOrder);
+            sosig.SetCurrentOrder(sosig.FallbackOrder);
         }
 
         private static SosigWeapon SpawnWeapon(List<FVRObject> o) => Object
@@ -130,32 +126,16 @@ namespace WurstMod.Runtime
             accessory.transform.SetParent(l.transform);
             accessory.GetComponent<SosigWearable>().RegisterWearable(l);
         }
-
-        [Serializable]
+        
         public struct SpawnOptions
         {
-            [Tooltip("Whether to spawn the Sosig activated or not")]
             public bool SpawnActivated;
-
-            [Tooltip("Sets the Sosig's IFF (Team). Values 5 and above get randomized")]
             public int IFF;
-
-            [Tooltip("Spawns the Sosig with full ammo")]
             public bool SpawnWithFullAmmo;
-
-            [Tooltip("Not sure what this does. Recommended to just leave at 0")]
             public int EquipmentMode;
-
-            [Tooltip("The state to spawn the Sosig in. 0 = Disabled, 1 = Guard, 2 = Wander, 3 = Assault")]
             public int SpawnState;
-
-            [Tooltip("The position of the Sosig's attack / guard position")]
             public Vector3 SosigTargetPosition;
-
             public Vector3 SosigTargetRotation;
-
-            [Tooltip("Set this a transform to make the Sosigs spawn with it's position and rotation as it's target.")]
-            public Transform SosigTransformTarget;
         }
     }
 }

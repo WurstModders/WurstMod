@@ -26,9 +26,30 @@ namespace WurstMod.MappingComponents.Generic
         [Tooltip("Whether or not this spawner is active by default")]
         public bool Active = true;
 
-        [Tooltip("The options to spawn the Sosig with")]
-        public SosigSpawnerHelper.SpawnOptions SosigSpawnOptions;
+        [Header("Spawn Options")]
+        [Tooltip("Whether to spawn the Sosig activated or not")]
+        public bool SpawnActivated;
 
+        [Tooltip("Sets the Sosig's IFF (Team). Values 5 and above get randomized")]
+        public int IFF;
+
+        [Tooltip("Spawns the Sosig with full ammo")]
+        public bool SpawnWithFullAmmo;
+
+        [Tooltip("Not sure what this does. Recommended to just leave at 0")]
+        public int EquipmentMode;
+
+        [Tooltip("The state to spawn the Sosig in. 0 = Disabled, 1 = Guard, 2 = Wander, 3 = Assault")]
+        public int SpawnState;
+
+        [Tooltip("The position of the Sosig's attack / guard position")]
+        public Vector3 SosigTargetPosition;
+
+        public Vector3 SosigTargetRotation;
+
+        [Tooltip("Set this a transform to make the Sosigs spawn with it's position and rotation as it's target.")]
+        public Transform SosigTransformTarget;
+        
         // This needs to be a ScriptableObject because otherwise Unity throws a fit
         private ScriptableObject[] _enemyTemplates;
         private IEnumerator _coroutine;
@@ -74,7 +95,16 @@ namespace WurstMod.MappingComponents.Generic
         {
             // Pick a random template and spawn the Sosig
             var template = _enemyTemplates[Random.Range(0, _enemyTemplates.Length)] as SosigEnemyTemplate;
-            SosigSpawnerHelper.SpawnSosigWithTemplate(template, SosigSpawnOptions, transform.position, transform.forward);
+            SosigSpawnerHelper.SpawnSosigWithTemplate(template, new SosigSpawnerHelper.SpawnOptions
+            {
+                SpawnActivated = SpawnActivated,
+                IFF = IFF,
+                SpawnWithFullAmmo = SpawnWithFullAmmo,
+                EquipmentMode = EquipmentMode,
+                SpawnState = SpawnState,
+                SosigTargetPosition = SosigTransformTarget ? SosigTransformTarget.position : SosigTargetPosition,
+                SosigTargetRotation = SosigTransformTarget ? SosigTransformTarget.rotation.eulerAngles : SosigTargetRotation
+            }, transform.position, transform.forward);
         }
 
         /// <summary>

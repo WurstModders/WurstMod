@@ -72,7 +72,7 @@ namespace WurstMod.Runtime
                     // If the field's value is already set, break.
                     // NOTE: Objects are "deleted" on scene load, but reflection will not necessarily return null immediately.
                     // This method is only run on scene load anyway, so the duplicate checking isn't super necessary.
-                    //if (field.GetValue(null) != null) break;
+                    if (field.GetValue(null) as Object) break;
 
                     // If the field type is GameObject, just find the GameObject normally
                     Object found;
@@ -86,8 +86,16 @@ namespace WurstMod.Runtime
                     field.SetValue(null, found);
                     
                     if (!reference.DontDestroyOnLoad) continue;
-                    if (found is GameObject go) go.transform.parent = null;
-                    else ((Component) found).transform.parent = null;
+                    if (found is GameObject go)
+                    {
+                        go.transform.parent = null;
+                        go.transform.position = Vector3.down * 1000;
+                    }
+                    else
+                    {
+                        ((Component) found).transform.parent = null;
+                        ((Component) found).transform.position = Vector3.down * 1000;
+                    }
                     Object.DontDestroyOnLoad(found);
                 }
             }

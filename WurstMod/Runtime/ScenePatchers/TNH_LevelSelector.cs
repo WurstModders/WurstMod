@@ -15,9 +15,6 @@ namespace WurstMod.Runtime.ScenePatchers
     {
         // Settings.
         private static readonly string levelDir = "CustomLevels/TakeAndHold";
-        private static readonly string dataFile = "/leveldata";
-        private static readonly string imageFile = "/thumb.png";
-        private static readonly string infoFile = "/info.txt";
 
         // Referenced objects.
         public static Canvas levelSelectorCanvas;

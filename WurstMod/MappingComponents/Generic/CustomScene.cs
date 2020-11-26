@@ -1,4 +1,5 @@
 ﻿using System;
+using FistVR;
 using UnityEngine;
 using Valve.VR.InteractionSystem;
 using WurstMod.Runtime;
@@ -19,6 +20,8 @@ namespace WurstMod.MappingComponents.Generic
 
         [Header("Scene Settings")] 
         public float MaxProjectileRange = 500f;
+
+        public int PlayerIFF = 0;
 
         public override void OnExport(ExportErrors err)
         {
@@ -77,6 +80,8 @@ namespace WurstMod.MappingComponents.Generic
             // Set the max range on the scene settings
             // TODO: There are probably a lot of settings we should carry over here.
             ObjectReferences.FVRSceneSettings.MaxProjectileRange = MaxProjectileRange;
+            ObjectReferences.FVRSceneSettings.DefaultPlayerIFF = PlayerIFF;
+            GM.CurrentPlayerBody.SetPlayerIFF(PlayerIFF);
         }
 
         [Serializable]
