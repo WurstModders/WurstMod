@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using WurstMod.MappingComponents.Generic;
@@ -20,12 +21,12 @@ namespace WurstMod.Runtime
         /// This is implemented by the deriving class and tells the loader which scene to use as the base for the game mode
         /// </summary>
         public abstract string BaseScene { get; }
-        
+
         /// <summary>
         /// This list contains the names of all objects that should be removed from the scene when loading a new level
         /// </summary>
-        public abstract string[] DestroyOnLoad { get; }
-        
+        public virtual IEnumerable<string> EnumerateDestroyOnLoad() => new[] {"!ftraceLightmaps"}.AsEnumerable();
+
         public CustomScene LevelRoot { get; set; }
 
         /// <summary>

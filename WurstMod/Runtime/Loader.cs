@@ -112,7 +112,7 @@ namespace WurstMod.Runtime
 
             // Step 3: Destroy all unused objects
             foreach (var gameObject in objects.SelectMany(o => o.GetComponentsInChildren<Transform>()))
-            foreach (var filter in sceneLoader.DestroyOnLoad)
+            foreach (var filter in sceneLoader.EnumerateDestroyOnLoad())
                 if (gameObject.name.Contains(filter))
                     Object.Destroy(gameObject.gameObject);
 
