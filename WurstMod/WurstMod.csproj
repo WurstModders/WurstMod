@@ -54,6 +54,9 @@
     <Reference Include="Deli">
       <HintPath>..\Libs\Deli.dll</HintPath>
     </Reference>
+    <Reference Include="Deli.Runtime">
+      <HintPath>..\Libs\Deli.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
