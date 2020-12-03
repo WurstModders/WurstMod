@@ -9,7 +9,7 @@ using WurstMod.Shared;
 
 namespace WurstMod.Runtime
 {
-    public class Entrypoint : DeliMod
+    public class Entrypoint : DeliBehaviour
     {
         void Awake()
         {
@@ -53,9 +53,9 @@ namespace WurstMod.Runtime
         public static ConfigEntry<bool> UseLegacyLoadingMethod;
         void InitConfig()
         {
-            ConfigQuickload = BaseMod.Config.Bind("Debug", "QuickloadPath", "", "Set this to a folder containing the scene you would like to load as soon as H3VR boots. This is good for quickly testing scenes you are developing.");
-            LoadDebugLevels = BaseMod.Config.Bind("Debug", "LoadDebugLevels", true, "True if you want the included default levels to be loaded");
-            UseLegacyLoadingMethod = BaseMod.Config.Bind("Debug", "UseLegacyLoadingMethod", true, $"True if you want to support loading legacy v1 or standalone levels from the {Constants.CustomLevelsDirectory} folder");
+            ConfigQuickload = Config.Bind("Debug", "QuickloadPath", "", "Set this to a folder containing the scene you would like to load as soon as H3VR boots. This is good for quickly testing scenes you are developing.");
+            LoadDebugLevels = Config.Bind("Debug", "LoadDebugLevels", true, "True if you want the included default levels to be loaded");
+            UseLegacyLoadingMethod = Config.Bind("Debug", "UseLegacyLoadingMethod", true, $"True if you want to support loading legacy v1 or standalone levels from the {Constants.CustomLevelsDirectory} folder");
         }
 
         private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode mode)
