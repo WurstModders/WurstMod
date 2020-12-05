@@ -38,8 +38,9 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony20, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\Libs\0Harmony20.dll</HintPath>
+    <Reference Include="0Harmony, Version=2.1.1.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\HarmonyX.2.1.1\lib\net35\0Harmony.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="ADepIn, Version=20.11.19.2309, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\ADepIn.20.11.19.2309\lib\net35\ADepIn.dll</HintPath>
@@ -48,14 +49,41 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>..\Libs\Assembly-CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="BepInEx">
-      <HintPath>..\Libs\BepInEx.dll</HintPath>
+    <Reference Include="BepInEx, Version=5.4.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\BepInEx.BaseLib.5.4.0\lib\net35\BepInEx.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Deli">
-      <HintPath>..\Libs\Deli.dll</HintPath>
+    <Reference Include="Deli, Version=0.2.4.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Deli.0.2.4\lib\net35\Deli.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Deli.Runtime">
-      <HintPath>..\Libs\Deli.Runtime.dll</HintPath>
+    <Reference Include="Deli.Runtime, Version=0.2.4.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Deli.Runtime.0.2.4\lib\net35\Deli.Runtime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
+      <HintPath>..\packages\Mono.Cecil.0.10.4\lib\net35\Mono.Cecil.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil.Mdb, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
+      <HintPath>..\packages\Mono.Cecil.0.10.4\lib\net35\Mono.Cecil.Mdb.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil.Pdb, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
+      <HintPath>..\packages\Mono.Cecil.0.10.4\lib\net35\Mono.Cecil.Pdb.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil.Rocks, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
+      <HintPath>..\packages\Mono.Cecil.0.10.4\lib\net35\Mono.Cecil.Rocks.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MonoMod.RuntimeDetour, Version=20.11.5.1, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\MonoMod.RuntimeDetour.20.11.5.1\lib\net35\MonoMod.RuntimeDetour.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MonoMod.Utils, Version=20.11.5.1, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\MonoMod.Utils.20.11.5.1\lib\net35\MonoMod.Utils.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -67,8 +95,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libs\UnityEditor.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>..\Libs\UnityEngine.dll</HintPath>
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UnityEngine.Core.5.6.0\lib\net35\UnityEngine.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -143,4 +172,11 @@
   <PropertyGroup>
     <PostBuildEvent>$(SolutionDir)pdb2mdb.exe $(TargetPath)</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\BepInEx.Core.5.4.0\build\BepInEx.Core.targets" Condition="Exists('..\packages\BepInEx.Core.5.4.0\build\BepInEx.Core.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\BepInEx.Core.5.4.0\build\BepInEx.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\BepInEx.Core.5.4.0\build\BepInEx.Core.targets'))" />
+  </Target>
 </Project>

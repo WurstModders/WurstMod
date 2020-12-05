@@ -1,8 +1,8 @@
 ﻿{
   "guid": "wurstmod",
-  "version": "2.0.0.0",
+  "version": "2.0.2.0",
   "dependencies": {
-    "deli.core": "0.2.0"
+    "deli.core": "0.2.5"
   },
   "name": "WurstMod",
   "authors": [

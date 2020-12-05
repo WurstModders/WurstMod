@@ -21,7 +21,7 @@ namespace WurstMod.Runtime
 
             // MUST patch GetTypes first. 
             // This might result in a double-patch for GetTypes but it won't hurt anything.
-            harmony.ProcessorForAnnotatedClass(typeof(Patch_Assembly)).Patch();
+            harmony.CreateClassProcessor(typeof(Patch_Assembly)).Patch();
             harmony.PatchAll(Assembly.GetExecutingAssembly());
         }
     }
