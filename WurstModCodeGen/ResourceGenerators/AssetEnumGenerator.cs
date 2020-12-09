@@ -7,10 +7,26 @@ namespace WurstModCodeGen.ResourceGenerators
 {
     public class AssetEnumGenerator : ResourceGenerator
     {
+        // Some format strings for this generator
+        private const string EnumLine = "            {0} = {1}";
+        private const string DictLine = "            [{0}.{1}] = @\"{2}\"";
+        private const string Template = @"
+        #region {0}
+        public enum {0}
+        {{
+{1}
+        }}
+
+        public static readonly Dictionary<{0}, string> {0}Resources = new()
+        {{
+{2}
+        }};
+        #endregion
+";
+
+        // List of assets we've discovered
         private readonly List<(string resourcePath, string enumName, long enumValue)> _assets = new();
         public override string Name { get; }
-
-        private static readonly int ResourcePathLength = Constants.UnpackedResourcePath.Length;
 
         public AssetEnumGenerator(string enumName)
         {
@@ -21,9 +37,10 @@ namespace WurstModCodeGen.ResourceGenerators
         {
             // If the file isn't in the resources folder, we won't be able to load it anyway so skip.
             if (!file.FullName.Contains("Resources")) return;
-            
+
             // Just add it to the assets list for now
-            var resourcePath = file.FullName.Substring(ResourcePathLength, file.FullName.Length - (6 + ResourcePathLength));
+            var resourcePathLength = WurstModCodeGen.UnpackedResourcePath.Length;
+            var resourcePath = file.FullName.Substring(resourcePathLength, file.FullName.Length - (6 + resourcePathLength));
             var enumName = string.Join("_", resourcePath.Split('\\').Skip(1).Select(x => EscapeEnumName(x).Replace("_", "")));
             var hashCode = file.FullName.GetStableHashCode();
             _assets.Add((resourcePath, enumName, hashCode));
@@ -31,30 +48,15 @@ namespace WurstModCodeGen.ResourceGenerators
 
         public override string Generate()
         {
-            const string EnumLine = "            {0} = {1}";
-            const string DictLine = "            [{0}] = @\"{1}\"";
-            var template = $@"
-        #region {Name}
-        public enum {Name}
-        {{{{
-{{0}}
-        }}}}
-
-        public static readonly Dictionary<{Name}, string> {Name}Resources = new()
-        {{{{
-{{1}}
-        }}}}
-        #endregion
-";
-
             var enumLines = string.Join(",\n", _assets.Select(x => string.Format(EnumLine, x.enumName, x.enumValue)));
-            var dictLines = string.Join(",\n", _assets.Select(x => string.Format(DictLine, x.enumName, x.resourcePath)));
-            return string.Format(template,enumLines, dictLines);
+            var dictLines = string.Join(",\n", _assets.Select(x => string.Format(DictLine, Name, x.enumName, x.resourcePath)));
+            return string.Format(Template, Name, enumLines, dictLines);
         }
 
         // Removes unwanted characters from file names to be valid in an enum
         private static readonly char[] UnwantedCharacters = {' ', '-', '+'};
-        private string EscapeEnumName(string str)
+
+        private static string EscapeEnumName(string str)
         {
             return UnwantedCharacters.Aggregate(str, (aggregate, c) => aggregate.Replace(c, '_'));
         }

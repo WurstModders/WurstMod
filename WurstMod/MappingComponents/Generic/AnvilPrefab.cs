@@ -10,12 +10,12 @@ namespace WurstMod.MappingComponents.Generic
         // Inspector
         // Using the WeaponStuff enum covers most of the stuff people probably want to instantiate,
         // but not all of it. TODO reconsider this implementation.
-        public ResourceDefs.AnvilAsset prefab;
-        public bool spawnOnSceneLoad = false;
+        public ResourceDefs.FVRObjectAsset Asset;
+        public bool SpawnOnSceneLoad;
         
         public override void InitializeComponent()
         {
-            if (spawnOnSceneLoad) Spawn();
+            if (SpawnOnSceneLoad) Spawn();
         }
 
         private void OnDrawGizmos()
@@ -31,9 +31,9 @@ namespace WurstMod.MappingComponents.Generic
         /// </summary>
         public void Spawn()
         {
-            Debug.Log("Loading Anvil Asset: " + ResourceDefs.AnvilAssetResources[prefab]);
-            FVRObject obj = Resources.Load<FVRObject>(ResourceDefs.AnvilAssetResources[prefab]);
-            GameObject go = Instantiate<GameObject>(obj.GetGameObject(), transform.position, transform.rotation, ObjectReferences.CustomScene.transform);
+            Debug.Log("Loading Anvil Asset: " + ResourceDefs.FVRObjectAssetResources[Asset]);
+            FVRObject obj = Resources.Load<FVRObject>(ResourceDefs.FVRObjectAssetResources[Asset]);
+            GameObject go = Instantiate(obj.GetGameObject(), transform.position, transform.rotation, ObjectReferences.CustomScene.transform);
             go.SetActive(true);
         }
 

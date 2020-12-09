@@ -14,7 +14,10 @@ namespace WurstModCodeGen
         private static readonly Dictionary<string, ResourceGenerator> _resourceGenerators = new()
         {
             // These are the GUIDs of the ScriptableObjects
-            ["91c24846d2fa5a046b0ef4d2e3869c9e"] = new AssetEnumGenerator("FVRObjectAssets")
+            ["91c24846d2fa5a046b0ef4d2e3869c9e"] = new AssetEnumGenerator("FVRObjectAsset"),
+            ["c66fb34a05334e547bd2e86bc689097b"] = new AssetEnumGenerator("MatDefAsset"),
+            ["cc0242bada76dd34098a8c617562b266"] = new AssetEnumGenerator("PMatAsset")
+            
         };
 
         // Declare some variables
@@ -22,12 +25,17 @@ namespace WurstModCodeGen
         private static int _scannedFiles;
         private static Stopwatch _stopwatch;
 
+        public static string UnpackedResourcePath;
+        
         public static void Main()
         {
+            Console.WriteLine("This utility is used to generate the resource definitions from a copy of the game that has been unpacked using uTinyRipper. Please enter the location of the Assets/Resources folder from the unpacked game:");
+            UnpackedResourcePath = Console.ReadLine();
+            
             // If we can't find the game files, exit.
-            if (!Directory.Exists(Constants.UnpackedResourcePath))
+            if (!Directory.Exists(UnpackedResourcePath))
             {
-                Console.WriteLine("This utility is used to generate certain enums from the unpacked source of the game, \nwhich will be automatically updated in the main WurstMod project.\n\nUsing this utility requires an unpacked version of H3VR to be placed in a uTinyExport \nfolder at the root of the repository.");
+                Console.WriteLine("The given directory does not exist. Exiting.");
                 return;
             }
 
@@ -39,7 +47,8 @@ namespace WurstModCodeGen
 
 
             // Yes I know the quadruple brackets look silly but you have to escape them once here and again in a String.Format() call
-            string resourceFileTemplate = $@"using System.Collections.Generic;
+            string resourceFileTemplate = $@"// ReSharper disable All
+using System.Collections.Generic;
 
 namespace {Constants.OutputNamespace}
 {{{{
@@ -49,13 +58,16 @@ namespace {Constants.OutputNamespace}
     }}}}
 }}}}
 ";
+            _stopwatch.Restart();
             File.WriteAllText(Constants.DestinationPath, string.Format(resourceFileTemplate, string.Join("\n\n", _resourceGenerators.Values.Select(x => x.Generate()))));
+            Console.WriteLine($"Done generating resource file. Duration: {_stopwatch.ElapsedMilliseconds / 1000d}s");
+            Console.WriteLine("Complete!");
         }
 
         private static void ScanFiles()
         {
             // Iterate over every asset file in the game files.
-            foreach (var file in Directory.EnumerateFiles(Constants.UnpackedResourcePath, "*.asset", SearchOption.AllDirectories))
+            foreach (var file in Directory.EnumerateFiles(UnpackedResourcePath, "*.asset", SearchOption.AllDirectories))
             {
                 // We want to know which ScriptableObject type this asset is.
                 // Luckily for us it includes the GUID of it on line 8
@@ -79,10 +91,13 @@ namespace {Constants.OutputNamespace}
                 // If we have a resource generator that cares about this guid pass it off
                 if (!string.IsNullOrEmpty(guid) && _resourceGenerators.TryGetValue(guid, out var resourceGenerator))
                     resourceGenerator.Discovered(file);
+
+                // Increment the scanned files variable
+                _scannedFiles++;
             }
 
             // Output some stats to the console
-            Console.WriteLine($"Done scanning files. Files: {_scannedFiles}, Elapsed: {_stopwatch.ElapsedMilliseconds / 1000d}s");
+            Console.WriteLine($"Done scanning files. Total scanned asset files: {_scannedFiles}, Duration: {_stopwatch.ElapsedMilliseconds / 1000d}s");
             foreach (var generator in _resourceGenerators.Values)
                 Console.WriteLine($"{generator.Name}: {generator.ScannedFiles}");
         }
