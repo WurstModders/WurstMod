@@ -131,7 +131,7 @@ public class EnumPickerWindow : EditorWindow
     }
 }
 
-[CustomPropertyDrawer(typeof(WurstMod.Shared.ResourceDefs.AnvilAsset))]
+[CustomPropertyDrawer(typeof(WurstMod.Shared.ResourceDefs.FVRObjectAsset))]
 public class EnumDrawers : EnumPicker
 {
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
