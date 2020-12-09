@@ -13,18 +13,12 @@ namespace WurstModCodeGen
     /// </summary>
     class Generator
     {
-        
-        static readonly string UnpackedPath = @"../../../uTinyExport";
-        static readonly string ClassName = "ResourceDefs";
-        static readonly string DestinationPath = $@"../../../WurstMod/Shared/{ClassName}.cs";
-        static readonly string AnvilEnumName = "AnvilAsset";
-
         static string[] allFiles;
         static List<int> allHashes = new List<int>();
 
         static void Main(string[] args)
         {
-            if (!Directory.Exists(UnpackedPath))
+            if (!Directory.Exists(Constants.UnpackedPath))
             {
                 Console.WriteLine(
 @"This utility is used to generate certain enums from the unpacked source of the game, 
@@ -40,7 +34,7 @@ folder at the root of the repository.");
                 string result = Generate();
                 result = result.Replace("\r", "");
                 result = result.Replace("\n", "\r\n");
-                File.WriteAllText(DestinationPath, result);
+                File.WriteAllText(Constants.DestinationPath, result);
 
                 if (allHashes.Count() != allHashes.Distinct().Count())
                 {
@@ -57,19 +51,19 @@ folder at the root of the repository.");
 
         static void GetAllFiles()
         {
-            allFiles = Directory.EnumerateFiles(UnpackedPath, "*.*", SearchOption.AllDirectories).ToArray();
+            allFiles = Directory.EnumerateFiles(Constants.UnpackedPath, "*.*", SearchOption.AllDirectories).ToArray();
         }
 
         static string Generate()
         {
             // Anvil
-            string[] sosigBodyRegion      = GeneratePartialRegion("SOSIGBODY__", "osigBody", "[SZ]osigBody_", AnvilEnumName, "objectids");
-            string[] sosigAccessoryRegion = GeneratePartialRegion("SOSIGACCESSORY__", "accessory", "[sS]osig[aA]ccessory_", AnvilEnumName, "objectids");
-            string[] sosigMeleeRegion     = GeneratePartialRegion("SOSIGMELEE__", "SosigMelee", "SosigMelee_", AnvilEnumName, "objectids");
-            string[] sosigGunRegion       = GeneratePartialRegion("SOSIGGUN__", "Sosiggun", "Sosiggun_", AnvilEnumName, "objectids");
-            string[] weaponStuffRegion    = GeneratePartialRegion("WEAPONRY__", "weaponry_", @".*\\", AnvilEnumName, "objectids");
-            string[] rotwienerRegion      = GeneratePartialRegion("ROTWIENER__", "", @".*\\", AnvilEnumName, "_returnrotwieners");
-            string[] powerupRegion        = GeneratePartialRegion("POWERUP__", "PowerUpMeat", @".*\\", AnvilEnumName, "objectids");
+            string[] sosigBodyRegion      = GeneratePartialRegion("SOSIGBODY__", "osigBody", "[SZ]osigBody_", Constants.AnvilEnumName, "objectids");
+            string[] sosigAccessoryRegion = GeneratePartialRegion("SOSIGACCESSORY__", "accessory", "[sS]osig[aA]ccessory_", Constants.AnvilEnumName, "objectids");
+            string[] sosigMeleeRegion     = GeneratePartialRegion("SOSIGMELEE__", "SosigMelee", "SosigMelee_", Constants.AnvilEnumName, "objectids");
+            string[] sosigGunRegion       = GeneratePartialRegion("SOSIGGUN__", "Sosiggun", "Sosiggun_", Constants.AnvilEnumName, "objectids");
+            string[] weaponStuffRegion    = GeneratePartialRegion("WEAPONRY__", "weaponry_", @".*\\", Constants.AnvilEnumName, "objectids");
+            string[] rotwienerRegion      = GeneratePartialRegion("ROTWIENER__", "", @".*\\", Constants.AnvilEnumName, "_returnrotwieners");
+            string[] powerupRegion        = GeneratePartialRegion("POWERUP__", "PowerUpMeat", @".*\\", Constants.AnvilEnumName, "objectids");
 
             // Other
             string pMatRegion   = GenerateRegion("PMat", "PMat_", "PMat", "pmaterialdefinitions");
@@ -80,10 +74,10 @@ $@"using System.Collections.Generic;
 
 namespace WurstMod.Shared
 {{
-    public static class {ClassName}
+    public static class {Constants.OutputClassName}
     {{
-        #region {AnvilEnumName}
-        public enum {AnvilEnumName}
+        #region {Constants.AnvilEnumName}
+        public enum {Constants.AnvilEnumName}
         {{
             {sosigBodyRegion[0]},
             {sosigAccessoryRegion[0]},
@@ -94,7 +88,7 @@ namespace WurstMod.Shared
             {powerupRegion[0]}
         }}
 
-        public static readonly Dictionary<{AnvilEnumName}, string> {AnvilEnumName}Resources = new Dictionary<{AnvilEnumName}, string>()
+        public static readonly Dictionary<{Constants.AnvilEnumName}, string> {Constants.AnvilEnumName}Resources = new Dictionary<{Constants.AnvilEnumName}, string>()
         {{
             {sosigBodyRegion[1]},
             {sosigAccessoryRegion[1]},
