@@ -41,7 +41,7 @@ namespace WurstModCodeGen.ResourceGenerators
             // Just add it to the assets list for now
             var resourcePathLength = WurstModCodeGen.UnpackedResourcePath.Length + 1;
             var resourcePath = file.FullName.Substring(resourcePathLength, file.FullName.Length - (6 + resourcePathLength));
-            var enumName = string.Join("_", resourcePath.Split('\\').Select(x => EscapeEnumName(x).Replace("_", "")));
+            var enumName = string.Join("_", resourcePath.Split('\\').Skip(1).Select(x => EscapeEnumName(x).Replace("_", "")));
             var hashCode = file.FullName.GetStableHashCode();
             _assets.Add((resourcePath, enumName, hashCode));
         }
