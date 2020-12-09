@@ -4538,8 +4538,6 @@ namespace WurstMod.Shared
         };
         #endregion
 
-
-
         #region MatDefAsset
         public enum MatDefAsset
         {
@@ -4667,8 +4665,6 @@ namespace WurstMod.Shared
             [MatDefAsset.matdefs_structural_Impenetrable] = @"\matdefs\structural\_Impenetrable"
         };
         #endregion
-
-
 
         #region PMatAsset
         public enum PMatAsset

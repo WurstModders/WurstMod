@@ -59,7 +59,7 @@ namespace {Constants.OutputNamespace}
 }}}}
 ";
             _stopwatch.Restart();
-            File.WriteAllText(Constants.DestinationPath, string.Format(resourceFileTemplate, string.Join("\n\n", _resourceGenerators.Values.Select(x => x.Generate()))));
+            File.WriteAllText(Constants.DestinationPath, string.Format(resourceFileTemplate, string.Join("", _resourceGenerators.Values.Select(x => x.Generate()))));
             Console.WriteLine($"Done generating resource file. Duration: {_stopwatch.ElapsedMilliseconds / 1000d}s");
             Console.WriteLine("Complete!");
         }
