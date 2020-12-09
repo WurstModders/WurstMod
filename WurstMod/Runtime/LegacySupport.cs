@@ -164,8 +164,8 @@ namespace WurstMod.TNH
     {
         void Awake()
         {
-            def = (WurstMod.Shared.ResourceDefs.PMat)WurstMod.Runtime.LegacySupport.pMatLegacyMapping[(int)def];
-            matDef = (WurstMod.Shared.ResourceDefs.MatDef)WurstMod.Runtime.LegacySupport.matDefLegacyMapping[(int)matDef];
+            Def = (WurstMod.Shared.ResourceDefs.PMatAsset)WurstMod.Runtime.LegacySupport.pMatLegacyMapping[(int)Def];
+            MatDef = (WurstMod.Shared.ResourceDefs.MatDefAsset)WurstMod.Runtime.LegacySupport.matDefLegacyMapping[(int)MatDef];
         }
     }
     [Obsolete] [AddComponentMenu("")] public class ScoreboardArea : WurstMod.MappingComponents.TakeAndHold.ScoreboardArea { }
@@ -211,13 +211,13 @@ namespace WurstMod.Any
 
         void Awake()
         {
-            spawnOnSceneLoad = true;
+            SpawnOnSceneLoad = true;
 
-            string[] enumNames = Enum.GetNames(typeof(WurstMod.Shared.ResourceDefs.AnvilAsset));
+            string[] enumNames = Enum.GetNames(typeof(WurstMod.Shared.ResourceDefs.FVRObjectAsset));
             string correctEnumName = enumNames.Where(x => x.EndsWith(AssetName)).FirstOrDefault();
             if (!string.IsNullOrEmpty(correctEnumName))
             {
-                prefab = (WurstMod.Shared.ResourceDefs.AnvilAsset)Enum.Parse(typeof(WurstMod.Shared.ResourceDefs.AnvilAsset), correctEnumName);
+                Asset = (WurstMod.Shared.ResourceDefs.FVRObjectAsset)Enum.Parse(typeof(WurstMod.Shared.ResourceDefs.FVRObjectAsset), correctEnumName);
             }
         }
     }
@@ -227,8 +227,8 @@ namespace WurstMod.Any
     {
         void Awake()
         {
-            def = (WurstMod.Shared.ResourceDefs.PMat)WurstMod.Runtime.LegacySupport.pMatLegacyMapping[(int)def];
-            matDef = (WurstMod.Shared.ResourceDefs.MatDef)WurstMod.Runtime.LegacySupport.matDefLegacyMapping[(int)matDef];
+            Def = (WurstMod.Shared.ResourceDefs.PMatAsset)WurstMod.Runtime.LegacySupport.pMatLegacyMapping[(int)Def];
+            MatDef = (WurstMod.Shared.ResourceDefs.MatDefAsset)WurstMod.Runtime.LegacySupport.matDefLegacyMapping[(int)MatDef];
         }
     }
     [Obsolete] [AddComponentMenu("")] public class Target : WurstMod.MappingComponents.Generic.Target { }

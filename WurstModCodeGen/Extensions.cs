@@ -12,7 +12,7 @@ namespace WurstModCodeGen
         /// This is a good-enough stable hash function that should be fully portable.
         /// https://stackoverflow.com/questions/36845430/persistent-hashcode-for-strings
         /// </summary>
-        public static int GetStableHashCode(this string str)
+        internal static int GetStableHashCode(this string str)
         {
             unchecked
             {
