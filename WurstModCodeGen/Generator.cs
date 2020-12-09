@@ -16,9 +16,9 @@ namespace WurstModCodeGen
         static string[] allFiles;
         static List<int> allHashes = new List<int>();
 
-        static void Main(string[] args)
+        static void OldMain(string[] args)
         {
-            if (!Directory.Exists(Constants.UnpackedPath))
+            if (!Directory.Exists(Constants.UnpackedResourcePath))
             {
                 Console.WriteLine(
 @"This utility is used to generate certain enums from the unpacked source of the game, 
@@ -51,7 +51,7 @@ folder at the root of the repository.");
 
         static void GetAllFiles()
         {
-            allFiles = Directory.EnumerateFiles(Constants.UnpackedPath, "*.*", SearchOption.AllDirectories).ToArray();
+            allFiles = Directory.EnumerateFiles(Constants.UnpackedResourcePath, "*.*", SearchOption.AllDirectories).ToArray();
         }
 
         static string Generate()

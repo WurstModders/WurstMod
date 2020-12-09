@@ -1862,7 +1862,7 @@ namespace WurstMod.Shared
             POWERUP__PowerUpMeat_WheredIGo = 212729258
         }
 
-        public static readonly Dictionary<AnvilAsset, string> AnvilAssetResources = new Dictionary<AnvilAsset, string>()
+        public static readonly Dictionary<AnvilAsset, string> AnvilAssetResources = new()
         {
             { AnvilAsset.SOSIGBODY__Boner, @"objectids\_sosig\sosigbody\ZosigBody_Boner" },
             { AnvilAsset.SOSIGBODY__Default, @"objectids\_sosig\sosigbody\SosigBody_Default" },
