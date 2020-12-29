@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using ADepIn;
 using UnityEngine;
 using Valve.Newtonsoft.Json;
 using WurstMod.Runtime;
@@ -16,7 +17,6 @@ namespace WurstMod.Shared
         // We don't want this serialized
         public string Location;
         
-        public bool IsFrameworkMod;
         public object Mod; // Deli.Mod, made object to fix exporter within Unity.
 
         // This is a replacement for using the location of the level asset bundle as a unique identifier.
@@ -32,7 +32,6 @@ namespace WurstMod.Shared
         {
             get
             {
-                if (!IsFrameworkMod) return SpriteLoader.LoadTexture(ThumbnailPath);
                 var thumb = ((Deli.Mod)Mod).Resources.Get<Texture2D>(ThumbnailPath);
                 return thumb.IsNone ? null : thumb.Unwrap();
             }
@@ -44,32 +43,9 @@ namespace WurstMod.Shared
             get
             {
                 if (!_cached)
-                    _cached = IsFrameworkMod ? ((Deli.Mod)Mod).Resources.Get<AssetBundle>(AssetBundlePath).Unwrap() : AssetBundle.LoadFromFile(AssetBundlePath);
+                    _cached = ((Deli.Mod) Mod).Resources.Get<AssetBundle>(AssetBundlePath).Unwrap();
                 return _cached;
             }
-        }
-
-
-        /// <summary>
-        /// Loads a LevelInfo struct from a file on disk
-        /// </summary>
-        /// <param name="path">The path to the directory</param>
-        /// <returns></returns>
-        public static LevelInfo? FromFile(string path)
-        {
-            // If we were not given a path, assume the base game will handle it and return null;
-            if (path == "")
-                return null;
-
-            // If we were not given the path to a directory, go up a level and re-create the path with the level info file
-            if ((File.GetAttributes(path) & FileAttributes.Directory) != FileAttributes.Directory)
-                path = Path.Combine(Path.GetDirectoryName(path) ?? string.Empty, Constants.FilenameLevelInfo);
-
-            // Then return the deserialized object
-            var levelInfo = JsonConvert.DeserializeObject<LevelInfo>(File.ReadAllText(path));
-            levelInfo.Location = Path.GetDirectoryName(path);
-            levelInfo.IsFrameworkMod = false;
-            return levelInfo;
         }
 
         /// <summary>
@@ -80,17 +56,35 @@ namespace WurstMod.Shared
         /// <returns>A LevelInfo from it</returns>
         public static LevelInfo? FromFrameworkMod(object mod, string path)
         {
-            // Load the level info from the mod archive
-            var levelInfo = JsonConvert.DeserializeObject<LevelInfo>(((Deli.Mod)mod).Resources.Get<string>(path + Constants.FilenameLevelInfo).Unwrap());
+            var resources = ((Deli.Mod)mod).Resources;
+            // Check if this level uses a json manifest (WM >= 2)
+            if (resources.Get<string>(path + Constants.FilenameLevelInfo).MatchSome(out var manifest))
+            {
+                // Load the level info from the mod archive
+                var levelInfo = JsonConvert.DeserializeObject<LevelInfo>(manifest);
 
-            // If it doesn't exist, exit early
-            if (levelInfo.Gamemode == "") return null;
+                // Set some vars and return it
+                levelInfo.Location = path;
+                levelInfo.Mod = mod;
+                return levelInfo;
+            }
+            // Check if this level uses an info txt file (WM < 2)
+            else if (resources.Get<string>(path + "info.txt").MatchSome(out var info))
+            {
+                // This supports the older format
+                var lines = info.Split('\n');
+                return new LevelInfo
+                {
+                    SceneName = lines[0],
+                    Author = lines[1],
+                    Gamemode = path.Contains("TakeAndHold") ? Constants.GamemodeTakeAndHold : Constants.GamemodeSandbox,
+                    Location = path,
+                    Mod = mod
+                };
+            }
 
-            // Set some vars and return it
-            levelInfo.Location = path;
-            levelInfo.IsFrameworkMod = true;
-            levelInfo.Mod = mod;
-            return levelInfo;
+            // If somehow neither of the above two options match it's an invalid thing.
+            return null;
         }
 
         /// <summary>

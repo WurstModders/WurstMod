@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
@@ -92,8 +92,6 @@ namespace WurstMod.Runtime.ScenePatchers
             vanillaLevel = LevelInfo.FromParams("Classic", "H3VR", Constants.GamemodeTakeAndHold, levelDescriptionText.text, levelImage.sprite);
             levels.Add(vanillaLevel);
             levels.AddRange(CustomLevelFinder.ArchiveLevels.Where(x => x.Gamemode == Constants.GamemodeTakeAndHold));
-            if (Entrypoint.UseLegacyLoadingMethod.Value)
-                levels.AddRange(CustomLevelFinder.DirectoryLevels.Where(x => x.Gamemode == Constants.GamemodeTakeAndHold));
 
             // Set to vanilla level.
             SetLevel(levels[0]);

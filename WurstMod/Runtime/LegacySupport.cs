@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using WurstMod.Shared;
 
 namespace WurstMod.Runtime
 {
@@ -124,31 +124,14 @@ namespace WurstMod.Runtime
             -1779142660
         };
 
-        public static void Init()
+        public static void EnsureLegacyFolderExists()
         {
-            JSONifyLevelInfos();
-        }
-
-        /// <summary>
-        /// Update all level info.txt files to the new info.json type.
-        /// </summary>
-        public static void JSONifyLevelInfos()
-        {
-            if (!Directory.Exists(Shared.Constants.CustomLevelsDirectory)) return;
-            string[] infoPaths = Directory.GetFiles(WurstMod.Shared.Constants.CustomLevelsDirectory, "info.txt", SearchOption.AllDirectories);
-            foreach (string ii in infoPaths)
-            {
-                WurstMod.Shared.LevelInfo converted = new WurstMod.Shared.LevelInfo();
-                converted.Location = Path.GetDirectoryName(ii);
-
-                string[] info = File.ReadAllLines(ii);
-                converted.SceneName = info[0];
-                converted.Author = info[1];
-                converted.Gamemode = converted.Location.Contains("TakeAndHold") ? WurstMod.Shared.Constants.GamemodeTakeAndHold : WurstMod.Shared.Constants.GamemodeSandbox;
-                converted.Description = string.Join("\n", info.Skip(2).ToArray());
-
-                converted.ToFile();
-            }
+            var manifest = Path.Combine(Constants.LegacyLevelsDirectory, "manifest.json");
+            if (File.Exists(manifest)) return;
+            Directory.CreateDirectory(Constants.LegacyLevelsDirectory);
+            Directory.CreateDirectory(Path.Combine(Constants.LegacyLevelsDirectory, "TakeAndHold"));
+            Directory.CreateDirectory(Path.Combine(Constants.LegacyLevelsDirectory, "Other"));
+            File.WriteAllText(manifest, Entrypoint.Instance.ResourceIO.Get<string>("legacyManifest.json").Expect("Missing legacy manifest"));
         }
     }
 }
