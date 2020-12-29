@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using BepInEx.Configuration;
@@ -11,19 +11,15 @@ namespace WurstMod.Runtime
 {
     public class Entrypoint : DeliBehaviour
     {
+        public static Entrypoint Instance;
+        
         void Awake()
         {
+            Instance = this;
             RegisterListeners();
             InitDetours();
             InitAppDomain();
             InitConfig();
-
-            // Only support legacy formats if opted in
-            if (UseLegacyLoadingMethod.Value)
-            {
-                LegacySupport.Init();
-                CustomLevelFinder.DiscoverLevelsInFolder();
-            }
         }
 
         void RegisterListeners()
@@ -53,9 +49,11 @@ namespace WurstMod.Runtime
         public static ConfigEntry<bool> UseLegacyLoadingMethod;
         void InitConfig()
         {
-            ConfigQuickload = Config.Bind("Debug", "QuickloadPath", "", "Set this to a folder containing the scene you would like to load as soon as H3VR boots. This is good for quickly testing scenes you are developing.");
             LoadDebugLevels = Config.Bind("Debug", "LoadDebugLevels", true, "True if you want the included default levels to be loaded");
-            UseLegacyLoadingMethod = Config.Bind("Debug", "UseLegacyLoadingMethod", true, $"True if you want to support loading legacy v1 or standalone levels from the {Constants.CustomLevelsDirectory} folder");
+            UseLegacyLoadingMethod = Config.Bind("Debug", "UseLegacyLoadingMethod", true, $"True if you want to support loading legacy v1 or standalone levels from the {Constants.LegacyLevelsDirectory} folder");
+            
+            if (UseLegacyLoadingMethod.Value)
+                LegacySupport.EnsureLegacyFolderExists();
         }
 
         private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode mode)
@@ -64,7 +62,8 @@ namespace WurstMod.Runtime
             Generic_LevelPopulator.SetupLevelPopulator(scene);
             
             StartCoroutine(Loader.OnSceneLoad(scene));
-            DebugQuickloader.Quickload(scene); // Must occur after regular loader.
         }
+
+        public IResourceIO ResourceIO => Resources;
     }
 }

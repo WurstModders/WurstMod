@@ -20,7 +20,6 @@ namespace WurstMod.Runtime
     public static class Loader
     {
         public static bool IsLoadInProgress;
-        private static readonly Harmony CustomAssemblyPatches = new Harmony("wurstmod.custom_assemblies");
 
         /// <summary>
         /// This is called by the BepInEx entrypoint. It is fired when ANY scene loads, including vanilla ones.
@@ -37,7 +36,6 @@ namespace WurstMod.Runtime
                 
                 // Load the level
                 var level = LevelToLoad.Value;
-                LoadCustomAssemblies(level);
                 yield return LoadCustomScene(level);
             }
 
@@ -53,33 +51,6 @@ namespace WurstMod.Runtime
             {
                 // We're loading a base scene
                 ScenePatcher.RunPatches(scene);
-            }
-        }
-
-        /// <summary>
-        /// This method loads custom assemblies packed beside the custom scene.
-        /// </summary>
-        private static void LoadCustomAssemblies(LevelInfo level)
-        {
-            // Unpatch any Harmony patches we've previously loaded for custom maps
-            CustomAssemblyPatches.UnpatchAll("wurstmod.custom_assemblies");
-            
-            // If this is loaded from an archive, just stop here. Archives would have already loaded the DLLs
-            if (level.IsFrameworkMod) return;
-            
-            // Now we can discover and load the assemblies for this map
-            foreach (var assembly in Directory.GetFiles(level.Location, "*.dll"))
-            {
-                if (!LoadedAssemblies.ContainsKey(assembly))
-                {
-                    var loadedAsm = Assembly.LoadFile(assembly);
-                    AppDomain.CurrentDomain.Load(loadedAsm.GetName());
-                    Debug.Log("LOADED TYPES: " + string.Join(", ", loadedAsm.GetTypes().Select(x => x.Name).ToArray()));
-                    LoadedAssemblies.Add(assembly, loadedAsm);
-                }
-                
-                // Patch any Harmony patches
-                CustomAssemblyPatches.PatchAll(LoadedAssemblies[assembly]);
             }
         }
 
