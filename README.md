@@ -8,7 +8,7 @@ With out of the box support for both sandbox and Take & Hold levels, plus an eas
 ## Quickstart Links
 - [Installing WurstMod](https://github.com/Nolenz/WurstMod/wiki/Installing-WurstMod)
 - [Installing Custom Levels](https://github.com/Nolenz/WurstMod/wiki/Installing-Custom-Levels)
-- [Creating Custom Maps]()
+- [Creating Custom Maps](https://github.com/Nolenz/WurstMod/wiki/Setting-up-your-environment)
 - [Developer Reference](https://github.com/Nolenz/WurstMod/wiki/Developer-References)
 
 ## Contributing
