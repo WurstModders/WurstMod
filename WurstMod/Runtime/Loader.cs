@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Deli.VFS;
 using HarmonyLib;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -146,7 +147,7 @@ namespace WurstMod.Runtime
         private static Scene _loadedScene;
 
         // Keep track of which assemblies and asset bundles we've already loaded
-        private static readonly Dictionary<string, AssetBundle> LoadedBundles = new Dictionary<string, AssetBundle>();
+        private static readonly Dictionary<IFileHandle, AssetBundle> LoadedBundles = new Dictionary<IFileHandle, AssetBundle>();
         private static readonly Dictionary<string, Assembly> LoadedAssemblies = new Dictionary<string, Assembly>();
 
         // Public field to set which level we'll load

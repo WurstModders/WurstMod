@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using Deli.VFS;
 using UnityEngine;
 using WurstMod.Shared;
 
@@ -124,14 +125,18 @@ namespace WurstMod.Runtime
             -1779142660
         };
 
-        public static void EnsureLegacyFolderExists()
+        public static void EnsureLegacyFolderExists(IFileHandle legacyManifest)
         {
             var manifest = Path.Combine(Constants.LegacyLevelsDirectory, "manifest.json");
             if (File.Exists(manifest)) return;
             Directory.CreateDirectory(Constants.LegacyLevelsDirectory);
             Directory.CreateDirectory(Path.Combine(Constants.LegacyLevelsDirectory, "TakeAndHold"));
             Directory.CreateDirectory(Path.Combine(Constants.LegacyLevelsDirectory, "Other"));
-            File.WriteAllText(manifest, Entrypoint.Instance.ResourceIO.Get<string>("legacyManifest.json").Expect("Missing legacy manifest"));
+            
+            var stream = legacyManifest.OpenRead();
+            var buffer = new byte[stream.Length];
+            stream.Read(buffer, 0, buffer.Length);
+            File.WriteAllBytes(manifest, buffer);
         }
     }
 }

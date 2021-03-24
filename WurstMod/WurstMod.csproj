@@ -42,10 +42,6 @@
       <HintPath>..\packages\HarmonyX.2.1.1\lib\net35\0Harmony.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="ADepIn, Version=20.11.19.2309, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\ADepIn.20.11.19.2309\lib\net35\ADepIn.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\Libs\Assembly-CSharp.dll</HintPath>
     </Reference>
@@ -53,12 +49,20 @@
       <HintPath>..\packages\BepInEx.BaseLib.5.4.0\lib\net35\BepInEx.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Deli, Version=0.2.4.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\Deli.0.2.4\lib\net35\Deli.dll</HintPath>
+    <Reference Include="Deli.Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Deli.Newtonsoft.Json.12.0.3\lib\net35\Deli.Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Deli.Runtime, Version=0.2.4.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\Deli.Runtime.0.2.4\lib\net35\Deli.Runtime.dll</HintPath>
+    <Reference Include="Deli.Patcher, Version=0.3.1.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Deli.Patcher.0.3.1\lib\net35\Deli.Patcher.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Deli.Setup, Version=0.3.1.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Deli.0.3.1\lib\net35\Deli.Setup.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DotNetZip, Version=1.12.0.0, Culture=neutral, PublicKeyToken=6583c7c814667745">
+      <HintPath>..\packages\DotNetZip.1.12.0\lib\net20\DotNetZip.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Mono.Cecil, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
@@ -135,7 +139,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Runtime\CustomLevelFinder.cs" />
     <Compile Include="Runtime\Entrypoint.cs" />
-    <Compile Include="Runtime\LevelModuleLoader.cs" />
     <Compile Include="Runtime\Loader.cs" />
     <Compile Include="Runtime\ObjectReferences.cs" />
     <Compile Include="Runtime\Patches.cs" />

@@ -90,25 +90,24 @@ namespace WurstMod.UnityEditor.SceneExporters
             Debug.Log("Writing level info...");
             var levelInfo = new LevelInfo
             {
-                Location = location,
                 SceneName = _root.SceneName,
                 Author = _root.Author,
                 Gamemode = _root.Gamemode,
                 Description = _root.Description
             };
-            levelInfo.ToFile();
+            levelInfo.ToFile(location);
 
             // Export the asset bundle
             Debug.Log("Creating asset bundle...");
-            BuildPipeline.BuildAssetBundles(levelInfo.Location, new[] {build}, buildOptions, BuildTarget.StandaloneWindows64);
+            BuildPipeline.BuildAssetBundles(location, new[] {build}, buildOptions, BuildTarget.StandaloneWindows64);
 
             // Delete unnecessary files.
             Debug.Log("Cleaning up...");
             var toDelete = new[]
             {
-                Path.Combine(levelInfo.Location, $"{Constants.FilenameLevelData}.manifest"),
-                Path.Combine(levelInfo.Location, _scene.name),
-                Path.Combine(levelInfo.Location, $"{_scene.name}.manifest")
+                Path.Combine(location, $"{Constants.FilenameLevelData}.manifest"),
+                Path.Combine(location, _scene.name),
+                Path.Combine(location, $"{_scene.name}.manifest")
             };
             foreach (var file in toDelete)
                 if (File.Exists(file))

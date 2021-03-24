@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using BepInEx.Configuration;
 using Deli;
+using Deli.Setup;
+using Deli.VFS;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using WurstMod.Runtime.ScenePatchers;
 using WurstMod.Shared;
@@ -11,59 +14,58 @@ namespace WurstMod.Runtime
 {
     public class Entrypoint : DeliBehaviour
     {
-        public static Entrypoint Instance;
-        
-        void Awake()
-        {
-            Instance = this;
-            RegisterListeners();
-            InitDetours();
-            InitAppDomain();
-            InitConfig();
-        }
-
-        void RegisterListeners()
-        {
-            SceneManager.sceneLoaded += SceneManager_sceneLoaded;
-        }
-
-        void InitDetours()
-        {
-            Patches.Patch();
-        }
-
         private static readonly Dictionary<string, Assembly> Assemblies = new Dictionary<string, Assembly>();
+        private static ConfigEntry<bool> loadDebugLevels;
+        private static ConfigEntry<bool> useLegacyLoadingMethod;
 
-        void InitAppDomain()
+        public Entrypoint()
         {
+            // Add a number of callbacks
+            Stages.Setup += StagesOnSetup;
+            SceneManager.sceneLoaded += SceneManager_sceneLoaded;
             AppDomain.CurrentDomain.AssemblyLoad += (sender, e) => { Assemblies[e.LoadedAssembly.FullName] = e.LoadedAssembly; };
             AppDomain.CurrentDomain.AssemblyResolve += (sender, e) =>
             {
                 Assemblies.TryGetValue(e.Name, out var assembly);
                 return assembly;
             };
+
+            // Config values
+            loadDebugLevels = Config.Bind("Debug", "LoadDebugLevels", false, "True if you want the included default levels to be loaded");
+            useLegacyLoadingMethod = Config.Bind("Debug", "UseLegacyLoadingMethod", true, $"True if you want to support loading legacy v1 or standalone levels from the {Constants.LegacyLevelsDirectory} folder");
+
+            // Legacy support
+            if (useLegacyLoadingMethod.Value)
+                LegacySupport.EnsureLegacyFolderExists(Resources.GetFile("legacyManifest.json"));
         }
 
-        public static ConfigEntry<string> ConfigQuickload;
-        public static ConfigEntry<bool> LoadDebugLevels;
-        public static ConfigEntry<bool> UseLegacyLoadingMethod;
-        void InitConfig()
+        private void StagesOnSetup(SetupStage stage)
         {
-            LoadDebugLevels = Config.Bind("Debug", "LoadDebugLevels", true, "True if you want the included default levels to be loaded");
-            UseLegacyLoadingMethod = Config.Bind("Debug", "UseLegacyLoadingMethod", true, $"True if you want to support loading legacy v1 or standalone levels from the {Constants.LegacyLevelsDirectory} folder");
-            
-            if (UseLegacyLoadingMethod.Value)
-                LegacySupport.EnsureLegacyFolderExists();
+            stage.SharedAssetLoaders[Source, "Level"] = SharedAssetLoader;
+        }
+
+        private void SharedAssetLoader(Stage stage, Mod mod, IHandle handle)
+        {
+            // If the config has disabled loading the default included levels, return
+            if (!loadDebugLevels.Value && mod.Info.Guid == "wurstmod")
+                return;
+
+            // Try to make a level info from it
+            var level = LevelInfo.FromFrameworkMod(mod, handle);
+
+            if (!level.HasValue) Debug.LogError($"Level in {mod}, {handle} is not valid!");
+            else
+            {
+                CustomLevelFinder.ArchiveLevels.Add(level.Value);
+                Debug.Log($"Discovered level {level.Value.SceneName} in {mod}, {handle}");
+            }
         }
 
         private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode mode)
         {
             TNH_LevelSelector.SetupLevelSelector(scene);
             Generic_LevelPopulator.SetupLevelPopulator(scene);
-            
             StartCoroutine(Loader.OnSceneLoad(scene));
         }
-
-        public IResourceIO ResourceIO => Resources;
     }
 }

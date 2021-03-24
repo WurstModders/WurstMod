@@ -1,8 +1,8 @@
 ﻿using System.IO;
-using ADepIn;
+using Deli.VFS;
+using FistVR;
 using UnityEngine;
 using Valve.Newtonsoft.Json;
-using WurstMod.Runtime;
 
 namespace WurstMod.Shared
 {
@@ -15,16 +15,16 @@ namespace WurstMod.Shared
         [JsonProperty] public string Description;
 
         // We don't want this serialized
-        public string Location;
-        
+        public IDirectoryHandle Location;
+
         public object Mod; // Deli.Mod, made object to fix exporter within Unity.
 
         // This is a replacement for using the location of the level asset bundle as a unique identifier.
         public string Identifier => $"{SceneName}{Author}{Gamemode}{Description}".GetHashCode().ToString();
-        
-        public string AssetBundlePath => Path.Combine(Location, Constants.FilenameLevelData);
-        public string ThumbnailPath => Path.Combine(Location, Constants.FilenameLevelThumbnail);
-        public string LevelInfoPath => Path.Combine(Location, Constants.FilenameLevelInfo);
+
+        public IFileHandle AssetBundlePath => Location.GetFile(Constants.FilenameLevelData);
+        public IFileHandle ThumbnailPath => Location.GetFile(Constants.FilenameLevelThumbnail);
+        public IFileHandle LevelInfoPath => Location.GetFile(Constants.FilenameLevelInfo);
 
         public Sprite existingSprite; // Used by TNH loader.
 
@@ -32,18 +32,29 @@ namespace WurstMod.Shared
         {
             get
             {
-                var thumb = ((Deli.Mod)Mod).Resources.Get<Texture2D>(ThumbnailPath);
-                return thumb.IsNone ? null : thumb.Unwrap();
+                var stream = AssetBundlePath.OpenRead();
+                var buffer = new byte[stream.Length];
+                stream.Read(buffer, 0, buffer.Length);
+                var tex = new Texture2D(0, 0);
+                tex.LoadImage(buffer);
+                return tex;
             }
         }
 
         private AssetBundle _cached;
+
         public AssetBundle AssetBundle
         {
             get
             {
                 if (!_cached)
-                    _cached = ((Deli.Mod) Mod).Resources.Get<AssetBundle>(AssetBundlePath).Unwrap();
+                {
+                    var stream = AssetBundlePath.OpenRead();
+                    var buffer = new byte[stream.Length];
+                    stream.Read(buffer, 0, buffer.Length);
+                    _cached = AssetBundle.LoadFromMemory(buffer);
+                }
+
                 return _cached;
             }
         }
@@ -54,36 +65,43 @@ namespace WurstMod.Shared
         /// <param name="mod">The Deli.Mod the module originates from</param>
         /// <param name="module">The module</param>
         /// <returns>A LevelInfo from it</returns>
-        public static LevelInfo? FromFrameworkMod(object mod, string path)
+        public static LevelInfo? FromFrameworkMod(object source, object handle)
         {
-            var resources = ((Deli.Mod)mod).Resources;
+            var mod = (Deli.Mod) source;
+            var path = (IDirectoryHandle) handle;
+
             // Check if this level uses a json manifest (WM >= 2)
-            if (resources.Get<string>(path + Constants.FilenameLevelInfo).MatchSome(out var manifest))
+            var manifest = path.GetFile(Constants.FilenameLevelInfo);
+            if (manifest != null)
             {
                 // Load the level info from the mod archive
-                var levelInfo = JsonConvert.DeserializeObject<LevelInfo>(manifest);
+                var bytes = new StreamReader(manifest.OpenRead()).ReadToEnd();
+                var levelInfo = JsonConvert.DeserializeObject<LevelInfo>(bytes);
 
                 // Set some vars and return it
                 levelInfo.Location = path;
                 levelInfo.Mod = mod;
                 return levelInfo;
             }
+
             // Check if this level uses an info txt file (WM < 2)
-            else if (resources.Get<string>(path + "info.txt").MatchSome(out var info))
+            manifest = path.GetFile("info.txt");
+            if (manifest != null)
             {
                 // This supports the older format
-                var lines = info.Split('\n');
+                var lines = new StreamReader(manifest.OpenRead()).ReadToEnd().Split('\n');
                 return new LevelInfo
                 {
                     SceneName = lines[0],
                     Author = lines[1],
-                    Gamemode = path.Contains("TakeAndHold") ? Constants.GamemodeTakeAndHold : Constants.GamemodeSandbox,
+                    Gamemode = path.Path.Contains("TakeAndHold") ? Constants.GamemodeTakeAndHold : Constants.GamemodeSandbox,
                     Location = path,
                     Mod = mod
                 };
             }
 
             // If somehow neither of the above two options match it's an invalid thing.
+            mod.Logger.LogError($"Level at {path} does not contain a valid manifest!");
             return null;
         }
 
@@ -111,13 +129,13 @@ namespace WurstMod.Shared
         /// <summary>
         /// This should really only be used inside the Unity Editor
         /// </summary>
-        public void ToFile()
+        public void ToFile(string location)
         {
             // Make sure the directory exists
-            if (!Directory.Exists(Location)) Directory.CreateDirectory(Location);
+            if (!Directory.Exists(location)) Directory.CreateDirectory(location);
 
             // Then write the serialized data
-            File.WriteAllText(LevelInfoPath, JsonConvert.SerializeObject(this));
+            File.WriteAllText(Path.Combine(location, Constants.FilenameLevelInfo), JsonConvert.SerializeObject(this));
         }
     }
 }
