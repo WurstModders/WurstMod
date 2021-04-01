@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace WurstModCodeGen
 {
@@ -28,6 +27,19 @@ namespace WurstModCodeGen
                 }
 
                 return hash1 + (hash2 * 1566083941);
+            }
+        }
+        
+        public static IEnumerable<T> Zip35Deferred<A, B, T>(
+            this IEnumerable<A> seqA, IEnumerable<B> seqB, Func<A, B, T> func)
+        {
+            using (var iteratorA = seqA.GetEnumerator())
+            using (var iteratorB = seqB.GetEnumerator())
+            {
+                while (iteratorA.MoveNext() && iteratorB.MoveNext())
+                {
+                    yield return func(iteratorA.Current, iteratorB.Current);
+                }
             }
         }
     }
