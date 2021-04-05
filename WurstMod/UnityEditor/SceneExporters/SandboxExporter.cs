@@ -1,4 +1,5 @@
-﻿using UnityEngine.SceneManagement;
+﻿#if UNITY_EDITOR
+using UnityEngine.SceneManagement;
 using WurstMod.MappingComponents.Generic;
 using WurstMod.MappingComponents.Sandbox;
 using WurstMod.Shared;
@@ -19,3 +20,4 @@ namespace WurstMod.UnityEditor.SceneExporters
         }
     }
 }
+#endif

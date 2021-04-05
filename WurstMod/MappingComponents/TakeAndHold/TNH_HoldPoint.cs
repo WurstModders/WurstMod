@@ -3,7 +3,10 @@ using System.Linq;
 using UnityEngine;
 using WurstMod.Runtime;
 using WurstMod.Shared;
+
+#if UNITY_EDITOR
 using WurstMod.UnityEditor;
+#endif
 
 namespace WurstMod.MappingComponents.TakeAndHold
 {
@@ -101,6 +104,7 @@ namespace WurstMod.MappingComponents.TakeAndHold
             return real;
         }
 
+#if UNITY_EDITOR
         public override void OnExport(ExportErrors err)
         {
             // Make sure the nav blockers are disabled
@@ -112,5 +116,6 @@ namespace WurstMod.MappingComponents.TakeAndHold
                 err.AddError("Holds must have at least 9 Sosig Defense Spawn Points.", this);
             }
         }
+#endif
     }
 }

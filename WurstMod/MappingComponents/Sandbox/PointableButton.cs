@@ -2,7 +2,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 using WurstMod.Runtime;
+
+#if UNITY_EDITOR
 using WurstMod.UnityEditor;
+#endif
 
 namespace WurstMod.MappingComponents.Sandbox
 {
@@ -44,6 +47,7 @@ namespace WurstMod.MappingComponents.Sandbox
            Destroy(this);
         }
 
+#if UNITY_EDITOR
         public override void OnExport(ExportErrors err)
         {
             // Set the collider's size
@@ -51,5 +55,6 @@ namespace WurstMod.MappingComponents.Sandbox
             var size = GetComponent<RectTransform>().sizeDelta;
             collider.size = new Vector3(size.x, size.y, 1);
         }
+#endif
     }
 }

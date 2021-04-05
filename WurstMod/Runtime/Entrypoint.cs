@@ -41,10 +41,10 @@ namespace WurstMod.Runtime
 
         private void StagesOnSetup(SetupStage stage)
         {
-            stage.SharedAssetLoaders[Source, "Level"] = SharedAssetLoader;
+            stage.SharedAssetLoaders[Source, "level"] = LevelLoader;
         }
 
-        private void SharedAssetLoader(Stage stage, Mod mod, IHandle handle)
+        private void LevelLoader(Stage stage, Mod mod, IHandle handle)
         {
             // If the config has disabled loading the default included levels, return
             if (!loadDebugLevels.Value && mod.Info.Guid == "wurstmod")

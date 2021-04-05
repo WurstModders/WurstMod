@@ -1,4 +1,5 @@
-﻿using FistVR;
+﻿#if UNITY_EDITOR
+using FistVR;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -160,3 +161,4 @@ namespace WurstMod.UnityEditor.SceneExporters
         public static SceneExporter GetExporterForGamemode(string gamemode) => RegisteredSceneExporters.FirstOrDefault(x => x.GamemodeId == gamemode);
     }
 }
+#endif

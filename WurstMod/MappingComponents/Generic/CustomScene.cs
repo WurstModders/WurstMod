@@ -4,7 +4,9 @@ using UnityEngine;
 using Valve.VR.InteractionSystem;
 using WurstMod.Runtime;
 using WurstMod.Shared;
+#if UNITY_EDITOR
 using WurstMod.UnityEditor;
+#endif
 
 namespace WurstMod.MappingComponents.Generic
 {
@@ -23,11 +25,13 @@ namespace WurstMod.MappingComponents.Generic
 
         public int PlayerIFF = 0;
 
+#if UNITY_EDITOR
         public override void OnExport(ExportErrors err)
         {
             Skybox = RenderSettings.skybox;
         }
-
+#endif
+        
         public override void InitializeComponent()
         {
             // This component is responsible for resolving many of the global/builtin things about a level.

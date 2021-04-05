@@ -4,7 +4,9 @@ using FistVR;
 using UnityEngine;
 using WurstMod.Runtime;
 using WurstMod.Shared;
+#if UNITY_EDITOR
 using WurstMod.UnityEditor;
+#endif
 using Random = UnityEngine.Random;
 
 namespace WurstMod.MappingComponents.Generic
@@ -131,6 +133,7 @@ namespace WurstMod.MappingComponents.Generic
             }
         }
 
+#if UNITY_EDITOR
         public override void OnExport(ExportErrors err)
         {
             if (SosigTypes.Length == 0) err.AddError("Sosig Spawner has no types to spawn!", this);
@@ -138,6 +141,7 @@ namespace WurstMod.MappingComponents.Generic
             if (SpawnInterval < 0) err.AddError("Sosig Spawner cannot have a spawn interval of less than zero", this);
             if (SpawnCount < 0) err.AddError("Sosig Spawner cannot have a spawn count of less than zero", this);
         }
+#endif
 
         private void OnDrawGizmos()
         {

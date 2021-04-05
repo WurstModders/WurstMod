@@ -127,6 +127,11 @@ namespace WurstMod.Runtime
 
         public static void EnsureLegacyFolderExists(IFileHandle legacyManifest)
         {
+            if (legacyManifest is null)
+            {
+                return;
+            }
+            
             var manifest = Path.Combine(Constants.LegacyLevelsDirectory, "manifest.json");
             if (File.Exists(manifest)) return;
             Directory.CreateDirectory(Constants.LegacyLevelsDirectory);

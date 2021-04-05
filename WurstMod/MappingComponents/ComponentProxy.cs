@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
+
+#if UNITY_EDITOR
 using WurstMod.UnityEditor;
+#endif
 
 namespace WurstMod.MappingComponents
 {
@@ -17,9 +20,11 @@ namespace WurstMod.MappingComponents
         /// </summary>
         public virtual void InitializeComponent() { }
 
+#if UNITY_EDITOR
         /// <summary>
         ///     This is called before the map is exported. Put one-time calculations and component validations here.
         /// </summary>
         public virtual void OnExport(ExportErrors err) { }
+#endif
     }
 }

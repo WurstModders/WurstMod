@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if UNITY_EDITOR
+using System;
 using UnityEditor;
 using UnityEngine.SceneManagement;
 using WurstMod.MappingComponents.Generic;
@@ -34,3 +35,4 @@ namespace WurstMod.UnityEditor.SceneExporters
         }
     }
 }
+#endif

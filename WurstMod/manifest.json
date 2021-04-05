@@ -11,7 +11,9 @@
   "dependencies": {},
   "assets": {
     "setup": {
-      "wurstmod.dll": "deli:assembly"
+      "wurstmod.dll": "deli:assembly",
+      "Debug Sandbox/": "wurstmodders.wurstmod:level",
+      "Debug TNH/": "wurstmodders.wurstmod:level"
     }
   }
 }
