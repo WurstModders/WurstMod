@@ -2,7 +2,7 @@
 {
     internal static class Constants
     {
-        public const string LegacyLevelsDirectory = "mods/legacy/CustomLevels";
+        public const string LegacyLevelsDirectory = "Deli/mods/legacy/CustomLevels";
         public const string FilenameLevelData = "leveldata";
         public const string FilenameLevelInfo = "info.json";
         public const string FilenameLevelThumbnail = "thumb.png";

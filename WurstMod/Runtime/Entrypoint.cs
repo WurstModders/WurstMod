@@ -20,6 +20,9 @@ namespace WurstMod.Runtime
 
         public Entrypoint()
         {
+            // Patches
+            Patches.Patch();
+            
             // Add a number of callbacks
             Stages.Setup += StagesOnSetup;
             SceneManager.sceneLoaded += SceneManager_sceneLoaded;

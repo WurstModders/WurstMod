@@ -42,16 +42,7 @@ namespace WurstMod.Runtime
 
             if (IsLoadInProgress && LevelToLoad.HasValue)
             {
-                // We're loading the modded scene after the base scene
-                ScenePatcher.RunPatches(scene);
-
                 IsLoadInProgress = false;
-            }
-
-            if (!IsLoadInProgress && !LevelToLoad.HasValue)
-            {
-                // We're loading a base scene
-                ScenePatcher.RunPatches(scene);
             }
         }
 
@@ -135,7 +126,7 @@ namespace WurstMod.Runtime
             yield return null;
 
             // Then merge the scene into the original
-            SceneManager.MergeScenes(SceneManager.GetSceneAt(SceneManager.sceneCount - 1), SceneManager.GetActiveScene());
+            SceneManager.MergeScenes(SceneManager.GetSceneByName(sceneName), SceneManager.GetActiveScene());
 
             // Find the level component
             ObjectReferences.CustomScene = _loadedScene.GetRootGameObjects()

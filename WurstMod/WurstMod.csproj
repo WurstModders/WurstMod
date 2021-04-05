@@ -146,8 +146,6 @@
     <Compile Include="Runtime\SceneLoaders\SandboxSceneLoader.cs" />
     <Compile Include="Runtime\SceneLoaders\TakeAndHoldSceneLoader.cs" />
     <Compile Include="Runtime\ScenePatchers\Generic_LevelPopulator.cs" />
-    <Compile Include="Runtime\ScenePatchers\MainMenuScenePatcher.cs" />
-    <Compile Include="Runtime\ScenePatchers\ScenePatcher.cs" />
     <Compile Include="Runtime\ScenePatchers\TNH_LevelSelector.cs" />
     <Compile Include="Runtime\SosigSpawnerHelper.cs" />
     <Compile Include="Runtime\SpriteLoader.cs" />
