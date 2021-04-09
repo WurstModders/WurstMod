@@ -1,13 +1,14 @@
 ﻿{
   "name": "WurstMod Legacy",
   "authors": [
-    "Nathan Gill"
+    "Nathan Gill",
+    "The authors of all the maps that this loads lmao"
   ],
   "guid": "wurstmodders.wurstmod.legacy",
   "version": "1.0.0",
   "require": "0.3.1",
   "dependencies": {
-    "wurstmodders.wurstmod": "2.0.3"
+    "wurstmodders.wurstmod": "2.0.4"
   },
   "assets": {
     "setup": {
