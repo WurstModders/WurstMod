@@ -1,0 +1,18 @@
+﻿{
+  "name": "WurstMod Legacy",
+  "authors": [
+    "Nathan Gill"
+  ],
+  "guid": "wurstmodders.wurstmod.legacy",
+  "version": "1.0.0",
+  "require": "0.3.1",
+  "dependencies": {
+    "wurstmodders.wurstmod": "2.0.3"
+  },
+  "assets": {
+    "setup": {
+      "**.dll": "deli:assembly",
+      "**/": "wurstmodders.wurstmod:level"
+    }
+  }
+}

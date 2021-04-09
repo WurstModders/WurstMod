@@ -35,7 +35,7 @@ namespace WurstMod.Runtime
 
             // Config values
             loadDebugLevels = Config.Bind("Debug", "LoadDebugLevels", false, "True if you want the included default levels to be loaded");
-            useLegacyLoadingMethod = Config.Bind("Debug", "UseLegacyLoadingMethod", true, $"True if you want to support loading legacy v1 or standalone levels from the {Constants.LegacyLevelsDirectory} folder");
+            useLegacyLoadingMethod = Config.Bind("Debug", "UseLegacyLoadingMethod", false, $"True if you want to support loading legacy v1 or standalone levels from the {Constants.LegacyLevelsDirectory} folder");
 
             // Legacy support
             if (useLegacyLoadingMethod.Value)
@@ -50,13 +50,22 @@ namespace WurstMod.Runtime
         private void LevelLoader(Stage stage, Mod mod, IHandle handle)
         {
             // If the config has disabled loading the default included levels, return
-            if (!loadDebugLevels.Value && mod.Info.Guid == "wurstmod")
+            if (!loadDebugLevels.Value && mod.Info.Guid == "wurstmodders.wurstmod")
+                return;
+            
+            // If this is the legacy stuff and we have that disabled, return
+            if (!useLegacyLoadingMethod.Value && mod.Info.Guid == "wurstmodders.wurstmod.legacy")
                 return;
 
             // Try to make a level info from it
             var level = LevelInfo.FromFrameworkMod(mod, handle);
 
-            if (!level.HasValue) Debug.LogError($"Level in {mod}, {handle} is not valid!");
+            if (!level.HasValue)
+            {
+                // Skip an error here because this will throw some errors on folders we know are invalid.
+                if (mod.Info.Guid != "wurstmodders.wurstmod.legacy")
+                    Debug.LogError($"Level in {mod}, {handle} is not valid!");
+            }
             else
             {
                 CustomLevelFinder.ArchiveLevels.Add(level.Value);

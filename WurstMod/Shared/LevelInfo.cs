@@ -102,7 +102,8 @@ namespace WurstMod.Shared
             }
 
             // If somehow neither of the above two options match it's an invalid thing.
-            mod.Logger.LogError($"Level at {path} does not contain a valid manifest!");
+            if (mod.Info.Guid != "wurstmodders.wurstmod.legacy")
+                mod.Logger.LogError($"Level at {path} does not contain a valid manifest!");
             return null;
         }
 

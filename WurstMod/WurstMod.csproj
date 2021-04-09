@@ -161,6 +161,9 @@
     <Compile Include="UnityEditor\SceneExporters\TakeAndHoldExporter.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="legacyManifest.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="manifest.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
