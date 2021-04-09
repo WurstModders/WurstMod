@@ -93,8 +93,8 @@ namespace WurstMod.Shared
                 var lines = new StreamReader(manifest.OpenRead()).ReadToEnd().Split('\n');
                 return new LevelInfo
                 {
-                    SceneName = lines[0],
-                    Author = lines[1],
+                    SceneName = lines[0].Trim(),
+                    Author = lines[1].Trim(),
                     Gamemode = path.Path.Contains("TakeAndHold") ? Constants.GamemodeTakeAndHold : Constants.GamemodeSandbox,
                     Location = path,
                     Mod = mod
