@@ -18,6 +18,7 @@ namespace WurstMod.SceneLoaders
                 "_Animator_Spawning_",
                 "_Boards",
                 "_Env",
+                "_AmbientAudio",
                 "AILadderTest1",
                 // TODO: Should probably remove all the Anvil Prefabs, but it causes errors...
                 //"__SpawnOnLoad",
