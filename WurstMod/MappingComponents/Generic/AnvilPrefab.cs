@@ -1,10 +1,13 @@
-﻿using FistVR;
+﻿using System;
+using FistVR;
 using UnityEngine;
 using WurstMod.Runtime;
 using WurstMod.Shared;
 
 namespace WurstMod.MappingComponents.Generic
 {
+    [Obsolete]
+    [AddComponentMenu("")]
     public class AnvilPrefab : ComponentProxy
     {
         // Inspector
@@ -33,7 +36,7 @@ namespace WurstMod.MappingComponents.Generic
         {
             Debug.Log("Loading Anvil Asset: " + ResourceDefs.AnvilAssetResources[prefab]);
             FVRObject obj = Resources.Load<FVRObject>(ResourceDefs.AnvilAssetResources[prefab]);
-            GameObject go = Instantiate<GameObject>(obj.GetGameObject(), transform.position, transform.rotation, ObjectReferences.CustomScene.transform);
+            GameObject go = Instantiate(obj.GetGameObject(), transform.position, transform.rotation, ObjectReferences.CustomScene.transform);
             go.SetActive(true);
         }
 

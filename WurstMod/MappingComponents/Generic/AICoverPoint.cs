@@ -21,9 +21,8 @@ namespace WurstMod.MappingComponents.Generic
             global::AICoverPoint real = gameObject.AddComponent<global::AICoverPoint>();
 
             // These seem to be constant, and Calc and CalcNew are an enigma.
-            real.Heights = new float[] { 3f, 0.5f, 1.1f, 1.5f };
+            real.Heights = new [] { 3f, 0.5f, 1.1f, 1.5f };
             real.Calc();
-            real.CalcNew();
 
             Destroy(this);
         }
