@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Deli;
 using Deli.VFS;
 using FistVR;
 using UnityEngine;
@@ -14,14 +15,15 @@ namespace WurstMod.Shared
         [JsonProperty] public string Author;
         [JsonProperty] public string Gamemode;
         [JsonProperty] public string Description;
+        
+        // This is a replacement for using the location of the level asset bundle as a unique identifier.
+        public string Identifier => $"{SceneName}{Author}{Gamemode}{Description}".GetHashCode().ToString();
 
+#if !UNITY_EDITOR
         // We don't want this serialized
         public IDirectoryHandle Location;
 
-        public object Mod; // Deli.Mod, made object to fix exporter within Unity.
-
-        // This is a replacement for using the location of the level asset bundle as a unique identifier.
-        public string Identifier => $"{SceneName}{Author}{Gamemode}{Description}".GetHashCode().ToString();
+        public Mod Mod;
 
         public IFileHandle AssetBundlePath => Location.GetFile(Constants.FilenameLevelData);
         public IFileHandle ThumbnailPath => Location.GetFile(Constants.FilenameLevelThumbnail);
@@ -127,7 +129,7 @@ namespace WurstMod.Shared
 
             return info;
         }
-
+#endif
         /// <summary>
         /// This should really only be used inside the Unity Editor
         /// </summary>
@@ -139,5 +141,6 @@ namespace WurstMod.Shared
             // Then write the serialized data
             File.WriteAllText(Path.Combine(location, Constants.FilenameLevelInfo), JsonConvert.SerializeObject(this));
         }
+
     }
 }
