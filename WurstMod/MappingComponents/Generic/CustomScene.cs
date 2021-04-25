@@ -1,11 +1,13 @@
 ﻿using System;
-using FistVR;
 using UnityEngine;
-using Valve.VR.InteractionSystem;
 using WurstMod.Runtime;
 using WurstMod.Shared;
+
 #if UNITY_EDITOR
 using WurstMod.UnityEditor;
+#else
+using Valve.VR.InteractionSystem;
+using FistVR;
 #endif
 
 namespace WurstMod.MappingComponents.Generic
@@ -20,8 +22,7 @@ namespace WurstMod.MappingComponents.Generic
 
         [HideInInspector] public StringKeyValue[] ExtraData;
 
-        [Header("Scene Settings")] 
-        public float MaxProjectileRange = 500f;
+        [Header("Scene Settings")] public float MaxProjectileRange = 500f;
 
         public int PlayerIFF = 0;
 
@@ -31,9 +32,17 @@ namespace WurstMod.MappingComponents.Generic
             Skybox = RenderSettings.skybox;
         }
 #endif
-        
+
+        public void TeleportPlayer(Transform to)
+        {
+#if !UNITY_EDITOR
+            GM.CurrentMovementManager.TeleportToPoint(to.position, true, to.eulerAngles);
+#endif
+        }
+
         public override void InitializeComponent()
         {
+#if !UNITY_EDITOR
             // This component is responsible for resolving many of the global/builtin things about a level.
             // Skybox
             if (Skybox != null)
@@ -72,8 +81,10 @@ namespace WurstMod.MappingComponents.Generic
 
                 foreach (TreeInstance jj in ii.terrainData.treeInstances)
                 {
-                    GameObject copiedTree = Instantiate(ii.terrainData.treePrototypes[jj.prototypeIndex].prefab, ii.transform);
-                    copiedTree.transform.localPosition = new Vector3(ii.terrainData.size.x * jj.position.x, ii.terrainData.size.y * jj.position.y, ii.terrainData.size.z * jj.position.z);
+                    GameObject copiedTree = Instantiate(ii.terrainData.treePrototypes[jj.prototypeIndex].prefab,
+                        ii.transform);
+                    copiedTree.transform.localPosition = new Vector3(ii.terrainData.size.x * jj.position.x,
+                        ii.terrainData.size.y * jj.position.y, ii.terrainData.size.z * jj.position.z);
                     copiedTree.transform.localScale = new Vector3(jj.widthScale, jj.heightScale, jj.widthScale);
                     copiedTree.transform.localEulerAngles = new Vector3(0f, jj.rotation, 0f);
                 }
@@ -86,6 +97,7 @@ namespace WurstMod.MappingComponents.Generic
             ObjectReferences.FVRSceneSettings.MaxProjectileRange = MaxProjectileRange;
             ObjectReferences.FVRSceneSettings.DefaultPlayerIFF = PlayerIFF;
             GM.CurrentPlayerBody.SetPlayerIFF(PlayerIFF);
+#endif
         }
 
         [Serializable]
