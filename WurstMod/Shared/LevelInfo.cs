@@ -35,12 +35,19 @@ namespace WurstMod.Shared
         {
             get
             {
-                var stream = ThumbnailPath.OpenRead();
-                var buffer = new byte[stream.Length];
-                stream.Read(buffer, 0, buffer.Length);
-                var tex = new Texture2D(0, 0);
-                tex.LoadImage(buffer);
-                return tex;
+                try
+                {
+                    var stream = ThumbnailPath.OpenRead();
+                    var buffer = new byte[stream.Length];
+                    stream.Read(buffer, 0, buffer.Length);
+                    var tex = new Texture2D(0, 0);
+                    tex.LoadImage(buffer);
+                    return tex;
+                }
+                catch
+                {
+                    return null;
+                }
             }
         }
 
