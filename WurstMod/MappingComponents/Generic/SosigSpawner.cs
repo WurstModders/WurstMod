@@ -28,8 +28,7 @@ namespace WurstMod.MappingComponents.Generic
         [Tooltip("Whether or not this spawner is active by default")]
         public bool Active = true;
 
-        [Header("Spawn Options")]
-        [Tooltip("Whether to spawn the Sosig activated or not")]
+        [Header("Spawn Options")] [Tooltip("Whether to spawn the Sosig activated or not")]
         public bool SpawnActivated;
 
         [Tooltip("Sets the Sosig's IFF (Team). Values 5 and above get randomized")]
@@ -51,7 +50,7 @@ namespace WurstMod.MappingComponents.Generic
 
         [Tooltip("Set this a transform to make the Sosigs spawn with it's position and rotation as it's target.")]
         public Transform SosigTransformTarget;
-        
+
         // This needs to be a ScriptableObject because otherwise Unity throws a fit
         private ScriptableObject[] _enemyTemplates;
         private IEnumerator _coroutine;
@@ -95,6 +94,7 @@ namespace WurstMod.MappingComponents.Generic
         /// </summary>
         public void Spawn()
         {
+#if !UNITY_EDITOR
             // Pick a random template and spawn the Sosig
             var template = _enemyTemplates[Random.Range(0, _enemyTemplates.Length)] as SosigEnemyTemplate;
             SosigSpawnerHelper.SpawnSosigWithTemplate(template, new SosigSpawnerHelper.SpawnOptions
@@ -107,6 +107,7 @@ namespace WurstMod.MappingComponents.Generic
                 SosigTargetPosition = SosigTransformTarget ? SosigTransformTarget.position : SosigTargetPosition,
                 SosigTargetRotation = SosigTransformTarget ? SosigTransformTarget.rotation.eulerAngles : SosigTargetRotation
             }, transform.position, transform.forward);
+#endif
         }
 
         /// <summary>
@@ -126,7 +127,7 @@ namespace WurstMod.MappingComponents.Generic
 
                 // Then wait for the interval delay to expire
                 yield return new WaitForSeconds(SpawnInterval);
-                
+
                 // Increment the counter. This *might* break if it's set to infinite spawning and we exceed the
                 // max 32-bit uint value but I don't think we need to worry about that.
                 counter++;

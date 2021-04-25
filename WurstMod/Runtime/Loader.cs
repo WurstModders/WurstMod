@@ -94,7 +94,7 @@ namespace WurstMod.Runtime
                 }
                 catch (Exception e)
                 {
-                    Debug.LogError("Error initializing component " + proxy + "\n" + e.StackTrace);
+                    Debug.LogError("Error initializing component " + proxy + ":" + e.Message + "\n" + e.StackTrace);
                 }
             }
             sceneLoader.Resolve();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !UNITY_EDITOR
+using System;
 using System.Collections.Generic;
 using FistVR;
 using UnityEngine;
@@ -139,3 +140,4 @@ namespace WurstMod.Runtime
         }
     }
 }
+#endif
