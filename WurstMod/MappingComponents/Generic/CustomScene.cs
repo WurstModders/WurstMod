@@ -39,6 +39,12 @@ namespace WurstMod.MappingComponents.Generic
             GM.CurrentMovementManager.TeleportToPoint(to.position, true, to.eulerAngles);
 #endif
         }
+        public void KillPlayer()
+        {
+#if !UNITY_EDITOR
+            GM.CurrentPlayerBody.RegisterPlayerHit(float.PositiveInfinity, true);
+#endif
+        }
 
         public override void InitializeComponent()
         {

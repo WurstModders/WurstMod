@@ -1,10 +1,12 @@
 ﻿using System.IO;
+using UnityEngine;
+using Valve.Newtonsoft.Json;
+#if !UNITY_EDITOR
 using Deli;
 using Deli.VFS;
 using FistVR;
-using UnityEngine;
-using Valve.Newtonsoft.Json;
 using Valve.VR.InteractionSystem.Sample;
+#endif
 
 namespace WurstMod.Shared
 {
