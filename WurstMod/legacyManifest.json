@@ -12,7 +12,7 @@
   },
   "assets": {
     "setup": {
-      "**.dll": "deli:assembly",
+      "**/*.dll": "deli:assembly",
       "**/": "wurstmodders.wurstmod:level"
     }
   }

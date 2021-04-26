@@ -34,7 +34,7 @@ namespace WurstMod.MappingComponents.Generic
 
         private IEnumerator SpawnAsync()
         {
-#if UNITY_EDITOR
+#if !UNITY_EDITOR
             FVRObject obj = IM.OD[ObjectId];
             var callback = obj.GetGameObjectAsync();
             yield return callback;
