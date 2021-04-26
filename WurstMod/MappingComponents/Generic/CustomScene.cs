@@ -36,13 +36,22 @@ namespace WurstMod.MappingComponents.Generic
         public void TeleportPlayer(Transform to)
         {
 #if !UNITY_EDITOR
-            GM.CurrentMovementManager.TeleportToPoint(to.position, true, to.eulerAngles);
+            FVRMovementManager mm = GM.CurrentMovementManager;
+            // If the player is currently holding a ladder, break them off it
+            if (mm.m_curGrabPoint) mm.EndGrabPointMove(mm.m_curGrabPoint);
+            
+            // Then teleport away
+            mm.TeleportToPoint(to.position, true, to.eulerAngles);
 #endif
         }
         public void KillPlayer()
         {
 #if !UNITY_EDITOR
+            // Damage the player directly, but then play the death noise.
+            // This is required because otherwise the invincible power-up blocks the damage.
             GM.CurrentPlayerBody.RegisterPlayerHit(float.PositiveInfinity, true);
+            FVRPlayerHitbox hb = GM.CurrentPlayerBody.Hitboxes[0];
+            hb.m_aud.PlayOneShot(hb.AudClip_Reset);
 #endif
         }
 

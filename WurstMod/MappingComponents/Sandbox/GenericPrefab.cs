@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using WurstMod.Runtime;
@@ -40,6 +41,14 @@ namespace WurstMod.MappingComponents.Sandbox
         private static Dictionary<Prefab, GameObject> baseObjects = new Dictionary<Prefab, GameObject>();
         public override void InitializeComponent()
         {
+            StartCoroutine(InitializeAsync());
+        }
+
+        private IEnumerator InitializeAsync()
+        {
+            // Wait a frame.
+            yield return null;
+            
             if (baseObjects.Count == 0)
             {
                 // Initialize dictionary of baseObjects.

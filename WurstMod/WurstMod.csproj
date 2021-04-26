@@ -24,6 +24,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>649</NoWarn>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,6 +34,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>649</NoWarn>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
@@ -42,8 +44,8 @@
       <HintPath>..\packages\HarmonyX.2.1.1\lib\net35\0Harmony.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\Libs\Assembly-CSharp.dll</HintPath>
+    <Reference Include="Assembly-CSharp, Version=1.2.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\Libs\Assembly-CSharp_publicized.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx, Version=5.4.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\BepInEx.BaseLib.5.4.0\lib\net35\BepInEx.dll</HintPath>

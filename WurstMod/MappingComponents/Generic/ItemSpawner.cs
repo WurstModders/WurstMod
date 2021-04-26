@@ -2,7 +2,6 @@
 using FistVR;
 using UnityEngine;
 using WurstMod.Runtime;
-using WurstMod.Shared;
 
 namespace WurstMod.MappingComponents.Generic
 {
