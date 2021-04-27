@@ -11,9 +11,21 @@ namespace WurstMod.MappingComponents.Generic
         public UnityEvent Enter;
         public UnityEvent Exit;
 
-        private void OnTriggerEnter(Collider other) => Enter.Invoke();
+        private int _inTrigger;
 
-        private void OnTriggerExit(Collider other) => Exit.Invoke();
+        private void OnTriggerEnter(Collider other)
+        {
+            if (_inTrigger != 0) return;
+            Enter.Invoke();
+            _inTrigger++;
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            _inTrigger--;
+            if (_inTrigger != 0) return;
+            Exit.Invoke();
+        }
 
 #if UNITY_EDITOR
         public override void OnExport(ExportErrors err)
