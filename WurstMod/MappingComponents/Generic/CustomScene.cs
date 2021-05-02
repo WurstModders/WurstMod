@@ -49,7 +49,7 @@ namespace WurstMod.MappingComponents.Generic
 #if !UNITY_EDITOR
             // Damage the player directly, but then play the death noise.
             // This is required because otherwise the invincible power-up blocks the damage.
-            GM.CurrentPlayerBody.RegisterPlayerHit(float.PositiveInfinity, true);
+            GM.CurrentPlayerBody.RegisterPlayerHit(GM.CurrentPlayerBody.Health + 5, true);
             FVRPlayerHitbox hb = GM.CurrentPlayerBody.Hitboxes[0];
             hb.m_aud.PlayOneShot(hb.AudClip_Reset);
 #endif
