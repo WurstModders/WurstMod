@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 using System;
 using UnityEditor;
 using UnityEngine.SceneManagement;
@@ -27,9 +27,14 @@ namespace WurstMod.UnityEditor.SceneExporters
 
         public override CustomScene.StringKeyValue[] OnExporterGUI(CustomScene.StringKeyValue[] customData)
         {
-            if (customData == null || customData.Length != 1) customData = new[] {new CustomScene.StringKeyValue {Key = "HoldOrder"}};
+            if (customData == null || customData.Length != 1) customData = new[]
+            {
+                new CustomScene.StringKeyValue {Key = "HoldOrder"},
+                new CustomScene.StringKeyValue {Key = "NumEntitiesToCheckPerFrame", Value = "1"}
+            };
 
             customData[0].Value = EditorGUILayout.TextField("Hold Order", customData[0].Value);
+            customData[1].Value = EditorGUILayout.TextField("Num Entities To Check Per Frame", customData[1].Value);
 
             return customData;
         }

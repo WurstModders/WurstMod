@@ -24,6 +24,7 @@ namespace WurstMod.Runtime
         [ObjectReference] public static FVRReverbSystem ReverbSystem;
         [ObjectReference] public static FVRSceneSettings FVRSceneSettings;
         [ObjectReference] public static MainMenuScreen MainMenuControls;
+        [ObjectReference] public static AIManager AIManager;
 
         // These get marked as Don't Destroy On Load because we kind of need them to exist after a reload :/
         [ObjectReference("ItemSpawner", true)] public static GameObject ItemSpawnerDonor;
