@@ -1,7 +1,8 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
+#if UNITY_EDITOR
 using WurstMod.UnityEditor;
+#endif
 
 namespace WurstMod.MappingComponents.Generic
 {
