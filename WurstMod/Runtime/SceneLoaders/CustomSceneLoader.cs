@@ -51,6 +51,11 @@ namespace WurstMod.Runtime
         /// </summary>
         public virtual void Resolve()
         {
+            if (ObjectReferences.AIManager)
+            {
+                ObjectReferences.AIManager.NumEntitiesToCheckPerFrame =
+                    ObjectReferences.CustomScene.NumEntitiesToCheckPerFrame;
+            }
         }
 
         public static CustomSceneLoader GetSceneLoaderForGamemode(string gamemode)

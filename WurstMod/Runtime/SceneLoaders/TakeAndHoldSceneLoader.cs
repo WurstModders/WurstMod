@@ -51,10 +51,6 @@ namespace WurstMod.Runtime.SceneLoaders
             // Safe Pos Matrix needs to be set. Diagonal for now.
             TNH_SafePositionMatrix maxMatrix = GenerateTestMatrix();
             _tnhManager.SafePosMatrix = maxMatrix;
-            
-            // Set this AI value. Does performance stuff
-            if (LevelRoot.ExtraData != null && LevelRoot.ExtraData.Length >= 2)
-                ObjectReferences.AIManager.NumEntitiesToCheckPerFrame = int.Parse(LevelRoot.ExtraData[1].Value);
         }
 
         /// <summary>

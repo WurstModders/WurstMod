@@ -21,7 +21,7 @@ namespace WurstMod.MappingComponents.Generic
         {
             // This needs to be a trigger on the interactable layer
             GetComponent<Collider>().isTrigger = true;
-            gameObject.layer = LayerMask.NameToLayer("HandTrigger");
+            gameObject.layer = LayerMask.NameToLayer("Interactable");
         }
 #endif
     }

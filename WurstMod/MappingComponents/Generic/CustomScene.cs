@@ -23,6 +23,7 @@ namespace WurstMod.MappingComponents.Generic
         [HideInInspector] public StringKeyValue[] ExtraData;
 
         [Header("Scene Settings")] public float MaxProjectileRange = 500f;
+        [Header("AI Settings")] public int NumEntitiesToCheckPerFrame = 1;
 
         public int PlayerIFF = 0;
 

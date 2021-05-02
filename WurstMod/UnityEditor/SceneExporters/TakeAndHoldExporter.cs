@@ -30,11 +30,9 @@ namespace WurstMod.UnityEditor.SceneExporters
             if (customData == null || customData.Length != 1) customData = new[]
             {
                 new CustomScene.StringKeyValue {Key = "HoldOrder"},
-                new CustomScene.StringKeyValue {Key = "NumEntitiesToCheckPerFrame", Value = "1"}
             };
 
             customData[0].Value = EditorGUILayout.TextField("Hold Order", customData[0].Value);
-            customData[1].Value = EditorGUILayout.TextField("Num Entities To Check Per Frame", customData[1].Value);
 
             return customData;
         }
