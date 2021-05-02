@@ -121,6 +121,7 @@
     <Compile Include="MappingComponents\Generic\ItemSpawner.cs" />
     <Compile Include="MappingComponents\Generic\PlayerTrigger.cs" />
     <Compile Include="MappingComponents\Generic\PMat.cs" />
+    <Compile Include="MappingComponents\Generic\HandTrigger.cs" />
     <Compile Include="MappingComponents\Generic\SosigSpawner.cs" />
     <Compile Include="MappingComponents\Generic\Target.cs" />
     <Compile Include="MappingComponents\Generic\CustomScene.cs" />
