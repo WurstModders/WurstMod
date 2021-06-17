@@ -1,8 +1,11 @@
-﻿namespace WurstMod.Shared
+﻿using System.IO;
+using BepInEx;
+
+namespace WurstMod.Shared
 {
     internal static class Constants
     {
-        public const string LegacyLevelsDirectory = "Deli/mods/legacy/CustomLevels";
+        public static readonly string LegacyLevelsDirectory = Path.Combine(Paths.PluginPath, "LegacyCustomLevels");
         public const string FilenameLevelData = "leveldata";
         public const string FilenameLevelInfo = "info.json";
         public const string FilenameLevelThumbnail = "thumb.png";
