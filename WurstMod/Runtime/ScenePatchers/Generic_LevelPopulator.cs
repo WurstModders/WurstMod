@@ -109,18 +109,13 @@ namespace WurstMod.Runtime.ScenePatchers
                 Texture2D image = null;
                 if (imageT) image = imageT;
 
-                if (level.existingSprite == null && level.Thumbnail != null)
-                {
-                    level.existingSprite = SpriteLoader.ConvertTextureToSprite(image);
-                }
-
                 // Create and apply scene def.
                 MainMenuSceneDef moddedDef = ScriptableObject.CreateInstance<MainMenuSceneDef>();
                 moddedDef.Name = level.SceneName + "\n" + level.Identifier;
                 moddedDef.Type = level.Author;
                 moddedDef.SceneName = "ProvingGround";
                 moddedDef.Desciption = level.Description;
-                moddedDef.Image = level.existingSprite;
+                moddedDef.Image = level.Sprite;
 
                 MainMenuScenePointable screen = screens.First(x => !x.gameObject.activeSelf);
                 screen.Def = moddedDef;

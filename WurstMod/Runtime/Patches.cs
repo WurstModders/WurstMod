@@ -27,6 +27,19 @@ namespace WurstMod.Runtime
         }
     }
 
+    [HarmonyPatch(typeof(TNH_UIManager), nameof(TNH_UIManager.UpdateLevelSelectDisplayAndLoader))]
+    class TNH_UIManager_UpdateLevelSelectDisplayAndLoader
+    {
+        static bool Prefix(TNH_UIManager __instance)
+        {
+            TNH_UIManager.LevelData level = __instance.GetLevelData(__instance.CurLevelID);
+            if (level is ModdedLevelInfo moddedLevelInfo)
+                Loader.LevelToLoad = moddedLevelInfo.Original;
+            else Loader.LevelToLoad = null;
+            return true;
+        }
+    }
+    
     #region Assembly GetTypes Hacking
     // Assembly.GetTypes() fails if ANY of the types cannot be loaded.
     // In practice, this means we cannot inherit from UnityEditor.

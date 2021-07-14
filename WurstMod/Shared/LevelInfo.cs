@@ -31,8 +31,6 @@ namespace WurstMod.Shared
         public IFileHandle ThumbnailPath => Location.GetFile(Constants.FilenameLevelThumbnail);
         public IFileHandle LevelInfoPath => Location.GetFile(Constants.FilenameLevelInfo);
 
-        public Sprite existingSprite; // Used by TNH loader.
-
         public Texture2D Thumbnail
         {
             get
@@ -50,6 +48,15 @@ namespace WurstMod.Shared
                 {
                     return null;
                 }
+            }
+        }
+        
+        public Sprite Sprite
+        {
+            get
+            {
+                Texture2D tex = Thumbnail;
+                return tex != null ? Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), Vector2.one / 2) : null;
             }
         }
 
@@ -116,27 +123,6 @@ namespace WurstMod.Shared
             if (mod.Info.Guid != "wurstmodders.wurstmod.legacy")
                 mod.Logger.LogError($"Level at {path} does not contain a valid manifest!");
             return null;
-        }
-
-        /// <summary>
-        /// Creates a Levelinfo struct with the params given. This is used by the TNH loader.
-        /// </summary>
-        /// <param name="name">Name of the level</param>
-        /// <param name="author">Author of the level</param>
-        /// <param name="gamemode">Gamemode of the level</param>
-        /// <param name="desc">Description of the level</param>
-        /// <param name="sprite">Sprite of the level</param>
-        /// <returns></returns>
-        public static LevelInfo FromParams(string name, string author, string gamemode, string desc, Sprite sprite)
-        {
-            LevelInfo info = new LevelInfo();
-            info.SceneName = name;
-            info.Author = author;
-            info.Gamemode = gamemode;
-            info.Description = desc;
-            info.existingSprite = sprite;
-
-            return info;
         }
 #endif
         /// <summary>

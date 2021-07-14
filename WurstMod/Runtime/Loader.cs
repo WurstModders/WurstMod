@@ -40,7 +40,7 @@ namespace WurstMod.Runtime
                 var level = LevelToLoad.Value;
                 yield return LoadCustomScene(level);
             }
-
+            
             if (IsLoadInProgress && LevelToLoad.HasValue)
             {
                 IsLoadInProgress = false;

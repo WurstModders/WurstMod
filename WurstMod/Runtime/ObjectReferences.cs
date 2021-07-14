@@ -34,7 +34,6 @@ namespace WurstMod.Runtime
         [ObjectReference("BangerDetonator", true)] public static GameObject BangerDetonatorDonor;
 
         [ObjectReference("[CameraRig]Fixed")] public static GameObject CameraRig;
-        [ObjectReference("_FinalScore")] public static GameObject FinalScore;
         [ObjectReference("[ResetPoint]")] public static GameObject ResetPoint;
 
         #endregion

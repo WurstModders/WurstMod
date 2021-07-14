@@ -45,7 +45,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Assembly-CSharp, Version=1.2.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\Libs\Assembly-CSharp_publicized.dll</HintPath>
+      <HintPath>..\libs\Assembly-CSharp_publicized.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\libs\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx, Version=5.4.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\BepInEx.BaseLib.5.4.0\lib\net35\BepInEx.dll</HintPath>
@@ -143,6 +146,7 @@
     <Compile Include="Runtime\CustomLevelFinder.cs" />
     <Compile Include="Runtime\Entrypoint.cs" />
     <Compile Include="Runtime\Loader.cs" />
+    <Compile Include="Runtime\ModdedLevelInfo.cs" />
     <Compile Include="Runtime\ObjectReferences.cs" />
     <Compile Include="Runtime\Patches.cs" />
     <Compile Include="Runtime\SceneLoaders\CustomSceneLoader.cs" />

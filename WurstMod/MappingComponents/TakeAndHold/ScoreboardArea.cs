@@ -17,7 +17,7 @@ namespace WurstMod.MappingComponents.TakeAndHold
         public override void InitializeComponent()
         {
             ObjectReferences.ResetPoint.transform.position = transform.position;
-            ObjectReferences.FinalScore.transform.position = transform.position + new Vector3(0f, 1.8f, 7.5f);
+            ObjectReferences.ManagerDonor.ScoreDisplay.transform.position = transform.position + new Vector3(0f, 1.8f, 7.5f);
 
             Destroy(this);
         }

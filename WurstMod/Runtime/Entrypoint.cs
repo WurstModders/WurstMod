@@ -6,10 +6,13 @@ using BepInEx.Configuration;
 using Deli;
 using Deli.Setup;
 using Deli.VFS;
+using Steamworks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Valve.VR;
 using WurstMod.Runtime.ScenePatchers;
 using WurstMod.Shared;
+using Constants = WurstMod.Shared.Constants;
 
 namespace WurstMod.Runtime
 {
@@ -21,6 +24,20 @@ namespace WurstMod.Runtime
 
         public Entrypoint()
         {
+            int buildId = -1;
+            try
+            {
+                SteamAPI.Init();
+                buildId = SteamApps.GetAppBuildId();
+            }
+            catch (InvalidOperationException)
+            {
+                // Ignored
+            }
+
+            if (buildId < 7024234)
+                throw new Exception("This version of the game is not supported. Please update your game.");
+
             // Patches
             Patches.Patch();
             
