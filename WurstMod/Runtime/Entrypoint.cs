@@ -35,7 +35,7 @@ namespace WurstMod.Runtime
                 // Ignored
             }
 
-            if (buildId < 7024234)
+            if (buildId < 7036061)
                 throw new Exception("This version of the game is not supported. Please update your game.");
 
             // Patches

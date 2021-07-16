@@ -19,7 +19,7 @@ namespace WurstMod.Shared
         [JsonProperty] public string Description;
         
         // This is a replacement for using the location of the level asset bundle as a unique identifier.
-        public string Identifier => $"{SceneName}{Author}{Gamemode}{Description}".GetHashCode().ToString();
+        public string Identifier => SceneName.Replace(" ", "").Truncate(16);
 
 #if !UNITY_EDITOR
         // We don't want this serialized

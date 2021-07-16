@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FistVR;
 using UnityEngine;
 using WurstMod.MappingComponents.TakeAndHold;
 using WurstMod.Shared;
+using Random = UnityEngine.Random;
 using TNH_HoldPoint = FistVR.TNH_HoldPoint;
 using TNH_SupplyPoint = FistVR.TNH_SupplyPoint;
 
@@ -12,6 +14,7 @@ namespace WurstMod.Runtime.SceneLoaders
     public class TakeAndHoldSceneLoader : CustomSceneLoader
     {
         private TNH_Manager _tnhManager;
+        private string LevelIdentifier;
 
         public override string GamemodeId => Constants.GamemodeTakeAndHold;
         public override string BaseScene => "TakeAndHoldClassic";
@@ -38,6 +41,9 @@ namespace WurstMod.Runtime.SceneLoaders
         public override void Resolve()
         {
             _tnhManager = ObjectReferences.ManagerDonor;
+            LevelIdentifier = Loader.LevelToLoad?.Identifier ??
+                                    throw new Exception("Invalid state. LevelToLoad was null in TNHSceneLoader Resolve");
+            _tnhManager.LevelName = LevelIdentifier;
 
             // Hold points need to be set.
             _tnhManager.HoldPoints = LevelRoot.GetComponentsInChildren<TNH_HoldPoint>(true).ToList();
@@ -46,7 +52,7 @@ namespace WurstMod.Runtime.SceneLoaders
             _tnhManager.SupplyPoints = LevelRoot.GetComponentsInChildren<TNH_SupplyPoint>(true).ToList();
 
             // Possible Sequences need to be generated at random.
-            if (LevelRoot.ExtraData == null || LevelRoot.ExtraData[0].Value == "") _tnhManager.PossibleSequnces = GenerateRandomPointSequences(1);
+            if (LevelRoot.ExtraData == null || LevelRoot.ExtraData[0].Value == "") _tnhManager.PossibleSequnces = GenerateRandomPointSequences(10);
 
             // Safe Pos Matrix needs to be set. Diagonal for now.
             TNH_SafePositionMatrix maxMatrix = GenerateTestMatrix();
@@ -58,6 +64,9 @@ namespace WurstMod.Runtime.SceneLoaders
         /// </summary>
         private List<TNH_PointSequence> GenerateRandomPointSequences(int count)
         {
+            // Temporarily initialize the random seed to match the level's identifier
+            Random.State oldState = Random.state;
+            Random.InitState(LevelIdentifier.GetHashCode());
             List<TNH_PointSequence> sequences = new List<TNH_PointSequence>();
             for (int ii = 0; ii < count; ii++)
             {
@@ -103,6 +112,9 @@ namespace WurstMod.Runtime.SceneLoaders
                 sequences.Add(sequence);
             }
 
+            // Set the random state back to what it was before
+            Random.state = oldState;
+            
             return sequences;
         }
 

@@ -11,7 +11,7 @@ namespace WurstMod.Runtime
             LevelAuthor = level.Author;
             LevelDescription = level.Description;
             LevelDisplayName = level.SceneName;
-            LevelID = level.SceneName.Replace(" ", "").Truncate(16);
+            LevelID = level.Identifier;
             LevelImage = level.Sprite;
             Original = level;
             LevelSceneName = "TakeAndHoldClassic";
