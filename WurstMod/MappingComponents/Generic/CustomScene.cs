@@ -39,7 +39,7 @@ namespace WurstMod.MappingComponents.Generic
 #if !UNITY_EDITOR
             FVRMovementManager mm = GM.CurrentMovementManager;
             // If the player is currently holding a ladder, break them off it
-            if (mm.m_curGrabPoint) mm.EndGrabPointMove(mm.m_curGrabPoint);
+            if (mm.m_activeGrabHand) mm.m_activeGrabHand.CurrentInteractable.EndInteraction(mm.m_activeGrabHand);
             
             // Then teleport away
             mm.TeleportToPoint(to.position, true, to.eulerAngles);
