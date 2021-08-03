@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using BepInEx.Configuration;
+using BepInEx.Logging;
 using Deli;
 using Deli.Setup;
 using Deli.VFS;
@@ -87,7 +88,7 @@ namespace WurstMod.Runtime
             else
             {
                 CustomLevelFinder.ArchiveLevels.Add(level.Value);
-                Debug.Log($"Discovered level {level.Value.SceneName} in {mod}, {handle}");
+                Logger.LogInfo($"Discovered level {level.Value.SceneName} in {mod}, {handle}");
             }
         }
 

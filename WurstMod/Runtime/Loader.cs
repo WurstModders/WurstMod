@@ -30,6 +30,13 @@ namespace WurstMod.Runtime
         {
             if (!IsLoadInProgress && LevelToLoad.HasValue)
             {
+                // Check if this scene is the one we wanted to load for this level
+                var level = LevelToLoad.Value;
+                var sceneLoader = CustomSceneLoader.GetSceneLoaderForGamemode(level.Gamemode);
+                
+                // If either of these are true something is wrong and we shouldn't try to load anything
+                if (sceneLoader is null || sceneLoader.BaseScene != scene.name) yield break;
+                
                 // We're loading the base scene for a modded scene
                 IsLoadInProgress = true;
                 
@@ -37,8 +44,7 @@ namespace WurstMod.Runtime
                 ObjectReferences.FindReferences(scene);
                 
                 // Load the level
-                var level = LevelToLoad.Value;
-                yield return LoadCustomScene(level);
+                yield return LoadCustomScene(level, sceneLoader);
             }
             
             if (IsLoadInProgress && LevelToLoad.HasValue)
@@ -50,11 +56,10 @@ namespace WurstMod.Runtime
         /// <summary>
         /// This method is called to load a custom scene 
         /// </summary>
-        private static IEnumerator LoadCustomScene(LevelInfo level)
+        private static IEnumerator LoadCustomScene(LevelInfo level, CustomSceneLoader sceneLoader)
         {
             // Step 0: Get the loaded scene and find any custom loaders and scene patchers
             _loadedScene = SceneManager.GetActiveScene();
-            var sceneLoader = CustomSceneLoader.GetSceneLoaderForGamemode(level.Gamemode);
             if (sceneLoader == null)
             {
                 Debug.LogError($"No SceneLoader found for the gamemode '{level.Gamemode}'! Cannot load level.");
