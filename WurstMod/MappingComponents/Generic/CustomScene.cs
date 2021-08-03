@@ -38,7 +38,7 @@ namespace WurstMod.MappingComponents.Generic
         {
 #if !UNITY_EDITOR
             // Proxy to the game's teleport method
-            GM.CurrentMovementManager.TeleportToPoint(to.position, true, to.eulerAngles);
+            GM.CurrentMovementManager.TeleportToPoint(to.position, true, to.position + transform.forward);
 #endif
         }
         public void KillPlayer()
