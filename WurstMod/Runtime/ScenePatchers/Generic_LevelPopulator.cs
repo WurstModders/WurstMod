@@ -67,15 +67,18 @@ namespace WurstMod.Runtime.ScenePatchers
             // Trimming positions we don't want and order by -z.
             screenPositions = screenPositions.Where(x => x.z < -7f).ToList();
             screenPositions = screenPositions.OrderByDescending(x => -x.z).ThenBy(x => Mathf.Abs(x.y - 4.15f)).ToList();
+            
+            // Compatibility with ATLAS. Only use half the screen positions. Atlas will use the other half.
+            screenPositions = screenPositions.Where(x => x.x < 0).ToList();
         }
 
         private static void InitObjects()
         {
             // Modded Levels label.
             GameObject moddedScenesLabel = GameObject.Instantiate(labelBase, labelBase.transform.parent);
-            moddedScenesLabel.transform.position = new Vector3(0f, 8.3f, -17.1f);
-            moddedScenesLabel.transform.localEulerAngles = new Vector3(-180f, 0f, 180f);
-            moddedScenesLabel.GetComponent<Text>().text = "Modded Scenes:";
+            moddedScenesLabel.transform.position = new Vector3(-4f, 8.3f, -15.5f);
+            moddedScenesLabel.transform.localEulerAngles = new Vector3(-180f, 30f, 180f);
+            moddedScenesLabel.GetComponent<Text>().text = "WurstMod Sandbox Scenes";
 
             // Scene screens.
             for (int ii = 0; ii < screenPositions.Count; ii++)

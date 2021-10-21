@@ -40,6 +40,7 @@ namespace WurstMod.Runtime.SceneLoaders
         /// </summary>
         public override void Resolve()
         {
+#if !UNITY_EDITOR
             _tnhManager = ObjectReferences.ManagerDonor;
             LevelIdentifier = Loader.LevelToLoad?.Identifier ??
                                     throw new Exception("Invalid state. LevelToLoad was null in TNHSceneLoader Resolve");
@@ -57,6 +58,7 @@ namespace WurstMod.Runtime.SceneLoaders
             // Safe Pos Matrix needs to be set. Diagonal for now.
             TNH_SafePositionMatrix maxMatrix = GenerateTestMatrix();
             _tnhManager.SafePosMatrix = maxMatrix;
+#endif
         }
 
         /// <summary>

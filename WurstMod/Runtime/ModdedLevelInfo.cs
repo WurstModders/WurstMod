@@ -7,6 +7,7 @@ namespace WurstMod.Runtime
     {
         public ModdedLevelInfo(LevelInfo level)
         {
+#if !UNITY_EDITOR
             IsModLevel = true;
             LevelAuthor = level.Author;
             LevelDescription = level.Description;
@@ -15,6 +16,7 @@ namespace WurstMod.Runtime
             LevelImage = level.Sprite;
             Original = level;
             LevelSceneName = "TakeAndHoldClassic";
+#endif
         }
         
         public LevelInfo Original;
