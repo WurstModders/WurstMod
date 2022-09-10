@@ -27,7 +27,7 @@ namespace WurstMod.Runtime
         [ObjectReference] public static AIManager AIManager;
 
         // These get marked as Don't Destroy On Load because we kind of need them to exist after a reload :/
-        [ObjectReference("ItemSpawner", true)] public static GameObject ItemSpawnerDonor;
+        [ObjectReference("ItemSpawner", true, true)] public static GameObject ItemSpawnerDonor;
         [ObjectReference("Destructobin", true)] public static GameObject DestructobinDonor;
         [ObjectReference("SosigSpawner", true)] public static GameObject SosigSpawnerDonor;
         [ObjectReference("WhizzBangADinger2", true)] public static GameObject WhizzBangADingerDonor;
@@ -77,10 +77,10 @@ namespace WurstMod.Runtime
                     // If the field type is GameObject, just find the GameObject normally
                     Object found;
                     if (field.FieldType == typeof(GameObject))
-                        found = gameObjects.FirstOrDefault(x => x.name.Contains(reference.NameFilter));
+                        found = gameObjects.FirstOrDefault(x => reference.MatchNameExactly ? x.name == reference.NameFilter : x.name.Contains(reference.NameFilter));
                     // If it isn't, we also want to query for where it has a component of the right type
                     else
-                        found = gameObjects.Where(x => x.name.Contains(reference.NameFilter)).FirstOrDefault(x => x.GetComponent(field.FieldType))?.GetComponent(field.FieldType);
+                        found = gameObjects.Where(x => reference.MatchNameExactly ? x.name == reference.NameFilter : x.name.Contains(reference.NameFilter)).FirstOrDefault(x => x.GetComponent(field.FieldType))?.GetComponent(field.FieldType);
                     
                     if (found == null) continue;
                     field.SetValue(null, found);
@@ -113,13 +113,15 @@ namespace WurstMod.Runtime
     [AttributeUsage(AttributeTargets.Field)]
     public class ObjectReferenceAttribute : Attribute
     {
-        public ObjectReferenceAttribute(string nameFilter = "", bool dontDestroyOnLoad = false)
+        public ObjectReferenceAttribute(string nameFilter = "", bool dontDestroyOnLoad = false, bool matchNameExactly = false)
         {
             NameFilter = nameFilter;
             DontDestroyOnLoad = dontDestroyOnLoad;
+            MatchNameExactly = matchNameExactly;
         }
 
         public string NameFilter { get; }
         public bool DontDestroyOnLoad { get; }
+        public bool MatchNameExactly { get; }
     }
 }

@@ -120,7 +120,7 @@ namespace WurstMod.Runtime
                     float vertMag = Mathf.Abs(jump.y);
                     bool jumpDown = jump.y < 0;
 
-                    if (!jumpDown && vertMag > (2 * horzMag)) fakeLink.Type = NavMeshLinkExtension.NavMeshLinkType.Climb;
+                    if (!jumpDown && vertMag > (2 * horzMag)) fakeLink.Type = NavMeshLinkExtension.NavMeshLinkType.Ladder;
                     else if (jumpDown && vertMag > (2 * horzMag)) fakeLink.Type = NavMeshLinkExtension.NavMeshLinkType.Drop;
                     else fakeLink.Type = NavMeshLinkExtension.NavMeshLinkType.LateralJump;
 
@@ -255,50 +255,6 @@ namespace WurstMod.Runtime
             {
                 if (ourTarget.shotEvent != null) ourTarget.shotEvent.Invoke();
             }
-        }
-    }
-
-    #endregion
-
-    #region Whizzbanger Support
-
-    /// <summary>
-    /// This patched method will run on the disabled donor detonator in generic sandbox levels
-    /// whenever a new banger is created by any whizzbanger, adding the new banger to all other
-    /// detonators lists.
-    /// 
-    /// With this patch, any banger created by any whizzbanger can be detonated by any detonator in the scene.
-    /// </summary>
-    [HarmonyPatch(typeof(BangerDetonator), "RegisterBanger")]
-    public class Patch_BangerDetonator_RegisterBanger
-    {
-        static List<BangerDetonator> detonators = new List<BangerDetonator>();
-
-        static bool Prefix(BangerDetonator __instance, Banger b)
-        {
-            if (Loader.LevelToLoad != null)
-            {
-                // We are in a custom level.
-                if (detonators.Count == 0 || detonators[0] == null)
-                {
-                    // We have loaded a new custom level, recreate the cache.
-                    detonators.Clear();
-                    detonators.AddRange(GameObject.FindObjectsOfType<BangerDetonator>());
-                }
-
-                // Add banger to all detonators in cache.
-                foreach (BangerDetonator ii in detonators)
-                {
-                    if (!ii.ReflectGet<List<Banger>>("m_bangers").Contains(b))
-                    {
-                        ii.ReflectGet<List<Banger>>("m_bangers").Add(b);
-                    }
-                }
-
-                return false;
-            }
-
-            return true;
         }
     }
 
