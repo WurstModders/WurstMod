@@ -59,6 +59,7 @@ namespace WurstMod.MappingComponents.TakeAndHold
             real.BarrierPoints = BarrierPoints.AsEnumerable().Select(x => x.gameObject.GetComponent<FistVR.TNH_DestructibleBarrierPoint>()).ToList();
             real.CoverPoints = CoverPoints.AsEnumerable().Select(x => x.gameObject.GetComponent<global::AICoverPoint>()).ToList();
             real.SpawnPoint_SystemNode = SpawnPoint_SystemNode;
+            real.SpawnPoints_SystemNode = new List<Transform>();
             real.SpawnPoints_Targets = SpawnPoints_Targets.AsEnumerable().ToList();
             real.SpawnPoints_Turrets = SpawnPoints_Turrets.AsEnumerable().ToList();
             real.AttackVectors = AttackVectors.AsEnumerable().Select(x => Resolve_AttackVector(x.GetComponent<AttackVector>())).Cast<FistVR.TNH_HoldPoint.AttackVector>().ToList();

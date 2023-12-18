@@ -6,7 +6,7 @@
   ],
   "guid": "wurstmodders.wurstmod",
   "source_url": "https://github.com/WurstModders/WurstMod",
-  "version": "2.2.3",
+  "version": "2.2.5",
   "require": "0.3.0",
   "dependencies": {},
   "assets": {
